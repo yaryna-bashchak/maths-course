@@ -10,8 +10,10 @@ namespace API.Entities
         public int Number { get; set; }
         public int Importance { get; set; } = 0;
         public bool isCompleted { get; set; } = false;
+        public List<CourseLesson> CourseLessons { get; set; }
         public List<LessonKeyword> LessonKeywords { get; set; }
-        public List<LessonPreviousLesson> PreviousLessons { get; set; }
+        public List<LessonPreviousLesson> PreviousLessons { get; set; } = new List<LessonPreviousLesson>();
+        public List<LessonPreviousLesson> PreviousLessonOf { get; set; } = new List<LessonPreviousLesson>();
         public List<Test> Tests { get; set; }
     }
 }

@@ -9,5 +9,6 @@ namespace API.Entities
     {
         public int Id { get; set; }
         public string Word { get; set; }
+        public List<LessonKeyword> LessonKeywords { get; set; }
     }
 }
