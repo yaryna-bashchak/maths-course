@@ -6,6 +6,11 @@ namespace API.Data
     {
         public static void Initialize(CourseContext context)
         {
+            InitializeLessons(context);
+            InitializeKeywords(context);
+        }
+        public static void InitializeLessons(CourseContext context)
+        {
             if (context.Lessons.Any()) return;
             var lessons = new List<Lesson>
             {
@@ -214,6 +219,38 @@ namespace API.Data
             foreach (var lesson in lessons)
             {
                 context.Lessons.Add(lesson);
+            }
+
+            context.SaveChanges();
+        }
+
+        public static void InitializeKeywords(CourseContext context)
+        {
+            if (context.Keywords.Any()) return;
+            var words = new List<string> { "дроби", "НСД/НСК", "модуль", "відсотки", "пропорції", "кут", "степінь", "рівняння", "лінійні рівняння",
+                "формули скороченого множення", "квадратне рівняння", "дискримінант", "теорема Вієта", "ОДЗ (область допустимих значень)",
+                "інтервал/проміжок", "система/об'єднання", "корені", "трикутник", "середня лінія", "медіана", "висота", "бісектриса", "3 ознаки рівності △",
+                "3 ознаки подібності △", "формула Герона", "площа", "теорема Піфагора", "тригонометричні функції (sin, cos, tg, ctg)", "похила і проекція",
+                "чотирикутник", "паралелограм", "ромб", "прямокутник", "квадрат", "трапеція", "периметр", "коло", "круг", "вписаний/центральний кут",
+                "вписане/описане коло", "теорема косинусів", "теорема синусів", "многокутник", "зовнішній кут", "біквадратні рівняння", "показниковий вираз",
+                "логарифм", "показникові рівняння", "логарифмічні рівняння",
+                };
+
+            var keywords = new List<Keyword>();
+
+            foreach (var word in words)
+            {
+                keywords.Add(
+                    new Keyword
+                    {
+                        Word = word,
+                    }
+                );
+            }
+
+            foreach (var keyword in keywords)
+            {
+                context.Keywords.Add(keyword);
             }
 
             context.SaveChanges();
