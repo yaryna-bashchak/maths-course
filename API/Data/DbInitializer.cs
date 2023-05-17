@@ -8,6 +8,7 @@ namespace API.Data
         {
             InitializeLessons(context);
             InitializeKeywords(context);
+            InitializeLessonKeywords(context);
         }
         public static void InitializeLessons(CourseContext context)
         {
@@ -255,5 +256,136 @@ namespace API.Data
 
             context.SaveChanges();
         }
+
+        public static void InitializeLessonKeywords (CourseContext context)
+        {
+            if (context.LessonKeywords.Any()) return;
+
+            var lessonsToKeywords = new List<LessonToKeywords> {
+                new LessonToKeywords
+                {
+                    LessonId = 1,
+                    KeywordIds = new List<int> {1, 2},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 2,
+                    KeywordIds = new List<int> {1, 3},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 3,
+                    KeywordIds = new List<int> {4, 5},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 4,
+                    KeywordIds = new List<int> {6},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 5,
+                    KeywordIds = new List<int> {7, 8, 9},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 6,
+                    KeywordIds = new List<int> {10, 11, 12, 13, 8},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 7,
+                    KeywordIds = new List<int> {14, 15, 16},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 8,
+                    KeywordIds = new List<int> {17},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 9,
+                    KeywordIds = new List<int> {18, 19, 20, 21, 22, 23, 24, 25, 26},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 10,
+                    KeywordIds = new List<int> {18, 27, 28, 29},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 11,
+                    KeywordIds = new List<int> {18},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 12,
+                    KeywordIds = new List<int> {30, 31, 32, 33, 34, 35},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 13,
+                    KeywordIds = new List<int> {36, 26},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 14,
+                    KeywordIds = new List<int> {37, 38, 39},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 15,
+                    KeywordIds = new List<int> {40, 41, 42, 36, 26},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 16,
+                    KeywordIds = new List<int> {43, 37, 6, 44, 40},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 17,
+                    KeywordIds = new List<int> {8, 11, 45},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 18,
+                    KeywordIds = new List<int> {8, 3, 16},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 19,
+                    KeywordIds = new List<int> {46, 47},
+                },
+                new LessonToKeywords
+                {
+                    LessonId = 20,
+                    KeywordIds = new List<int> {8, 46, 48},
+                },
+            };
+
+            foreach (var lessonToKeywords in lessonsToKeywords)
+            {
+                foreach (var keywordId in lessonToKeywords.KeywordIds)
+                {
+                    context.LessonKeywords.Add(
+                        new LessonKeyword
+                        {
+                            LessonId = lessonToKeywords.LessonId,
+                            KeywordId = keywordId,
+                        }
+                    );
+                }
+            }
+
+            context.SaveChanges();
+        }
+    // helper class to make seeding data into join table easier
+    class LessonToKeywords
+    {
+        public int LessonId { get; set; }
+        public List<int> KeywordIds { get; set; }
+
     }
 }
+
