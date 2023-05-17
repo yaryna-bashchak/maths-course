@@ -9,6 +9,7 @@ namespace API.Data
             InitializeLessons(context);
             InitializeKeywords(context);
             InitializeLessonKeywords(context);
+            InitializePreviousLessons(context);
         }
         public static void InitializeLessons(CourseContext context)
         {
@@ -380,11 +381,94 @@ namespace API.Data
 
             context.SaveChanges();
         }
-    // helper class to make seeding data into join table easier
+
+        public static void InitializePreviousLessons (CourseContext context)
+        {
+            if (context.PreviousLessons.Any()) return;
+
+            var lessonsToPreviousLessons = new List<LessonToPreviousLessons> {
+                new LessonToPreviousLessons
+                {
+                    LessonId = 2,
+                    PreviousLessonIds = new List<int> {1},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 7,
+                    PreviousLessonIds = new List<int> {6},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 10,
+                    PreviousLessonIds = new List<int> {9},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 11,
+                    PreviousLessonIds = new List<int> {9},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 13,
+                    PreviousLessonIds = new List<int> {9, 12},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 15,
+                    PreviousLessonIds = new List<int> {12, 13},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 17,
+                    PreviousLessonIds = new List<int> {6},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 18,
+                    PreviousLessonIds = new List<int> {2, 7},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 19,
+                    PreviousLessonIds = new List<int> {5},
+                },
+                new LessonToPreviousLessons
+                {
+                    LessonId = 20,
+                    PreviousLessonIds = new List<int> {19},
+                },
+            };
+
+            foreach (var lessonToPreviousLessons in lessonsToPreviousLessons)
+            {
+                foreach (var previousLessonId in lessonToPreviousLessons.PreviousLessonIds)
+                {
+                    context.PreviousLessons.Add(
+                        new LessonPreviousLesson
+                        {
+                            LessonId = lessonToPreviousLessons.LessonId,
+                            PreviousLessonId = previousLessonId,
+                        }
+                    );
+                }
+            }
+
+            context.SaveChanges();
+        }
+    }
+
+    // helper classes to make seeding data into join tables easier
     class LessonToKeywords
     {
         public int LessonId { get; set; }
         public List<int> KeywordIds { get; set; }
+
+    }
+
+    class LessonToPreviousLessons
+    {
+        public int LessonId { get; set; }
+        public List<int> PreviousLessonIds { get; set; }
 
     }
 }
