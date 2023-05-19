@@ -19,6 +19,18 @@ namespace API.Controllers
             Context = context;
         }
 
+        [HttpPost]
+        public ActionResult<List<GetLessonDto>> AddLesson(AddLessonDto newLesson)
+        {
+            var lesson = Mapper.Map<Lesson>(newLesson);
+            lesson.Id = Context.Lessons.Max(l => l.Id) + 1;
+            Context.Lessons.Add(lesson);
+            Context.SaveChanges();
+            
+            var lessons = Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
+            return Ok(lessons);
+        }
+
         [HttpGet]
         public ActionResult<List<GetLessonDto>> GetLessons()
         {
