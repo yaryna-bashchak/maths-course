@@ -52,6 +52,23 @@ namespace API.Controllers
             var lesson = Mapper.Map<GetLessonDto>(dbLesson);
             return Ok(lesson);
         }
+
+        [HttpPut("id")]
+        public ActionResult<GetLessonDto> UpdateLesson(UpdateLesssonDto updatedLesson)
+        {
+            var dbLesson = Context.Lessons.FirstOrDefault(l => l.Id == updatedLesson.Id);
+            
+            dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
+            dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
+            dbLesson.UrlTheory = updatedLesson.UrlTheory ?? dbLesson.UrlTheory;
+            dbLesson.UrlPractice = updatedLesson.UrlPractice ?? dbLesson.UrlPractice;
+            dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
+            dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
+            dbLesson.isCompleted = updatedLesson.isCompleted != -1 ? (updatedLesson.isCompleted != 0) : dbLesson.isCompleted;
+            Context.SaveChanges();
+            
+            var lesson = Mapper.Map<GetLessonDto>(dbLesson);
+            return Ok(lesson);
         }
     }
 }
