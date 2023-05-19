@@ -1,6 +1,9 @@
 using API.Data;
+using API.Dtos.Lesson;
 using API.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -9,22 +12,34 @@ namespace API.Controllers
     public class LessonsController : ControllerBase
     {
         public CourseContext Context { get; }
-        public LessonsController(CourseContext context)
+        public IMapper Mapper { get; }
+        public LessonsController(CourseContext context, IMapper mapper)
         {
+            Mapper = mapper;
             Context = context;
         }
 
         [HttpGet]
-        public ActionResult<List<Lesson>> GetLessons()
+        public ActionResult<List<GetLessonDto>> GetLessons()
         {
-            var lessons = Context.Lessons.ToList();
+            var dbLessons = Context.Lessons
+                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword);
+            
+            var lessons = dbLessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
+            
             return Ok(lessons);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Lesson> GetLesson(int id)
+        public ActionResult<GetLessonDto> GetLesson(int id)
         {
-            return Context.Lessons.Find(id);
+            var dbLesson = Context.Lessons
+                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .FirstOrDefault(l => l.Id == id);
+
+            var lesson = Mapper.Map<GetLessonDto>(dbLesson);
+            return Ok(lesson);
+        }
         }
     }
 }
