@@ -46,12 +46,11 @@ namespace API.Data
             modelBuilder.Entity<LessonPreviousLesson>()
                 .HasOne(lpl => lpl.Lesson)
                 .WithMany(l => l.PreviousLessons) // <--
-                .HasForeignKey(lpl => lpl.LessonId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(lpl => lpl.LessonId);
             modelBuilder.Entity<LessonPreviousLesson>()
                 .HasOne(lpl => lpl.PreviousLesson)
                 .WithMany(pl => pl.PreviousLessonOf) // <--
-                .HasForeignKey(lpl => lpl.PreviousLessonId);        
+                .HasForeignKey(lpl => lpl.PreviousLessonId);
         }
 
         public DbSet<Lesson> Lessons { get; set; }
