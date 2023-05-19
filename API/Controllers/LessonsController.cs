@@ -48,7 +48,11 @@ namespace API.Controllers
             var dbLesson = Context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                 .FirstOrDefault(l => l.Id == id);
-
+            if (dbLesson == null)
+            {
+                return NotFound("Lesson with the provided ID not found.");
+            }
+            
             var lesson = Mapper.Map<GetLessonDto>(dbLesson);
             return Ok(lesson);
         }
@@ -57,7 +61,11 @@ namespace API.Controllers
         public ActionResult<GetLessonDto> UpdateLesson(UpdateLesssonDto updatedLesson)
         {
             var dbLesson = Context.Lessons.FirstOrDefault(l => l.Id == updatedLesson.Id);
-            
+            if (dbLesson == null)
+            {
+                return NotFound("Lesson with the provided ID not found.");
+            }
+
             dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
             dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
             dbLesson.UrlTheory = updatedLesson.UrlTheory ?? dbLesson.UrlTheory;
