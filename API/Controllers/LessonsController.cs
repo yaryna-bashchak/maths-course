@@ -60,6 +60,22 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("keyword/{keyword}")]
+        public ActionResult<GetLessonDto> GetLessonsByKeyword(string keyword)
+        {
+            var dbLessons = Context.Lessons
+                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Where(l => l.LessonKeywords.Any(lk => lk.Keyword.Word == keyword));
+            
+            if (dbLessons == null)
+            {
+                return NotFound("Lessons with the provided keyword not found.");
+            }
+            var lessons = dbLessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
+
+            return Ok(lessons);
+        }
+
         [HttpPut("id")]
         public ActionResult<GetLessonDto> UpdateLesson(UpdateLesssonDto updatedLesson)
         {
