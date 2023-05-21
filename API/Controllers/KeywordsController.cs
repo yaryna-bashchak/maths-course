@@ -80,5 +80,24 @@ namespace API.Controllers
                 return NotFound("Keyword with the provided ID not found.");
             }
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult<List<GetKeywordDto>> DeleteKeyword(int id)
+        {
+            try
+            {
+                var dbkeyword = Context.Keywords.First(l => l.Id == id);
+                
+                Context.Keywords.Remove(dbkeyword);
+                Context.SaveChanges();
+            
+                var keywords = Context.Keywords.Select(l => Mapper.Map<GetKeywordDto>(l)).ToList();
+                return Ok(keywords);
+            }
+            catch (System.Exception)
+            {
+                return NotFound("Keyword with the provided ID not found.");
+            }
+        }
     }
 }
