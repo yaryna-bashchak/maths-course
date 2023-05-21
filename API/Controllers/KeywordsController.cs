@@ -61,5 +61,24 @@ namespace API.Controllers
                 return NotFound("Keyword with the provided ID not found.");
             }
         }
+
+        [HttpPut("id")]
+        public ActionResult<GetKeywordDto> UpdateKeyword(GetKeywordDto updatedKeyword)
+        {
+            try
+            {
+                var dbKeyword = Context.Keywords.FirstOrDefault(l => l.Id == updatedKeyword.Id);
+                
+                dbKeyword.Word = updatedKeyword.Word ?? dbKeyword.Word;
+                Context.SaveChanges();
+                
+                var keyword = Mapper.Map<GetKeywordDto>(dbKeyword);
+                return Ok(keyword);
+            }
+            catch (System.Exception)
+            {
+                return NotFound("Keyword with the provided ID not found.");
+            }
+        }
     }
 }
