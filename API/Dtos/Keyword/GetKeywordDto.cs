@@ -8,6 +8,7 @@ namespace API.Dtos.Keyword
 {
     public class GetKeywordDto
     {
+        public int Id { get; set; }
         public string Word { get; set; }
     }
 }
