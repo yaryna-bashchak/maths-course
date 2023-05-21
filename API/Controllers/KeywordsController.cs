@@ -22,6 +22,18 @@ namespace API.Controllers
             Context = context;
         }
 
+        [HttpPost]
+        public ActionResult<List<GetKeywordDto>> AddKeyword(AddKeywordDto newKeyword)
+        {
+            var keyword = Mapper.Map<Keyword>(newKeyword);
+            keyword.Id = Context.Keywords.Max(l => l.Id) + 1;
+            Context.Keywords.Add(keyword);
+            Context.SaveChanges();
+            
+            var keywords = Context.Keywords.Select(l => Mapper.Map<GetKeywordDto>(l)).ToList();
+            return Ok(keywords);
+        }
+
         [HttpGet]
         public ActionResult<List<GetKeywordDto>> GetKeywords()
         {
