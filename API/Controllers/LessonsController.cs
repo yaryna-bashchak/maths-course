@@ -84,6 +84,24 @@ namespace API.Controllers
             return Ok(lessons);
         }
 
+        [HttpGet("keyword/id/{id}")]
+        public ActionResult<GetLessonDto> GetLessonsByKeywordId(int id)
+        {
+            var dbLessons = Context.Lessons
+                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Where(l => l.LessonKeywords.Any(lk => lk.Keyword.Id == id));
+
+            var lessons = dbLessons
+                .Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
+            
+            if (lessons == null || !lessons.Any())
+            {
+                return NotFound("Lessons with this keyword ID not found.");
+            }
+
+            return Ok(lessons);
+        }
+
         [HttpPut("id")]
         public ActionResult<GetLessonDto> UpdateLesson(UpdateLesssonDto updatedLesson)
         {
