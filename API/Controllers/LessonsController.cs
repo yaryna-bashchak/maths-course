@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.RegularExpressions;
 using API.Data;
 using API.Dtos.Lesson;
 using API.Entities;
@@ -63,15 +65,21 @@ namespace API.Controllers
         [HttpGet("keyword/{keyword}")]
         public ActionResult<GetLessonDto> GetLessonsByKeyword(string keyword)
         {
+            var regex = new Regex(keyword, RegexOptions.IgnoreCase);
+
             var dbLessons = Context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                .Where(l => l.LessonKeywords.Any(lk => lk.Keyword.Word == keyword));
-            
-            if (dbLessons == null)
+                .ToList();
+
+            var lessons = dbLessons
+                .Select(l => Mapper.Map<GetLessonDto>(l))
+                .Where(l => l.Keywords.Any(lk => regex.IsMatch(lk.Word)))
+                .ToList();
+
+            if (lessons == null || !lessons.Any())
             {
-                return NotFound("Lessons with the provided keyword not found.");
+                return NotFound("Lessons with this keyword pattern not found.");
             }
-            var lessons = dbLessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
 
             return Ok(lessons);
         }
