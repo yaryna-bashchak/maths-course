@@ -37,7 +37,8 @@ namespace API.Controllers
         public ActionResult<List<GetLessonDto>> GetLessons()
         {
             var dbLessons = Context.Lessons
-                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword);
+                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson);
             
             var lessons = dbLessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
             
@@ -51,6 +52,7 @@ namespace API.Controllers
             {
                 var dbLesson = Context.Lessons
                     .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                    .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
                     .First(l => l.Id == id);
 
                 var lesson = Mapper.Map<GetLessonDto>(dbLesson);
@@ -69,6 +71,7 @@ namespace API.Controllers
 
             var dbLessons = Context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
                 .ToList();
 
             var lessons = dbLessons
@@ -89,6 +92,7 @@ namespace API.Controllers
         {
             var dbLessons = Context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
                 .Where(l => l.LessonKeywords.Any(lk => lk.Keyword.Id == id));
 
             var lessons = dbLessons

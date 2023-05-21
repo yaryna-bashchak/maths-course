@@ -18,5 +18,6 @@ namespace API.Dtos.Lesson
         public int Importance { get; set; } = 0;
         public bool isCompleted { get; set; } = false;
         public List<GetKeywordDto> Keywords { get; set; }
+        public List<GetPreviousLessonDto> PreviousLessons { get; set; }
     }
 }
