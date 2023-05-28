@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos.Keyword;
 using API.Dtos.Lesson;
+using API.Dtos.LessonKeyword;
 using API.Entities;
 using AutoMapper;
 
@@ -21,6 +22,9 @@ namespace API
             
             CreateMap<Keyword, GetKeywordDto>();
             CreateMap<AddKeywordDto, Keyword>();
+
+            CreateMap<AddLessonKeywordDto, LessonKeyword>();
+            CreateMap<LessonKeyword, AddLessonKeywordDto>();
         }
     }
 }

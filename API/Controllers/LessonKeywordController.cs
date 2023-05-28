@@ -56,6 +56,15 @@ namespace API.Controllers
             return Ok(Mapper.Map<GetLessonDto>(lesson));
         }
 
-        
+        [HttpGet]
+        public ActionResult<List<AddLessonKeywordDto>> GetLessonKeywords()
+        {
+            var dbLessonKeywords = Context.LessonKeywords;
+
+            var lessonKeywords = dbLessonKeywords
+                .Select(lk => Mapper.Map<AddLessonKeywordDto>(lk)).ToList();
+            
+            return Ok(lessonKeywords);
+        }
     }
 }
