@@ -7,6 +7,7 @@ using API.Dtos.Keyword;
 using API.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -23,38 +24,38 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<List<GetKeywordDto>> AddKeyword(AddKeywordDto newKeyword)
+        public async Task<ActionResult<List<GetKeywordDto>>> AddKeyword(AddKeywordDto newKeyword)
         {
             var keyword = Mapper.Map<Keyword>(newKeyword);
             keyword.Id = Context.Keywords.Max(l => l.Id) + 1;
-            Context.Keywords.Add(keyword);
-            Context.SaveChanges();
+            await Context.Keywords.AddRangeAsync(keyword);
+            await Context.SaveChangesAsync();
             
-            var keywords = Context.Keywords.Select(l => Mapper.Map<GetKeywordDto>(l)).ToList();
-            return Ok(keywords);
+            var keywords = await Context.Keywords.Select(l => Mapper.Map<GetKeywordDto>(l)).ToListAsync();
+            return keywords;
         }
 
         [HttpGet]
-        public ActionResult<List<GetKeywordDto>> GetKeywords()
+        public async Task<ActionResult<List<GetKeywordDto>>> GetKeywords()
         {
             var dbKeywords = Context.Keywords;
 
-            var keywords = dbKeywords
-                .Select(l => Mapper.Map<GetKeywordDto>(l)).ToList();
+            var keywords = await dbKeywords
+                .Select(l => Mapper.Map<GetKeywordDto>(l)).ToListAsync();
             
-            return Ok(keywords);
+            return keywords;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GetKeywordDto> GetKeyword(int id)
+        public async Task<ActionResult<GetKeywordDto>> GetKeyword(int id)
         {
             try
             {
-                var dbKeyword = Context.Keywords
-                    .First(l => l.Id == id);
+                var dbKeyword = await Context.Keywords
+                    .FirstAsync(l => l.Id == id);
 
                 var keyword = Mapper.Map<GetKeywordDto>(dbKeyword);
-                return Ok(keyword);
+                return keyword;
             }
             catch (System.Exception)
             {
@@ -63,17 +64,17 @@ namespace API.Controllers
         }
 
         [HttpPut("id")]
-        public ActionResult<GetKeywordDto> UpdateKeyword(GetKeywordDto updatedKeyword)
+        public async Task<ActionResult<GetKeywordDto>> UpdateKeyword(GetKeywordDto updatedKeyword)
         {
             try
             {
-                var dbKeyword = Context.Keywords.FirstOrDefault(l => l.Id == updatedKeyword.Id);
+                var dbKeyword = await Context.Keywords.FirstOrDefaultAsync(l => l.Id == updatedKeyword.Id);
                 
                 dbKeyword.Word = updatedKeyword.Word ?? dbKeyword.Word;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 
                 var keyword = Mapper.Map<GetKeywordDto>(dbKeyword);
-                return Ok(keyword);
+                return keyword;
             }
             catch (System.Exception)
             {
@@ -82,17 +83,17 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<List<GetKeywordDto>> DeleteKeyword(int id)
+        public async Task<ActionResult<List<GetKeywordDto>>> DeleteKeyword(int id)
         {
             try
             {
-                var dbkeyword = Context.Keywords.First(l => l.Id == id);
+                var dbkeyword = await Context.Keywords.FirstAsync(l => l.Id == id);
                 
                 Context.Keywords.Remove(dbkeyword);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             
-                var keywords = Context.Keywords.Select(l => Mapper.Map<GetKeywordDto>(l)).ToList();
-                return Ok(keywords);
+                var keywords = await Context.Keywords.Select(l => Mapper.Map<GetKeywordDto>(l)).ToListAsync();
+                return keywords;
             }
             catch (System.Exception)
             {

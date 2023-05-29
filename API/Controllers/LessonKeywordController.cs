@@ -25,19 +25,19 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<GetLessonDto> AddLessonKeyword(AddLessonKeywordDto newLessonKeyword)
+        public async Task<ActionResult<GetLessonDto>> AddLessonKeyword(AddLessonKeywordDto newLessonKeyword)
         {
-            Lesson lesson = Context.Lessons
+            Lesson lesson = await Context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                .FirstOrDefault(l => l.Id == newLessonKeyword.LessonId);
+                .FirstOrDefaultAsync(l => l.Id == newLessonKeyword.LessonId);
 
             if (lesson == null)
             {
                 return NotFound("Lesson with the provided ID not found.");
             }
 
-            Keyword keyword = Context.Keywords
-                .FirstOrDefault(k => k.Id == newLessonKeyword.KeywordId);
+            Keyword keyword = await Context.Keywords
+                .FirstOrDefaultAsync(k => k.Id == newLessonKeyword.KeywordId);
 
             if (keyword == null)
             {
@@ -50,21 +50,21 @@ namespace API.Controllers
                 Keyword = keyword,
             };
 
-            Context.LessonKeywords.Add(lessonKeyword);
-            Context.SaveChanges();
+            await Context.LessonKeywords.AddAsync(lessonKeyword);
+            await Context.SaveChangesAsync();
 
-            return Ok(Mapper.Map<GetLessonDto>(lesson));
+            return Mapper.Map<GetLessonDto>(lesson);
         }
 
         [HttpGet]
-        public ActionResult<List<AddLessonKeywordDto>> GetLessonKeywords()
+        public async Task<ActionResult<List<AddLessonKeywordDto>>> GetLessonKeywords()
         {
             var dbLessonKeywords = Context.LessonKeywords;
 
-            var lessonKeywords = dbLessonKeywords
-                .Select(lk => Mapper.Map<AddLessonKeywordDto>(lk)).ToList();
+            var lessonKeywords = await dbLessonKeywords
+                .Select(lk => Mapper.Map<AddLessonKeywordDto>(lk)).ToListAsync();
             
-            return Ok(lessonKeywords);
+            return lessonKeywords;
         }
     }
 }
