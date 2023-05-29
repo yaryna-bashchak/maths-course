@@ -42,7 +42,7 @@ namespace API.Controllers
             
             var lessons = await dbLessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
             
-            return Ok(lessons);
+            return lessons;
         }
 
         [HttpGet("{id}")]
@@ -141,7 +141,7 @@ namespace API.Controllers
                 Context.Lessons.Remove(dbLesson);
                 await Context.SaveChangesAsync();
             
-                var lessons = Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
+                var lessons = await Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
                 return lessons;
             }
             catch (System.Exception)
