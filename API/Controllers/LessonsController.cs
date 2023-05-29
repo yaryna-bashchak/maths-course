@@ -22,41 +22,41 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<List<GetLessonDto>> AddLesson(AddLessonDto newLesson)
+        public async Task<ActionResult<List<GetLessonDto>>> AddLesson(AddLessonDto newLesson)
         {
             var lesson = Mapper.Map<Lesson>(newLesson);
             lesson.Id = Context.Lessons.Max(l => l.Id) + 1;
-            Context.Lessons.Add(lesson);
-            Context.SaveChanges();
+            await Context.Lessons.AddAsync(lesson);
+            await Context.SaveChangesAsync();
             
-            var lessons = Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
-            return Ok(lessons);
+            var lessons = await Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
+            return lessons;
         }
 
         [HttpGet]
-        public ActionResult<List<GetLessonDto>> GetLessons()
+        public async Task<ActionResult<List<GetLessonDto>>> GetLessons()
         {
             var dbLessons = Context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                 .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson);
             
-            var lessons = dbLessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
+            var lessons = await dbLessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
             
-            return Ok(lessons);
+            return lessons;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GetLessonDto> GetLesson(int id)
+        public async Task<ActionResult<GetLessonDto>> GetLesson(int id)
         {
             try
             {
-                var dbLesson = Context.Lessons
+                var dbLesson = await Context.Lessons
                     .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                     .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                    .First(l => l.Id == id);
+                    .FirstAsync(l => l.Id == id);
 
                 var lesson = Mapper.Map<GetLessonDto>(dbLesson);
-                return Ok(lesson);
+                return lesson;
             }
             catch (System.Exception)
             {
@@ -65,14 +65,14 @@ namespace API.Controllers
         }
 
         [HttpGet("keyword/{keyword}")]
-        public ActionResult<GetLessonDto> GetLessonsByKeyword(string keyword)
+        public async Task<ActionResult<GetLessonDto>> GetLessonsByKeyword(string keyword)
         {
             var regex = new Regex(keyword, RegexOptions.IgnoreCase);
 
-            var dbLessons = Context.Lessons
+            var dbLessons = await Context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                 .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                .ToList();
+                .ToListAsync();
 
             var lessons = dbLessons
                 .Select(l => Mapper.Map<GetLessonDto>(l))
@@ -88,15 +88,15 @@ namespace API.Controllers
         }
 
         [HttpGet("keyword/id/{id}")]
-        public ActionResult<GetLessonDto> GetLessonsByKeywordId(int id)
+        public async Task<ActionResult<GetLessonDto>> GetLessonsByKeywordId(int id)
         {
             var dbLessons = Context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                 .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
                 .Where(l => l.LessonKeywords.Any(lk => lk.Keyword.Id == id));
 
-            var lessons = dbLessons
-                .Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
+            var lessons = await dbLessons
+                .Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
             
             if (lessons == null || !lessons.Any())
             {
@@ -107,11 +107,11 @@ namespace API.Controllers
         }
 
         [HttpPut("id")]
-        public ActionResult<GetLessonDto> UpdateLesson(UpdateLesssonDto updatedLesson)
+        public async Task<ActionResult<GetLessonDto>> UpdateLesson(UpdateLesssonDto updatedLesson)
         {
             try
             {
-                var dbLesson = Context.Lessons.FirstOrDefault(l => l.Id == updatedLesson.Id);
+                var dbLesson = await Context.Lessons.FirstOrDefaultAsync(l => l.Id == updatedLesson.Id);
                 
                 dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
                 dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
@@ -120,10 +120,10 @@ namespace API.Controllers
                 dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
                 dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
                 dbLesson.isCompleted = updatedLesson.isCompleted != -1 ? (updatedLesson.isCompleted != 0) : dbLesson.isCompleted;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 
                 var lesson = Mapper.Map<GetLessonDto>(dbLesson);
-                return Ok(lesson);
+                return lesson;
             }
             catch (System.Exception)
             {
@@ -132,17 +132,17 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<List<GetLessonDto>> DeleteLesson(int id)
+        public async Task<ActionResult<List<GetLessonDto>>> DeleteLesson(int id)
         {
             try
             {
-                var dbLesson = Context.Lessons.First(l => l.Id == id);
+                var dbLesson = await Context.Lessons.FirstAsync(l => l.Id == id);
                 
                 Context.Lessons.Remove(dbLesson);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             
-                var lessons = Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToList();
-                return Ok(lessons);
+                var lessons = await Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
+                return lessons;
             }
             catch (System.Exception)
             {
