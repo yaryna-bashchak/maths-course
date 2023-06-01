@@ -6,6 +6,7 @@ using API.Dtos.Lesson;
 using API.Dtos.Keyword;
 using API.Repositories;
 using API.Repositories.Implementation;
+using System.Linq;
 
 namespace API.Tests;
 
@@ -13,6 +14,43 @@ public class LessonsControllerTests
 {
     private Mock<ILessonsRepository> _mockRepository = new Mock<ILessonsRepository>();
     
+    [Fact]
+    public async void GetLessons()
+    {
+        //Arrange
+        var validLessons = new List<GetLessonDto>
+        {
+            new GetLessonDto
+            {
+                Id = 1,
+                Title = "Види чисел, дроби, НСД, НСК, порівняння дробів",
+            },
+            new GetLessonDto
+            {
+                Id = 2,
+                Title = "Десяткові дроби, дії з ними, модуль",
+            },
+            new GetLessonDto
+            {
+                Id = 3,
+                Title = "Вступ в геометрію: фігури на площині, кути",
+            },
+        };
+
+        _mockRepository
+            .Setup(x => x.GetLessons())
+            .Returns(Task.FromResult(new Result<List<GetLessonDto>> { IsSuccess = true, Data = validLessons }));
+
+        //Act
+        var result = await _mockRepository.Object.GetLessons();
+
+        //Assert
+        Assert.True(result.IsSuccess);
+        Assert.Equal(validLessons.Count, result.Data.Count);
+        Assert.Equal(validLessons.First().Id, result.Data.First().Id);
+        Assert.Equal(validLessons.Last().Id, result.Data.Last().Id);
+    }
+
     [Fact]
     public async void GetLesson_ValidId()
     {
@@ -243,5 +281,89 @@ public class LessonsControllerTests
         //Assert
         Assert.False(result.IsSuccess);
         Assert.Equal("Lesson with the provided ID not found.", result.ErrorMessage);
+    }
+
+    [Fact]
+    public async void GetLessonsByKeyword_TwoKeywordsMatch()
+    {
+        //Arrange
+        var keywordPattern = "вираз";
+
+        var validLessons = new List<GetLessonDto>
+        {
+            new GetLessonDto
+            {
+                Id = 20,
+                Title = "Показниковий вираз",
+                Keywords = new List<GetKeywordDto>
+                {
+                    new GetKeywordDto
+                    {
+                        Word = "рівняння",
+                    },
+                    new GetKeywordDto
+                    {
+                        Word = "показниковий вираз",
+                    },
+                    new GetKeywordDto
+                    {
+                        Word = "показникові рівняння",
+                    },
+                },
+            },
+            new GetLessonDto
+            {
+                Id = 21,
+                Title = "Логарифмічний вираз",
+                Keywords = new List<GetKeywordDto>
+                {
+                    new GetKeywordDto
+                    {
+                        Word = "рівняння",
+                    },
+                    new GetKeywordDto
+                    {
+                        Word = "логарифмічний вираз",
+                    },
+                    new GetKeywordDto
+                    {
+                        Word = "логарифмічні рівняння",
+                    },
+                },
+            },
+        };
+
+        _mockRepository
+            .Setup(x => x.GetLessonsByKeyword(It.IsAny<string>()))
+            .Returns(Task.FromResult(new Result<List<GetLessonDto>> { IsSuccess = true, Data = validLessons }));
+
+        //Act
+        var result = await _mockRepository.Object.GetLessonsByKeyword(keywordPattern);
+
+        //Assert
+        Assert.True(result.IsSuccess);
+        Assert.Equal(validLessons.Count, result.Data.Count);
+        Assert.Equal(validLessons.First().Id, result.Data.First().Id);
+        Assert.Equal(validLessons.Last().Id, result.Data.Last().Id);
+        Assert.True(result.Data[0].Keywords.Any(k => k.Word == "показниковий вираз"));
+        Assert.True(result.Data[1].Keywords.Any(k => k.Word == "логарифмічний вираз"));
+    }
+
+    [Fact]
+    public async void GetLessonsByKeyword_NoKeywordMatch()
+    {
+        //Arrange
+        var keywordPattern = "матем";
+
+        _mockRepository
+            .Setup(x => x.GetLessonsByKeyword(It.IsAny<string>()))
+            .Returns(Task.FromResult(new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lessons with this keyword pattern not found." }));
+
+        //Act
+        var result = await _mockRepository.Object.GetLessonsByKeyword(keywordPattern);
+
+        //Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Lessons with this keyword pattern not found.", result.ErrorMessage);
     }
 }
