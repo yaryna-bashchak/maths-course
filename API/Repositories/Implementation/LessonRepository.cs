@@ -24,9 +24,9 @@ namespace API.Repositories.Implementation
             var dbLessons = _context.Lessons
                 .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                 .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson);
-            
+
             var lessons = await dbLessons.Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
-            return new Result<List<GetLessonDto>>{ IsSuccess = true, Data = lessons };
+            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
         }
 
         public async Task<Result<GetLessonDto>> GetLesson(int id)
@@ -39,11 +39,11 @@ namespace API.Repositories.Implementation
                     .FirstAsync(l => l.Id == id);
 
                 var lesson = _mapper.Map<GetLessonDto>(dbLesson);
-                return new Result<GetLessonDto>{ IsSuccess = true, Data = lesson };
+                return new Result<GetLessonDto> { IsSuccess = true, Data = lesson };
             }
             catch (System.Exception)
             {
-                return new Result<GetLessonDto>{ IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
             }
         }
 
@@ -55,7 +55,7 @@ namespace API.Repositories.Implementation
             await _context.SaveChangesAsync();
 
             var lessons = await _context.Lessons.Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
-            return new Result<List<GetLessonDto>>{ IsSuccess = true, Data = lessons};
+            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
         }
 
         public async Task<Result<GetLessonDto>> UpdateLesson(UpdateLesssonDto updatedLesson)
@@ -74,11 +74,11 @@ namespace API.Repositories.Implementation
                 await _context.SaveChangesAsync();
 
                 var lesson = _mapper.Map<GetLessonDto>(dbLesson);
-                return new Result<GetLessonDto>{ IsSuccess = true, Data = lesson };
+                return new Result<GetLessonDto> { IsSuccess = true, Data = lesson };
             }
             catch (System.Exception)
             {
-                return new Result<GetLessonDto>{ IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
             }
         }
 
@@ -92,11 +92,11 @@ namespace API.Repositories.Implementation
                 await _context.SaveChangesAsync();
 
                 var lessons = await _context.Lessons.Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
-                return new Result<List<GetLessonDto>>{ IsSuccess = true, Data = lessons };
+                return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
             }
             catch (System.Exception)
             {
-                return new Result<List<GetLessonDto>>{ IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
             }
         }
 
@@ -116,10 +116,10 @@ namespace API.Repositories.Implementation
 
             if (lessons == null || !lessons.Any())
             {
-                return new Result<List<GetLessonDto>>{ IsSuccess = false, ErrorMessage = "Lessons with this keyword pattern not found." };
+                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lessons with this keyword pattern not found." };
             }
 
-            return new Result<List<GetLessonDto>>{ IsSuccess = true, Data = lessons };
+            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
         }
 
         public async Task<Result<List<GetLessonDto>>> GetLessonsByKeywordID(int id)
@@ -134,10 +134,10 @@ namespace API.Repositories.Implementation
 
             if (lessons == null || !lessons.Any())
             {
-                return new Result<List<GetLessonDto>>{ IsSuccess = false, ErrorMessage = "Lessons with this keyword ID not found." };
+                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lessons with this keyword ID not found." };
             }
 
-            return new Result<List<GetLessonDto>>{ IsSuccess = true, Data = lessons };
+            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
         }
     }
 }
