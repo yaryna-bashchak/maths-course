@@ -54,8 +54,8 @@ namespace API.Repositories.Implementation
             await _context.Lessons.AddAsync(lesson);
             await _context.SaveChangesAsync();
 
-            var lessons = await _context.Lessons.Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
-            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
+            var result = await GetLessons();
+            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = result.Data };
         }
 
         public async Task<Result<GetLessonDto>> UpdateLesson(UpdateLesssonDto updatedLesson)
@@ -73,8 +73,8 @@ namespace API.Repositories.Implementation
                 dbLesson.isCompleted = updatedLesson.IsCompleted != -1 ? (updatedLesson.IsCompleted != 0) : dbLesson.isCompleted;
                 await _context.SaveChangesAsync();
 
-                var lesson = _mapper.Map<GetLessonDto>(dbLesson);
-                return new Result<GetLessonDto> { IsSuccess = true, Data = lesson };
+                var result = await GetLesson(updatedLesson.Id);
+                return new Result<GetLessonDto> { IsSuccess = true, Data = result.Data };
             }
             catch (System.Exception)
             {
@@ -91,8 +91,8 @@ namespace API.Repositories.Implementation
                 _context.Lessons.Remove(dbLesson);
                 await _context.SaveChangesAsync();
 
-                var lessons = await _context.Lessons.Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
-                return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
+                var result = await GetLessons();
+                return new Result<List<GetLessonDto>> { IsSuccess = true, Data = result.Data };
             }
             catch (System.Exception)
             {
