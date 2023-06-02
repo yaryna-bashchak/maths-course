@@ -9,6 +9,6 @@ namespace API.Dtos.Lesson
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public bool isCompleted { get; set; } = false;
+        public bool IsCompleted { get; set; } = false;
     }
 }

@@ -1,11 +1,8 @@
-using System.Text;
-using System.Text.RegularExpressions;
 using API.Data;
 using API.Dtos.Lesson;
-using API.Entities;
+using API.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -13,141 +10,108 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class LessonsController : ControllerBase
     {
-        public CourseContext Context { get; }
-        public IMapper Mapper { get; }
-        public LessonsController(CourseContext context, IMapper mapper)
+        private CourseContext _context;
+        private IMapper _mapper;
+        private ILessonsRepository _lessonsRepository;
+        public LessonsController(
+            CourseContext context,
+            IMapper mapper,
+            ILessonsRepository lessonsRepository)
         {
-            Mapper = mapper;
-            Context = context;
+            _mapper = mapper;
+            _context = context;
+            _lessonsRepository = lessonsRepository;
         }
 
         [HttpPost]
         public async Task<ActionResult<List<GetLessonDto>>> AddLesson(AddLessonDto newLesson)
         {
-            var lesson = Mapper.Map<Lesson>(newLesson);
-            lesson.Id = Context.Lessons.Max(l => l.Id) + 1;
-            await Context.Lessons.AddAsync(lesson);
-            await Context.SaveChangesAsync();
-            
-            var lessons = await Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
-            return lessons;
+            var result = await _lessonsRepository.AddLesson(newLesson);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<GetLessonDto>>> GetLessons()
         {
-            var dbLessons = Context.Lessons
-                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson);
-            
-            var lessons = await dbLessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
-            
-            return lessons;
+            var result = await _lessonsRepository.GetLessons();
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<GetLessonDto>> GetLesson(int id)
         {
-            try
-            {
-                var dbLesson = await Context.Lessons
-                    .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                    .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                    .FirstAsync(l => l.Id == id);
+            var result = await _lessonsRepository.GetLesson(id);
 
-                var lesson = Mapper.Map<GetLessonDto>(dbLesson);
-                return lesson;
-            }
-            catch (System.Exception)
+            if (!result.IsSuccess)
             {
-                return NotFound("Lesson with the provided ID not found.");
+                return NotFound(result.ErrorMessage);
             }
+
+            return result.Data;
         }
 
         [HttpGet("keyword/{keyword}")]
-        public async Task<ActionResult<GetLessonDto>> GetLessonsByKeyword(string keyword)
+        public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByKeyword(string keyword)
         {
-            var regex = new Regex(keyword, RegexOptions.IgnoreCase);
+            var result = await _lessonsRepository.GetLessonsByKeyword(keyword);
 
-            var dbLessons = await Context.Lessons
-                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                .ToListAsync();
-
-            var lessons = dbLessons
-                .Select(l => Mapper.Map<GetLessonDto>(l))
-                .Where(l => l.Keywords.Any(lk => regex.IsMatch(lk.Word)))
-                .ToList();
-
-            if (lessons == null || !lessons.Any())
+            if (!result.IsSuccess)
             {
-                return NotFound("Lessons with this keyword pattern not found.");
+                return NotFound(result.ErrorMessage);
             }
 
-            return Ok(lessons);
+            return result.Data;
         }
 
         [HttpGet("keyword/id/{id}")]
-        public async Task<ActionResult<GetLessonDto>> GetLessonsByKeywordId(int id)
+        public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByKeywordId(int id)
         {
-            var dbLessons = Context.Lessons
-                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                .Where(l => l.LessonKeywords.Any(lk => lk.Keyword.Id == id));
+            var result = await _lessonsRepository.GetLessonsByKeywordID(id);
 
-            var lessons = await dbLessons
-                .Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
-            
-            if (lessons == null || !lessons.Any())
+            if (!result.IsSuccess)
             {
-                return NotFound("Lessons with this keyword ID not found.");
+                return NotFound(result.ErrorMessage);
             }
 
-            return Ok(lessons);
+            return result.Data;
         }
 
         [HttpPut("id")]
         public async Task<ActionResult<GetLessonDto>> UpdateLesson(UpdateLesssonDto updatedLesson)
         {
-            try
+            var result = await _lessonsRepository.UpdateLesson(updatedLesson);
+
+            if (!result.IsSuccess)
             {
-                var dbLesson = await Context.Lessons.FirstOrDefaultAsync(l => l.Id == updatedLesson.Id);
-                
-                dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
-                dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
-                dbLesson.UrlTheory = updatedLesson.UrlTheory ?? dbLesson.UrlTheory;
-                dbLesson.UrlPractice = updatedLesson.UrlPractice ?? dbLesson.UrlPractice;
-                dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
-                dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
-                dbLesson.isCompleted = updatedLesson.isCompleted != -1 ? (updatedLesson.isCompleted != 0) : dbLesson.isCompleted;
-                await Context.SaveChangesAsync();
-                
-                var lesson = Mapper.Map<GetLessonDto>(dbLesson);
-                return lesson;
+                return NotFound(result.ErrorMessage);
             }
-            catch (System.Exception)
-            {
-                return NotFound("Lesson with the provided ID not found.");
-            }
+
+            return result.Data;
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<GetLessonDto>>> DeleteLesson(int id)
         {
-            try
+            var result = await _lessonsRepository.DeleteLesson(id);
+
+            if (!result.IsSuccess)
             {
-                var dbLesson = await Context.Lessons.FirstAsync(l => l.Id == id);
-                
-                Context.Lessons.Remove(dbLesson);
-                await Context.SaveChangesAsync();
-            
-                var lessons = await Context.Lessons.Select(l => Mapper.Map<GetLessonDto>(l)).ToListAsync();
-                return lessons;
+                return NotFound(result.ErrorMessage);
             }
-            catch (System.Exception)
-            {
-                return NotFound("Lesson with the provided ID not found.");
-            }
+
+            return result.Data;
         }
     }
 }
