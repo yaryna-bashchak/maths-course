@@ -11,5 +11,6 @@ namespace API.Repositories
         Task<Result<List<GetLessonDto>>> DeleteLesson(int id);
         Task<Result<List<GetLessonDto>>> GetLessonsByKeyword(string keyword);
         Task<Result<List<GetLessonDto>>> GetLessonsByKeywordID(int id);
+        Task<Result<List<GetLessonDto>>> GetLessonsByImportance(int importance);
     }
 }

@@ -139,5 +139,27 @@ namespace API.Repositories.Implementation
 
             return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
         }
+
+        public async Task<Result<List<GetLessonDto>>> GetLessonsByImportance(int importance)
+        {
+            if (importance < 0)
+            {
+                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Importance cannot be less than 0 (it can only be 0, 1 or 2)." };
+            }
+
+            var dbLessons = _context.Lessons
+                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+                .Where(l => l.Importance <= importance);
+
+            var lessons = await dbLessons.Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
+
+            if (lessons == null || !lessons.Any())
+            {
+                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "It seems there are no lessons whose importance is equal to or less than given one (it can only be 0, 1 or 2)." };
+            }
+
+            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
+        }
     }
 }
