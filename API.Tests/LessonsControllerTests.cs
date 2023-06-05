@@ -345,8 +345,8 @@ public class LessonsControllerTests
         Assert.Equal(validLessons.Count, result.Data.Count);
         Assert.Equal(validLessons.First().Id, result.Data.First().Id);
         Assert.Equal(validLessons.Last().Id, result.Data.Last().Id);
-        Assert.True(result.Data[0].Keywords.Any(k => k.Word == "показниковий вираз"));
-        Assert.True(result.Data[1].Keywords.Any(k => k.Word == "логарифмічний вираз"));
+        Assert.Contains("показниковий вираз", result.Data[0].Keywords.Select(k => k.Word));
+        Assert.Contains("логарифмічний вираз", result.Data[1].Keywords.Select(k => k.Word));
     }
 
     [Fact]
