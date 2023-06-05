@@ -109,7 +109,7 @@ if you try to write "теор" it will find lessons that have keywords such as "
 
 ![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/052b19f8-a4fd-47ac-8c59-fa013af74176)
 
-Or if you want to **run tests**
+Or if you want to **run tests** (you also can see that all tests are passed in _Github Actions_)
 
 - go back to the root folder maths-course if you are not there
 - run the following command
