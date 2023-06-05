@@ -2,7 +2,7 @@
 ### Project structure
 
 ```
-Maths course
+maths-course
 │
 ├───API
 │   │   API.csproj
@@ -66,15 +66,19 @@ Maths course
 
 ### About project
 
-For now, this is a web API that helps you interact with a database that stores math course data. You can see the database schema and component diagram below.
-
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/55c18a95-a191-48f2-a582-b27c37891ed9)
-
-![Component diagram drawio (1)](https://github.com/yaryna-bashchak/maths-course/assets/90560209/c16c4614-197e-439e-9cf1-cc4d97c4b648)
+For now, this is a web API that helps you interact with a database that stores math course data.
 
 This project implements functions for the user (student) for convenient course completion, such as displaying of lessons that should be completed/repeated before that, division of lessons into 3 levels of difficulty, ability to filter lessons by category and so on.
 
-Try to run example of usage (see "How to run").
+More about business logic, database schema, component diagram you can see in [design document](https://docs.google.com/document/d/1Qa3eTDBOGj27OgakiaHTJO45HmPfYqd6rW9GfFrkzkg/edit?usp=sharing).
+
+To run the project and try by yourself see "How to run".
+
+---
+
+### Design document
+
+[here](https://docs.google.com/document/d/1Qa3eTDBOGj27OgakiaHTJO45HmPfYqd6rW9GfFrkzkg/edit?usp=sharing)
 
 ---
 
