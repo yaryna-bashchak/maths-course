@@ -88,6 +88,19 @@ namespace API.Controllers
             return result.Data;
         }
 
+        [HttpGet("importance/{importance}")]
+        public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByImportance(int importance)
+        {
+            var result = await _lessonsRepository.GetLessonsByImportance(importance);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
+
         [HttpPut("id")]
         public async Task<ActionResult<GetLessonDto>> UpdateLesson(UpdateLesssonDto updatedLesson)
         {
