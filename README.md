@@ -82,6 +82,12 @@ To run the project and try by yourself see "How to run".
 
 ---
 
+### Pull Requests
+
+[here](https://github.com/yaryna-bashchak/maths-course/pulls?q=)
+
+---
+
 ### How to run
 - first of all, you need to install [.Net 7.0](https://dotnet.microsoft.com/en-us/download) (if you do not already have it)
 - open this folder in [VS Code](https://code.visualstudio.com/download)
@@ -113,7 +119,7 @@ if you try to write "теор" it will find lessons that have keywords such as "
 
 ![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/052b19f8-a4fd-47ac-8c59-fa013af74176)
 
-Or if you want to **run tests** (you also can see that all tests are passed in _Github Actions_)
+Or if you want to **run tests** (you also can see that all tests are passed in [_Github Actions_](https://github.com/yaryna-bashchak/maths-course/actions))
 
 - go back to the root folder maths-course if you are not there
 - run the following command
@@ -123,5 +129,3 @@ Or if you want to **run tests** (you also can see that all tests are passed in _
 Example:
 
 ![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/c05c51ec-8fde-42bd-9022-387070f7b4c3)
-
----
