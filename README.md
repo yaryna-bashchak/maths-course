@@ -78,7 +78,7 @@ To run the project and try by yourself see "How to run".
 
 ### Design document
 
-[here](https://docs.google.com/document/d/1Qa3eTDBOGj27OgakiaHTJO45HmPfYqd6rW9GfFrkzkg/edit?usp=sharing)
+[here](https://docs.google.com/document/d/1SiX7W5BYTzpek1fFk5KwCguPs0oBv1DjUQ11WBPz1LQ/edit?usp=sharing)
 
 ---
 
