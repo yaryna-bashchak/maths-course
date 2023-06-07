@@ -10,6 +10,7 @@ namespace API.Data
             InitializeKeywords(context);
             InitializeLessonKeywords(context);
             InitializePreviousLessons(context);
+            InitializeTests(context);
         }
         public static void InitializeLessons(CourseContext context)
         {
@@ -455,6 +456,319 @@ namespace API.Data
 
             context.SaveChanges();
         }
+
+        public static void InitializeTests (CourseContext context)
+        {
+            if (context.Tests.Any()) return;
+            if (context.Options.Any()) return;
+
+            var lessonTests = new List<LessonTests> {
+                new LessonTests
+                {
+                    LessonId = 1,
+                    TestOptions = new List<TestOptions>
+                    {
+                        new TestOptions
+                        {
+                            Question = "1. Вкажіть натуральне число",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "4,1",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "0",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "-3",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "17",
+                                    isAnswer = true,
+                                },
+                                new Option
+                                {
+                                    Text = "1,8",
+                                    isAnswer = false,
+                                },
+                            },
+                        },
+                        new TestOptions
+                        {
+                            Question = "2. При діленні числа 28 на 6 остача дорівнює",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "0",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "1",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "2",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "4",
+                                    isAnswer = true,
+                                },
+                                new Option
+                                {
+                                    Text = "6",
+                                    isAnswer = false,
+                                },
+                            },
+                        },
+                        new TestOptions
+                        {
+                            Question = "3. Скоротіть дріб 108/18 до нескоротного",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "108/18",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "54/9",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "7",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "34/3",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "6",
+                                    isAnswer = true,
+                                },
+                            },
+                        },
+                    },
+                },
+                new LessonTests
+                {
+                    LessonId = 2,
+                    TestOptions = new List<TestOptions>
+                    {
+                        new TestOptions
+                        {
+                            Question = "1.  7412/1000 =",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "7412000",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "74,12",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "7,412",
+                                    isAnswer = true,
+                                },
+                                new Option
+                                {
+                                    Text = "0,7412",
+                                    isAnswer = false,
+                                },
+                            },
+                        },
+                        new TestOptions
+                        {
+                            Question = "2.  1,61 + 2,49",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "4,1",
+                                    isAnswer = true,
+                                },
+                                new Option
+                                {
+                                    Text = "4",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "3,1",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "3",
+                                    isAnswer = false,
+                                },
+                            },
+                        },
+                        new TestOptions
+                        {
+                            Question = "3.  7×1,2=",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "8,4",
+                                    isAnswer = true,
+                                },
+                                new Option
+                                {
+                                    Text = "8,2",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "0,74",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "9,2",
+                                    isAnswer = false,
+                                },
+                            },
+                        },
+                    },
+                },
+                new LessonTests
+                {
+                    LessonId = 3,
+                    TestOptions = new List<TestOptions>
+                    {
+                        new TestOptions
+                        {
+                            Question = "1. Виразіть число 2/5 у відсотках",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "10%",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "20%",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "30%",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "40%",
+                                    isAnswer = true,
+                                },
+                            },
+                        },
+                        new TestOptions
+                        {
+                            Question = "2. Якщо b = (33*a)/100, тоді",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "a становить 33% від b",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "b становить 33% від a",
+                                    isAnswer = true,
+                                },
+                                new Option
+                                {
+                                    Text = "a становить ∼3% від b",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "b становить ∼3% від a",
+                                    isAnswer = false,
+                                },
+                            },
+                        },
+                        new TestOptions
+                        {
+                            Question = "3. Ви поповнювали рахунок через термінал, який бере 5% комісії. У результаті комісія становила 3 грн, а решта грошей прийшла на рахунок💰 На скільки грн поповнився ваш рахунок?",
+                            Options = new List<Option>
+                            {
+                                new Option
+                                {
+                                    Text = "60 грн",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "57 грн",
+                                    isAnswer = true,
+                                },
+                                new Option
+                                {
+                                    Text = "15 грн",
+                                    isAnswer = false,
+                                },
+                                new Option
+                                {
+                                    Text = "12 грн",
+                                    isAnswer = false,
+                                },
+                            },
+                        },
+                    },
+                },
+            };
+
+            foreach (var lessonTest in lessonTests)
+            {
+                foreach (var testOption in lessonTest.TestOptions)
+                {
+                    var test = new Test
+                    {
+                        Question = testOption.Question,
+                        Type = testOption.Type,
+                        ImgUrl = testOption.ImgUrl,
+                        Lesson = context.Lessons.FirstOrDefault(l => l.Id == lessonTest.LessonId),
+                    };
+
+                    context.Tests.Add(test);
+                    context.SaveChanges();
+
+                    foreach (var option in testOption.Options)
+                    {
+                        option.Test = context.Tests.OrderBy(test => test.Id).Last();
+                        context.Options.Add(option);
+                    }
+                }
+            }
+
+            context.SaveChanges();
+        }
     }
 
     // helper classes to make seeding data into join tables easier
@@ -462,14 +776,26 @@ namespace API.Data
     {
         public int LessonId { get; set; }
         public List<int> KeywordIds { get; set; }
-
     }
 
     class LessonToPreviousLessons
     {
         public int LessonId { get; set; }
         public List<int> PreviousLessonIds { get; set; }
+    }
 
+    class LessonTests
+    {
+        public int LessonId { get; set; }
+        public List<TestOptions> TestOptions { get; set; }
+    }
+
+    class TestOptions
+    {
+        public string Question { get; set; }
+        public string Type { get; set; } = "radio";
+        public string ImgUrl { get; set; } = "";
+        public List<Option> Options { get; set; }
     }
 }
 
