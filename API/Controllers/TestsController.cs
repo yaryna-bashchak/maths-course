@@ -45,5 +45,18 @@ namespace API.Controllers
 
             return result.Data;
         }
+
+        [HttpDelete]
+        public async Task<ActionResult<List<GetTestDto>>> DeleteTest(int id)
+        {
+            var result = await _testsRepository.DeleteTest(id);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
     }
 }

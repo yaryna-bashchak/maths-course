@@ -54,5 +54,30 @@ namespace API.Repositories.Implementation
                 return new Result<List<GetTestDto>> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
             }
         }
+
+        public async Task<Result<List<GetTestDto>>> DeleteTest(int id)
+        {
+            try
+            {
+                var dbTest = await _context.Tests.FirstAsync(t => t.Id == id);
+                var lessonId = dbTest.LessonId;
+
+                _context.Tests.Remove(dbTest);
+                await _context.SaveChangesAsync();
+
+                var result = await GetTestsOfLesson(lessonId);
+
+                if (result.IsSuccess == false)
+                {
+                    return new Result<List<GetTestDto>> { IsSuccess = false, ErrorMessage = result.ErrorMessage };
+                }
+
+                return new Result<List<GetTestDto>> { IsSuccess = true, Data = result.Data };
+            }
+            catch (System.Exception)
+            {
+                return new Result<List<GetTestDto>> { IsSuccess = false, ErrorMessage = "Test with the provided ID not found." };
+            }
+        }
     }
 }
