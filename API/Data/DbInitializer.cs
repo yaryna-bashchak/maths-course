@@ -753,7 +753,7 @@ namespace API.Data
                         Question = testOption.Question,
                         Type = testOption.Type,
                         ImgUrl = testOption.ImgUrl,
-                        Lesson = context.Lessons.FirstOrDefault(l => l.Id == lessonTest.LessonId),
+                        LessonId = lessonTest.LessonId,
                     };
 
                     context.Tests.Add(test);
@@ -761,7 +761,7 @@ namespace API.Data
 
                     foreach (var option in testOption.Options)
                     {
-                        option.Test = context.Tests.OrderBy(test => test.Id).Last();
+                        option.TestId = context.Tests.Max(t => t.Id);
                         context.Options.Add(option);
                     }
                 }

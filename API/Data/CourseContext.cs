@@ -34,12 +34,16 @@ namespace API.Data
                 .HasForeignKey(cl => cl.LessonId);
 
             modelBuilder.Entity<Test>()
-                .HasOne(t => t.Lesson)
-                .WithMany(l => l.Tests);
+                .HasMany(t => t.Options)
+                .WithOne(o => o.Test)
+                .HasForeignKey(o => o.TestId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Option>()
-                .HasOne(o => o.Test)
-                .WithMany(t => t.Options);
+            modelBuilder.Entity<Lesson>()
+                .HasMany(l => l.Tests)
+                .WithOne(t => t.Lesson)
+                .HasForeignKey(t => t.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LessonPreviousLesson>()
                 .HasKey(lpl => new { lpl.LessonId, lpl.PreviousLessonId });

@@ -43,7 +43,6 @@ namespace API.Repositories.Implementation
             {
                 var test = _mapper.Map<Test>(newTest);
                 test.Id = _context.Tests.Max(t => t.Id) + 1;
-                test.Lesson = await _context.Lessons.FirstAsync(l => l.Id == newTest.LessonId);
                 await _context.Tests.AddAsync(test);
                 await _context.SaveChangesAsync();
 
