@@ -366,4 +366,190 @@ public class LessonsControllerTests
         Assert.False(result.IsSuccess);
         Assert.Equal("Lessons with this keyword pattern not found.", result.ErrorMessage);
     }
+
+    [Theory]
+    [InlineData(2)]
+    [InlineData(5)]
+    public async void GetLessonsByImportance_EqualOrLessThan2(int importance)
+    {
+        //Arrange
+        var validLessons = new List<GetLessonDto>
+        {
+            new GetLessonDto
+            {
+                Id = 1,
+                Title = "Види чисел, дроби, НСД, НСК, порівняння дробів",
+                Importance = 0,
+            },
+            new GetLessonDto
+            {
+                Id = 2,
+                Title = "Десяткові дроби, дії з ними, модуль",
+                Importance = 0,
+            },
+            new GetLessonDto
+            {
+                Id = 3,
+                Title = "Вступ в геометрію: фігури на площині, кути",
+                Importance = 0,
+            },
+            new GetLessonDto
+            {
+                Id = 17,
+                Title = "Складніші рівняння, теорема Безу",
+                Importance = 2,
+            },
+            new GetLessonDto
+            {
+                Id = 18,
+                Title = "Складніші рівняння, част 2",
+                Importance = 1,
+            },
+        };
+
+        _mockRepository
+            .Setup(x => x.GetLessonsByImportance(It.IsAny<int>()))
+            .Returns(Task.FromResult(new Result<List<GetLessonDto>> { IsSuccess = true, Data = validLessons }));
+
+        //Act
+        var result = await _mockRepository.Object.GetLessonsByImportance(importance);
+
+        //Assert
+        Assert.True(result.IsSuccess);
+        Assert.Equal(validLessons.Count, result.Data.Count);
+        Assert.Contains(0, result.Data.Select(l => l.Importance));
+        Assert.Contains(1, result.Data.Select(l => l.Importance));
+        Assert.Contains(2, result.Data.Select(l => l.Importance));
+        Assert.Equal(2, result.Data[3].Importance);
+        Assert.Equal(1, result.Data[4].Importance);
+    }
+
+    [Fact]
+    public async void GetLessonsByImportance_EqualOrLessThan1()
+    {
+        //Arrange
+        int importance = 1;
+
+        var validLessons = new List<GetLessonDto>
+        {
+            new GetLessonDto
+            {
+                Id = 1,
+                Title = "Види чисел, дроби, НСД, НСК, порівняння дробів",
+                Importance = 0,
+            },
+            new GetLessonDto
+            {
+                Id = 2,
+                Title = "Десяткові дроби, дії з ними, модуль",
+                Importance = 0,
+            },
+            new GetLessonDto
+            {
+                Id = 3,
+                Title = "Вступ в геометрію: фігури на площині, кути",
+                Importance = 0,
+            },
+            new GetLessonDto
+            {
+                Id = 18,
+                Title = "Складніші рівняння, част 2",
+                Importance = 1,
+            },
+        };
+
+        _mockRepository
+            .Setup(x => x.GetLessonsByImportance(It.IsAny<int>()))
+            .Returns(Task.FromResult(new Result<List<GetLessonDto>> { IsSuccess = true, Data = validLessons }));
+
+        //Act
+        var result = await _mockRepository.Object.GetLessonsByImportance(importance);
+
+        //Assert
+        Assert.True(result.IsSuccess);
+        Assert.Equal(validLessons.Count, result.Data.Count);
+        Assert.Contains(0, result.Data.Select(l => l.Importance));
+        Assert.Contains(1, result.Data.Select(l => l.Importance));
+        Assert.DoesNotContain(2, result.Data.Select(l => l.Importance));
+        Assert.Equal(1, result.Data[3].Importance);
+    }
+
+    [Fact]
+    public async void GetLessonsByImportance_EqualOrLessThan0()
+    {
+        //Arrange
+        int importance = 0;
+
+        var validLessons = new List<GetLessonDto>
+        {
+            new GetLessonDto
+            {
+                Id = 1,
+                Title = "Види чисел, дроби, НСД, НСК, порівняння дробів",
+                Importance = 0,
+            },
+            new GetLessonDto
+            {
+                Id = 2,
+                Title = "Десяткові дроби, дії з ними, модуль",
+                Importance = 0,
+            },
+            new GetLessonDto
+            {
+                Id = 3,
+                Title = "Вступ в геометрію: фігури на площині, кути",
+                Importance = 0,
+            },
+        };
+
+        _mockRepository
+            .Setup(x => x.GetLessonsByImportance(It.IsAny<int>()))
+            .Returns(Task.FromResult(new Result<List<GetLessonDto>> { IsSuccess = true, Data = validLessons }));
+
+        //Act
+        var result = await _mockRepository.Object.GetLessonsByImportance(importance);
+
+        //Assert
+        Assert.True(result.IsSuccess);
+        Assert.Equal(validLessons.Count, result.Data.Count);
+        Assert.Contains(0, result.Data.Select(l => l.Importance));
+        Assert.DoesNotContain(1, result.Data.Select(l => l.Importance));
+        Assert.DoesNotContain(2, result.Data.Select(l => l.Importance));
+    }
+
+    [Fact]
+    public async void GetLessonsByImportance_Invalid()
+    {
+        //Arrange
+        int importance = -3;
+
+        _mockRepository
+            .Setup(x => x.GetLessonsByImportance(It.IsAny<int>()))
+            .Returns(Task.FromResult(new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Importance cannot be less than 0 (it can only be 0, 1 or 2)."}));
+
+        //Act
+        var result = await _mockRepository.Object.GetLessonsByImportance(importance);
+
+        //Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Importance cannot be less than 0 (it can only be 0, 1 or 2).", result.ErrorMessage);
+    }
+
+    [Fact]
+    public async void GetLessonsByImportance_EmptyDatabase()
+    {
+        //Arrange
+        int importance = 1;
+
+        _mockRepository
+            .Setup(x => x.GetLessonsByImportance(It.IsAny<int>()))
+            .Returns(Task.FromResult(new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "It seems there are no lessons whose importance is equal to or less than given one (it can only be 0, 1 or 2)."}));
+
+        //Act
+        var result = await _mockRepository.Object.GetLessonsByImportance(importance);
+
+        //Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal("It seems there are no lessons whose importance is equal to or less than given one (it can only be 0, 1 or 2).", result.ErrorMessage);
+    }
 }
