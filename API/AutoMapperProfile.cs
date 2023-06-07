@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using API.Dtos.Keyword;
 using API.Dtos.Lesson;
 using API.Dtos.LessonKeyword;
+using API.Dtos.Option;
+using API.Dtos.Test;
 using API.Entities;
 using AutoMapper;
 
@@ -25,6 +27,10 @@ namespace API
 
             CreateMap<AddLessonKeywordDto, LessonKeyword>();
             CreateMap<LessonKeyword, AddLessonKeywordDto>();
+
+            CreateMap<Test, GetTestDto>()
+                .ForMember(dto => dto.Options, t => t.MapFrom(t => t.Options));
+            CreateMap<Option, GetOptionDto>();
         }
     }
 }

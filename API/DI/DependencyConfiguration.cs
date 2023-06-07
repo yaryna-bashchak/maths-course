@@ -9,6 +9,7 @@ namespace API.DI
         {
             // Repositories
             services.AddScoped<ILessonsRepository, LessonsRepository>();
+            services.AddScoped<ITestsRepository, TestsRepository>();
 
             // Services
             // Services should be here
