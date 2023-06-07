@@ -31,6 +31,10 @@ namespace API
             CreateMap<Test, GetTestDto>()
                 .ForMember(dto => dto.Options, t => t.MapFrom(t => t.Options));
             CreateMap<Option, GetOptionDto>();
+            
+            CreateMap<AddTestDto, Test>();
+            CreateMap<AddOptionDto, Option>();
+
         }
     }
 }

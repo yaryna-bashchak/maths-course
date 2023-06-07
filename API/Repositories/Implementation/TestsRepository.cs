@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.Dtos.Test;
+using API.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +35,25 @@ namespace API.Repositories.Implementation
 
             var tests = await dbTests.Select(t => _mapper.Map<GetTestDto>(t)).ToListAsync();
             return new Result<List<GetTestDto>> { IsSuccess = true, Data = tests };
+        }
+
+        public async Task<Result<List<GetTestDto>>> AddTest(AddTestDto newTest)
+        {
+            try
+            {
+                var test = _mapper.Map<Test>(newTest);
+                test.Id = _context.Tests.Max(t => t.Id) + 1;
+                test.Lesson = await _context.Lessons.FirstAsync(l => l.Id == newTest.LessonId);
+                await _context.Tests.AddAsync(test);
+                await _context.SaveChangesAsync();
+
+                var result = await GetTestsOfLesson(newTest.LessonId);
+                return new Result<List<GetTestDto>> { IsSuccess = true, Data = result.Data };
+            }
+            catch (System.Exception)
+            {
+                return new Result<List<GetTestDto>> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+            }
         }
     }
 }

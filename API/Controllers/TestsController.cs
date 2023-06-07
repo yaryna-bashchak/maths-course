@@ -32,5 +32,18 @@ namespace API.Controllers
 
             return result.Data;
         }
+
+        [HttpPost]
+        public async Task<ActionResult<List<GetTestDto>>> AddTest(AddTestDto newTest)
+        {
+            var result = await _testsRepository.AddTest(newTest);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
     }
 }
