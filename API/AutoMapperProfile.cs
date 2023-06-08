@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Dtos.Course;
 using API.Dtos.Keyword;
 using API.Dtos.Lesson;
 using API.Dtos.LessonKeyword;
@@ -35,6 +36,9 @@ namespace API
             CreateMap<AddTestDto, Test>();
             CreateMap<AddOptionDto, Option>();
 
+            CreateMap<Course, GetCourseDto>()
+                .ForMember(dto => dto.Lessons, c => c.MapFrom(c => c.CourseLessons.Select(cl => cl.Lesson)));
+            CreateMap<Lesson, GetLessonForCourseDto>();
         }
     }
 }
