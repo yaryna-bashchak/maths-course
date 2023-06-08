@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Entities
+namespace API.Dtos.Option
 {
-    public class Option
+    public class GetOptionDto
     {
         public int Id { get; set; }
         public string Text { get; set; }
         public string ImgUrl { get; set; } = "";
         public bool isAnswer { get; set; }
-        public int TestId { get; set; }
-        public Test Test { get; set; }
     }
 }
