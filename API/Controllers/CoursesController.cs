@@ -1,0 +1,34 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using API.Dtos.Course;
+using API.Repositories;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CoursesController : ControllerBase
+    {
+        private ICoursesRepository _coursesRepository;
+        public CoursesController(ICoursesRepository coursesRepository)
+        {
+            _coursesRepository = coursesRepository;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetCourseDto>> GetCourse(int id)
+        {
+            var result = await _coursesRepository.GetCourse(id);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
+    }
+}
