@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Lesson } from "../models/lesson";
+import ListOfLessons from "../../features/listOfLessons/ListOfLessons";
 
 function App() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -31,15 +32,10 @@ function App() {
   }
 
   return (
-    <div>
+    <>
       <h1>План ZNO-шника</h1>
-      <ul>
-        {lessons.map((item, index) => (
-          <li key={index}>{item.title} - {item.description}</li>
-        ))}
-      </ul>
-      <button onClick={addLesson}>Add lesson</button>
-    </div>
+      <ListOfLessons lessons={lessons} addLesson={addLesson} />
+    </>
   );
 }
 
