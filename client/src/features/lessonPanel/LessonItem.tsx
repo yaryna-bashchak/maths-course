@@ -1,6 +1,8 @@
 import { Collapse, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Lesson } from "../../app/models/lesson";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
+import { yellow } from '@mui/material/colors';
 
 interface Props {
     index: number;
@@ -17,7 +19,16 @@ export default function LessonItem({ index, lesson, isOpen, onItemClick }: Props
     return (
         <>
             <ListItemButton key={index} onClick={handleClick}>
-                <ListItemText primary={lesson.title} />
+                <ListItemText >
+                    <span style={{ display: "flex", alignItems: "center" }}>
+                        {lesson.title}
+                        {
+                            Array.from({ length: lesson.importance }).map((_, i) => (
+                                <StarPurple500RoundedIcon sx={{ color: yellow[800], ml: i === 0 ? "5px" : "" }} />
+                            ))
+                        }
+                    </span>
+                </ListItemText>
                 {isOpen ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={isOpen} timeout="auto" unmountOnExit>
