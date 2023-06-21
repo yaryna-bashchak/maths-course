@@ -1,27 +1,26 @@
 import { Collapse, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Lesson } from "../../app/models/lesson";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { useState } from "react";
 
 interface Props {
     index: number;
     lesson: Lesson;
+    isOpen: boolean;
+    onItemClick: (index: number) => void;
 }
 
-export default function LessonItem({ index, lesson }: Props) {
-    const [open, setOpen] = useState(false);
-
+export default function LessonItem({ index, lesson, isOpen, onItemClick }: Props) {
     const handleClick = () => {
-        setOpen(!open);
+        onItemClick(index);
     };
 
     return (
         <>
             <ListItemButton key={index} onClick={handleClick}>
                 <ListItemText primary={lesson.title} />
-                {open ? <ExpandLess /> : <ExpandMore />}
+                {isOpen ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={open} timeout="auto" unmountOnExit>
+            <Collapse in={isOpen} timeout="auto" unmountOnExit>
                 <Typography variant="body1">{lesson.description}</Typography>
             </Collapse>
         </>
