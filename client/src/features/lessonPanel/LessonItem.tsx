@@ -2,7 +2,9 @@ import { Collapse, ListItemButton, ListItemText, Typography } from "@mui/materia
 import { Lesson } from "../../app/models/lesson";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
-import { yellow } from '@mui/material/colors';
+import { green, grey, yellow } from '@mui/material/colors';
+import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 
 interface Props {
     index: number;
@@ -21,6 +23,7 @@ export default function LessonItem({ index, lesson, isOpen, onItemClick }: Props
             <ListItemButton key={index} onClick={handleClick}>
                 <ListItemText >
                     <span style={{ display: "flex", alignItems: "center" }}>
+                        {lesson.isCompleted ? <DoneOutlineIcon sx={{ color: green[500], mr: "5px" }}/> : <CalculateOutlinedIcon sx={{ color: grey[500], mr: "5px" }}/>}
                         {lesson.title}
                         {
                             Array.from({ length: lesson.importance }).map((_, i) => (
