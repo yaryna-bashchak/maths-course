@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Lesson } from "../models/lesson";
-import ListOfLessons from "../../features/listOfLessons/ListOfLessons";
+import LessonList from "../../features/lessonPanel/LessonList";
 import { Container, CssBaseline } from "@mui/material";
 import Header from "./Header";
 
@@ -37,6 +37,9 @@ function App() {
     <>
       <CssBaseline />
       <Header />
+      <Container sx={{ pt: "70px" }}>
+        <LessonList lessons={lessons} addLesson={addLesson} />
+      </Container>
     </>
   );
 }
