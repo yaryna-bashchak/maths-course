@@ -1,5 +1,4 @@
 import Checkbox from "@mui/joy/Checkbox";
-import { Lesson } from "../../app/models/lesson";
 
 interface Props {
     completed: boolean[];

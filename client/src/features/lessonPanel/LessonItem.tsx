@@ -17,20 +17,20 @@ interface Props {
 
 export default function LessonItem({ lesson, isOpen, onItemClick }: Props) {
     const [completed, setCompleted] = useState([lesson.isTheoryCompleted, lesson.isPracticeCompleted, (lesson.testScore >= 0)]);
-    
+
     const handleChangeTheory = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCompleted([event.target.checked, completed[1], completed[2]]);
     };
-    
+
     const handleChangePractice = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCompleted([completed[0], event.target.checked, completed[2]]);
     };
-    
+
     type Stage = "completed" | "inProcess" | "notStarted";
-    
+
     const stages = {
         completed: <DoneOutlineIcon sx={{ color: green[500], mr: "5px" }} />,
-        inProcess: <AccessTimeIcon sx={{ color: yellow[800], mr: "5px"}}/>,
+        inProcess: <AccessTimeIcon sx={{ color: yellow[800], mr: "5px" }} />,
         notStarted: <CalculateOutlinedIcon sx={{ color: grey[500], mr: "5px" }} />,
     };
 
@@ -50,6 +50,38 @@ export default function LessonItem({ lesson, isOpen, onItemClick }: Props) {
         setStage(stageOfCompletion());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [completed]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            let data = {};
+
+            if (completed[0] !== lesson.isTheoryCompleted) {
+                data = { ...data, isTheoryCompleted: Number(completed[0]) };
+            }
+
+            if (completed[1] !== lesson.isPracticeCompleted) {
+                data = { ...data, isPracticeCompleted: Number(completed[1]) };
+            }
+
+            if (Object.keys(data).length > 0) {
+                fetch(`http://localhost:5000/api/Lessons/${lesson.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen]);
 
     const handleClick = () => {
         onItemClick(lesson.id);
