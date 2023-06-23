@@ -116,13 +116,17 @@ public class LessonsControllerTests
         var id = 21;
         var title = "New lesson from test";
         var description = "Description of new lesson";
-        var isCompleted = true;
+        var isTheoryCompleted = true;
+        var isPracticeCompleted = false;
+        var testScore = 62;
 
         var newLesson = new AddLessonDto
         {
             Title = title,
             Description = description,
-            IsCompleted = isCompleted,
+            TestScore = testScore,
+            IsTheoryCompleted = isTheoryCompleted,
+            IsPracticeCompleted = isPracticeCompleted,
         };
 
         var validNewLesson = new GetLessonDto
@@ -130,7 +134,9 @@ public class LessonsControllerTests
             Id = id,
             Title = title,
             Description = description,
-            IsCompleted = isCompleted,
+            TestScore = testScore,
+            IsTheoryCompleted = isTheoryCompleted,
+            IsPracticeCompleted = isPracticeCompleted,
         };
 
         _mockRepository
@@ -144,7 +150,7 @@ public class LessonsControllerTests
         Assert.Equal(id, result.Data.Last().Id);
         Assert.Equal(title, result.Data.Last().Title);
         Assert.Equal(description, result.Data.Last().Description);
-        Assert.True(result.Data.Last().IsCompleted);
+        Assert.True(result.Data.Last().TestScore);
     }
 
     [Fact]
