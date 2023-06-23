@@ -7,6 +7,14 @@ import Header from "./Header";
 function App() {
     const [lessons, setLessons] = useState<Lesson[]>([]);
 
+    const updateLessonCompletion = (lessonId: number, isCompleted: boolean) => {
+        setLessons(lessons =>
+            lessons.map(lesson =>
+                lesson.id === lessonId ? { ...lesson, isCompleted } : lesson
+            )
+        );
+    };
+
     useEffect(() => {
         fetch('http://localhost:5000/api/lessons')
             .then(response => response.json())
@@ -39,7 +47,7 @@ function App() {
             <Header />
             <Container sx={{ pt: "90px" }}>
                 <Typography variant="h5">Повний курс</Typography>
-                <LessonList lessons={lessons} addLesson={addLesson} />
+                <LessonList lessons={lessons} addLesson={addLesson} updateLessonCompletion={updateLessonCompletion}/>
             </Container>
         </>
     );

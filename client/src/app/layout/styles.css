@@ -1,0 +1,10 @@
+video, iframe {
+    margin-bottom: 15px;
+    width: 300px;
+    height: 200px;
+}
+
+.video-wrapper {
+    display: inline-block;
+    padding: 15px;
+}
