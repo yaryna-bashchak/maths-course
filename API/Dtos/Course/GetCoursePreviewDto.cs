@@ -6,11 +6,11 @@ using API.Dtos.Lesson;
 
 namespace API.Dtos.Course
 {
-    public class GetCourseDto
+    public class GetCoursePreviewDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public List<GetLessonDto> Lessons { get; set; }
+        public List<GetLessonForCourseDto> Lessons { get; set; }
     }
 }

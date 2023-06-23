@@ -38,6 +38,9 @@ namespace API
 
             CreateMap<Course, GetCourseDto>()
                 .ForMember(dto => dto.Lessons, c => c.MapFrom(c => c.CourseLessons.Select(cl => cl.Lesson)));
+
+            CreateMap<Course, GetCoursePreviewDto>()
+                .ForMember(dto => dto.Lessons, c => c.MapFrom(c => c.CourseLessons.Select(cl => cl.Lesson)));
             CreateMap<Lesson, GetLessonForCourseDto>();
         }
     }
