@@ -5,6 +5,7 @@ import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
 import { green, grey, yellow } from '@mui/material/colors';
 import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Videos from "./Videos";
 import { useEffect, useState } from "react";
 
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export default function LessonItem({ lesson, isOpen, onItemClick, updateLessonCompletion }: Props) {
-    const [completed, setCompleted] = useState(lesson.isCompleted ? [true, true, true] : [false, false, true]);
+    const [completed, setCompleted] = useState([false, false, lesson.isCompleted]);
 
     const handleChangeTheory = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCompleted([event.target.checked, completed[1], completed[2]]);
@@ -26,9 +27,23 @@ export default function LessonItem({ lesson, isOpen, onItemClick, updateLessonCo
         setCompleted([completed[0], event.target.checked, completed[2]]);
     };
 
+    const stageOfCompletion = () => {
+        if (completed.every(value => value === true)) {
+            return "completed";
+        } else if (completed.some(value => value === true)) {
+            return "in process";
+        } else {
+            return "not started";
+        }
+    }
+
+    const [stage, setStage] = useState(stageOfCompletion());
+
     useEffect(() => {
         const isCompleted = completed.every(value => value === true);
         updateLessonCompletion(lesson.id, isCompleted);
+        setStage(stageOfCompletion());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [completed]);
 
     const handleClick = () => {
@@ -40,7 +55,9 @@ export default function LessonItem({ lesson, isOpen, onItemClick, updateLessonCo
             <ListItemButton onClick={handleClick}>
                 <ListItemText>
                     <span style={{ display: "flex", alignItems: "center" }}>
-                        {lesson.isCompleted ? <DoneOutlineIcon sx={{ color: green[500], mr: "5px" }} /> : <CalculateOutlinedIcon sx={{ color: grey[500], mr: "5px" }} />}
+                        {stage === "completed" ? <DoneOutlineIcon sx={{ color: green[500], mr: "5px" }} />
+                            : (stage === "in process") ? <AccessTimeIcon sx={{ color: yellow[800], mr: "5px"}}/>
+                            : <CalculateOutlinedIcon sx={{ color: grey[500], mr: "5px" }} />}
                         {lesson.title}
                         {
                             Array.from({ length: lesson.importance }).map((_, i) => (
