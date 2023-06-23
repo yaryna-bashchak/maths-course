@@ -13,11 +13,10 @@ interface Props {
     lesson: Lesson;
     isOpen: boolean;
     onItemClick: (index: number) => void;
-    updateLessonCompletion: (lessonId: number, isCompleted: boolean) => void;
 }
 
-export default function LessonItem({ lesson, isOpen, onItemClick, updateLessonCompletion }: Props) {
-    const [completed, setCompleted] = useState([false, false, lesson.isCompleted]);
+export default function LessonItem({ lesson, isOpen, onItemClick }: Props) {
+    const [completed, setCompleted] = useState([lesson.isTheoryCompleted, lesson.isPracticeCompleted, (lesson.testScore >= 0)]);
     
     const handleChangeTheory = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCompleted([event.target.checked, completed[1], completed[2]]);
@@ -48,8 +47,6 @@ export default function LessonItem({ lesson, isOpen, onItemClick, updateLessonCo
     const [stage, setStage] = useState(stageOfCompletion());
 
     useEffect(() => {
-        const isCompleted = completed.every(value => value === true);
-        updateLessonCompletion(lesson.id, isCompleted);
         setStage(stageOfCompletion());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [completed]);
@@ -76,7 +73,7 @@ export default function LessonItem({ lesson, isOpen, onItemClick, updateLessonCo
             </ListItemButton>
             <Collapse in={isOpen} timeout="auto" unmountOnExit>
                 <Typography variant="body1">{lesson.description}</Typography>
-                <Videos lesson={lesson} completed={completed} onTheoryClick={handleChangeTheory} onPracticeClick={handleChangePractice} />
+                <Videos completed={completed} onTheoryClick={handleChangeTheory} onPracticeClick={handleChangePractice} />
             </Collapse>
         </>
     )

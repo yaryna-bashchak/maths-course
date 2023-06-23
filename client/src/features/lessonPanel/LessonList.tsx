@@ -6,10 +6,9 @@ import { useState } from "react";
 interface Props {
     lessons: Lesson[];
     addLesson: () => void;
-    updateLessonCompletion: (lessonId: number, isCompleted: boolean) => void;
 }
 
-export default function LessonList({ lessons, addLesson, updateLessonCompletion }: Props) {
+export default function LessonList({ lessons, addLesson }: Props) {
     const [openIndex, setOpenIndex] = useState(-1);
 
     const handleItemClick = (index: number) => {
@@ -25,7 +24,6 @@ export default function LessonList({ lessons, addLesson, updateLessonCompletion 
                         lesson={lesson}
                         isOpen={openIndex === lesson.id} 
                         onItemClick={handleItemClick}
-                        updateLessonCompletion={updateLessonCompletion}
                     />
                 )}
             </List>

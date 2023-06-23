@@ -13,7 +13,9 @@ export interface Lesson {
   urlPractice: string
   number: number
   importance: number
-  isCompleted: boolean
+  testScore: number
+  isTheoryCompleted: boolean
+  isPracticeCompleted: boolean
   keywords?: Keyword[]
   previousLessons?: PreviousLesson[]
 }

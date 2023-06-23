@@ -2,13 +2,12 @@ import Checkbox from "@mui/joy/Checkbox";
 import { Lesson } from "../../app/models/lesson";
 
 interface Props {
-    lesson: Lesson;
     completed: boolean[];
     onTheoryClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onPracticeClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function Videos({ lesson, completed, onTheoryClick, onPracticeClick }: Props) {
+export default function Videos({ completed, onTheoryClick, onPracticeClick }: Props) {
     const handleContextMenu = (event: React.MouseEvent<HTMLVideoElement>) => {
         event.preventDefault();
     }
