@@ -58,11 +58,11 @@ namespace API.Repositories.Implementation
             return new Result<List<GetLessonDto>> { IsSuccess = true, Data = result.Data };
         }
 
-        public async Task<Result<GetLessonDto>> UpdateLesson(UpdateLesssonDto updatedLesson)
+        public async Task<Result<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson)
         {
             try
             {
-                var dbLesson = await _context.Lessons.FirstOrDefaultAsync(l => l.Id == updatedLesson.Id);
+                var dbLesson = await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);
 
                 dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
                 dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
@@ -75,7 +75,7 @@ namespace API.Repositories.Implementation
                 dbLesson.IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 ? (updatedLesson.IsPracticeCompleted != 0) : dbLesson.IsPracticeCompleted;
                 await _context.SaveChangesAsync();
 
-                var result = await GetLesson(updatedLesson.Id);
+                var result = await GetLesson(id);
                 return new Result<GetLessonDto> { IsSuccess = true, Data = result.Data };
             }
             catch (System.Exception)

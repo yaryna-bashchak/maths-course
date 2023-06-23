@@ -164,7 +164,6 @@ public class LessonsControllerTests
 
         var updatedLesson = new UpdateLesssonDto
         {
-            Id = id,
             Title = title,
             Importance = importance,
         };
@@ -192,11 +191,11 @@ public class LessonsControllerTests
         };
 
         _mockRepository
-            .Setup(x => x.UpdateLesson(It.IsAny<UpdateLesssonDto>()))
+            .Setup(x => x.UpdateLesson(It.IsAny<int>(), It.IsAny<UpdateLesssonDto>()))
             .Returns(Task.FromResult(new Result<GetLessonDto> { IsSuccess = true, Data = validUpdatedLesson }));
 
         //Act
-        var result = await _mockRepository.Object.UpdateLesson(updatedLesson);
+        var result = await _mockRepository.Object.UpdateLesson(id, updatedLesson);
 
         //Assert
         Assert.Equal(id, result.Data.Id);
@@ -216,16 +215,15 @@ public class LessonsControllerTests
 
         var updatedLesson = new UpdateLesssonDto
         {
-            Id = id,
             Importance = importance,
         };
 
         _mockRepository
-            .Setup(x => x.UpdateLesson(It.IsAny<UpdateLesssonDto>()))
+            .Setup(x => x.UpdateLesson(It.IsAny<int>(), It.IsAny<UpdateLesssonDto>()))
             .Returns(Task.FromResult(new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." }));
 
         //Act
-        var result = await _mockRepository.Object.UpdateLesson(updatedLesson);
+        var result = await _mockRepository.Object.UpdateLesson(id, updatedLesson);
 
         //Assert
         Assert.False(result.IsSuccess);

@@ -63,12 +63,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("id")]
-        public async Task<ActionResult<GetKeywordDto>> UpdateKeyword(GetKeywordDto updatedKeyword)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GetKeywordDto>> UpdateKeyword(int id, UpdateKeywordDto updatedKeyword)
         {
             try
             {
-                var dbKeyword = await Context.Keywords.FirstOrDefaultAsync(l => l.Id == updatedKeyword.Id);
+                var dbKeyword = await Context.Keywords.FirstOrDefaultAsync(l => l.Id == id);
                 
                 dbKeyword.Word = updatedKeyword.Word ?? dbKeyword.Word;
                 await Context.SaveChangesAsync();

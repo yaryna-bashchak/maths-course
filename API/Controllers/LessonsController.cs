@@ -101,10 +101,10 @@ namespace API.Controllers
             return result.Data;
         }
 
-        [HttpPut("id")]
-        public async Task<ActionResult<GetLessonDto>> UpdateLesson(UpdateLesssonDto updatedLesson)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson)
         {
-            var result = await _lessonsRepository.UpdateLesson(updatedLesson);
+            var result = await _lessonsRepository.UpdateLesson(id, updatedLesson);
 
             if (!result.IsSuccess)
             {
