@@ -18,22 +18,30 @@ interface Props {
 
 export default function LessonItem({ lesson, isOpen, onItemClick, updateLessonCompletion }: Props) {
     const [completed, setCompleted] = useState([false, false, lesson.isCompleted]);
-
+    
     const handleChangeTheory = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCompleted([event.target.checked, completed[1], completed[2]]);
     };
-
+    
     const handleChangePractice = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCompleted([completed[0], event.target.checked, completed[2]]);
     };
+    
+    type Stage = "completed" | "inProcess" | "notStarted";
+    
+    const stages = {
+        completed: <DoneOutlineIcon sx={{ color: green[500], mr: "5px" }} />,
+        inProcess: <AccessTimeIcon sx={{ color: yellow[800], mr: "5px"}}/>,
+        notStarted: <CalculateOutlinedIcon sx={{ color: grey[500], mr: "5px" }} />,
+    };
 
-    const stageOfCompletion = () => {
+    const stageOfCompletion = (): Stage => {
         if (completed.every(value => value === true)) {
             return "completed";
         } else if (completed.some(value => value === true)) {
-            return "in process";
+            return "inProcess";
         } else {
-            return "not started";
+            return "notStarted";
         }
     }
 
@@ -55,9 +63,7 @@ export default function LessonItem({ lesson, isOpen, onItemClick, updateLessonCo
             <ListItemButton onClick={handleClick}>
                 <ListItemText>
                     <span style={{ display: "flex", alignItems: "center" }}>
-                        {stage === "completed" ? <DoneOutlineIcon sx={{ color: green[500], mr: "5px" }} />
-                            : (stage === "in process") ? <AccessTimeIcon sx={{ color: yellow[800], mr: "5px"}}/>
-                            : <CalculateOutlinedIcon sx={{ color: grey[500], mr: "5px" }} />}
+                        {stages[stage]}
                         {lesson.title}
                         {
                             Array.from({ length: lesson.importance }).map((_, i) => (
