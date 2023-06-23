@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Lesson } from "../models/lesson";
+import { Course, Lesson } from "../models/lesson";
 import LessonList from "../../features/lessonPanel/LessonList";
 import { Container, CssBaseline, Typography } from "@mui/material";
 import Header from "./Header";
 
 function App() {
+    const [course, setCourse] = useState<Course>();
     const [lessons, setLessons] = useState<Lesson[]>([]);
 
     const updateLessonCompletion = (lessonId: number, isCompleted: boolean) => {
@@ -16,9 +17,12 @@ function App() {
     };
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/lessons')
+        fetch('http://localhost:5000/api/courses/1')
             .then(response => response.json())
-            .then(data => setLessons(data))
+            .then(data => {
+                setCourse(data);
+                setLessons(data.lessons)
+            })
     }, [])
 
     function addLesson() {
@@ -46,7 +50,7 @@ function App() {
             <CssBaseline />
             <Header />
             <Container sx={{ pt: "90px" }}>
-                <Typography variant="h5">Повний курс</Typography>
+                <Typography variant="h5">{course?.title}</Typography>
                 <LessonList lessons={lessons} addLesson={addLesson} updateLessonCompletion={updateLessonCompletion}/>
             </Container>
         </>
