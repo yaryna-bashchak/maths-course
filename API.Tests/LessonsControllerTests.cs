@@ -150,7 +150,7 @@ public class LessonsControllerTests
         Assert.Equal(id, result.Data.Last().Id);
         Assert.Equal(title, result.Data.Last().Title);
         Assert.Equal(description, result.Data.Last().Description);
-        Assert.True(result.Data.Last().TestScore);
+        Assert.Equal(testScore, result.Data.Last().TestScore);
     }
 
     [Fact]

@@ -12,31 +12,31 @@ namespace API.Tests;
 public class CoursesControllerTests
 {
     private Mock<ICoursesRepository> _mockRepository = new Mock<ICoursesRepository>();
-    
+
     [Fact]
-    public async void GetCourse_ValidId()
+    public async void GetCoursePreview_ValidId()
     {
         //Arrange
         var id = 4;
 
-        var validCourse = new GetCourseDto
+        var validCourse = new GetCoursePreviewDto
         {
             Id = 4,
             Title = "Геометрія",
             Description = "Цей курс містить всі теми з геометрії, що потрібні для ЗНО/НМТ.",
-            Lessons = new List<GetLessonForCourseDto>
+            Lessons = new List<GetLessonPreviewDto>
             {
-                new GetLessonForCourseDto
+                new GetLessonPreviewDto
                 {
                     Id = 4,
                     Title = "Вступ в геометрію: фігури на площині, кути",
                 },
-                new GetLessonForCourseDto
+                new GetLessonPreviewDto
                 {
                     Id = 9,
                     Title = "Трикутник. 3 ознаки рівності трик., 3 ознаки подібності трик., формула Герона",
                 },
-                new GetLessonForCourseDto
+                new GetLessonPreviewDto
                 {
                     Id = 10,
                     Title = "Прямокутний трикутник, теорема Піфагора, sin, cos, tg, ctg, похила",
@@ -45,11 +45,11 @@ public class CoursesControllerTests
         };
 
         _mockRepository
-            .Setup(x => x.GetCourse(It.IsAny<int>()))
-            .Returns(Task.FromResult(new Result<GetCourseDto> { IsSuccess = true, Data = validCourse }));
+            .Setup(x => x.GetCoursePreview(It.IsAny<int>()))
+            .Returns(Task.FromResult(new Result<GetCoursePreviewDto> { IsSuccess = true, Data = validCourse }));
 
         //Act
-        var result = await _mockRepository.Object.GetCourse(id);
+        var result = await _mockRepository.Object.GetCoursePreview(id);
 
         //Assert
         Assert.Equal(validCourse.Id, result.Data.Id);
@@ -59,17 +59,17 @@ public class CoursesControllerTests
     }
 
     [Fact]
-    public async void GetCourse_InvalidId()
+    public async void GetCoursePreview_InvalidId()
     {
         //Arrange
         var id = 15;
 
         _mockRepository
-            .Setup(x => x.GetCourse(It.IsAny<int>()))
-            .Returns(Task.FromResult(new Result<GetCourseDto> { IsSuccess = false, ErrorMessage = "Course with the provided ID not found." }));
+            .Setup(x => x.GetCoursePreview(It.IsAny<int>()))
+            .Returns(Task.FromResult(new Result<GetCoursePreviewDto> { IsSuccess = false, ErrorMessage = "Course with the provided ID not found." }));
 
         //Act
-        var result = await _mockRepository.Object.GetCourse(id);
+        var result = await _mockRepository.Object.GetCoursePreview(id);
 
         //Assert
         Assert.False(result.IsSuccess);

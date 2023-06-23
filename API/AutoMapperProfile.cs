@@ -22,7 +22,7 @@ namespace API
                 .ForMember(dto => dto.PreviousLessons, l => l.MapFrom(l => l.PreviousLessons.Select(lpl => lpl.PreviousLesson)));
             CreateMap<AddLessonDto, Lesson>();
             CreateMap<Lesson, GetPreviousLessonDto>();
-            
+
             CreateMap<Keyword, GetKeywordDto>();
             CreateMap<AddKeywordDto, Keyword>();
 
@@ -32,7 +32,7 @@ namespace API
             CreateMap<Test, GetTestDto>()
                 .ForMember(dto => dto.Options, t => t.MapFrom(t => t.Options));
             CreateMap<Option, GetOptionDto>();
-            
+
             CreateMap<AddTestDto, Test>();
             CreateMap<AddOptionDto, Option>();
 
@@ -41,7 +41,7 @@ namespace API
 
             CreateMap<Course, GetCoursePreviewDto>()
                 .ForMember(dto => dto.Lessons, c => c.MapFrom(c => c.CourseLessons.Select(cl => cl.Lesson)));
-            CreateMap<Lesson, GetLessonForCourseDto>();
+            CreateMap<Lesson, GetLessonPreviewDto>();
         }
     }
 }

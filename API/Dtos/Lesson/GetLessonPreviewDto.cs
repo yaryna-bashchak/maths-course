@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace API.Dtos.Lesson
 {
-    public class GetLessonForCourseDto
+    public class GetLessonPreviewDto
     {
         public int Id { get; set; }
         public string Title { get; set; }

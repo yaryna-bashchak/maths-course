@@ -11,6 +11,6 @@ namespace API.Dtos.Course
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public List<GetLessonForCourseDto> Lessons { get; set; }
+        public List<GetLessonPreviewDto> Lessons { get; set; }
     }
 }
