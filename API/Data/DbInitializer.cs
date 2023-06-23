@@ -27,7 +27,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 1,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -37,7 +36,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 2,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -47,7 +45,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 3,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -57,7 +54,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 4,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -67,7 +63,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 5,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -77,7 +72,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 6,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -87,7 +81,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 7,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -97,7 +90,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 8,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -107,7 +99,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 9,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -117,7 +108,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 10,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -127,7 +117,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 11,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -137,7 +126,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 12,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -147,7 +135,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 13,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -157,7 +144,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 14,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -167,7 +153,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 15,
                     Importance = 0,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -177,7 +162,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 16,
                     Importance = 1,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -187,7 +171,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 17,
                     Importance = 2,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -197,7 +180,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 18,
                     Importance = 1,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -207,7 +189,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 19,
                     Importance = 1,
-                    isCompleted = false,
                 },
                 new Lesson
                 {
@@ -217,7 +198,6 @@ namespace API.Data
                     UrlPractice = "",
                     Number = 20,
                     Importance = 1,
-                    isCompleted = false,
                 },
             };
 
@@ -261,7 +241,7 @@ namespace API.Data
             context.SaveChanges();
         }
 
-        public static void InitializeLessonKeywords (CourseContext context)
+        public static void InitializeLessonKeywords(CourseContext context)
         {
             if (context.LessonKeywords.Any()) return;
 
@@ -385,7 +365,7 @@ namespace API.Data
             context.SaveChanges();
         }
 
-        public static void InitializePreviousLessons (CourseContext context)
+        public static void InitializePreviousLessons(CourseContext context)
         {
             if (context.PreviousLessons.Any()) return;
 
@@ -459,7 +439,7 @@ namespace API.Data
             context.SaveChanges();
         }
 
-        public static void InitializeTests (CourseContext context)
+        public static void InitializeTests(CourseContext context)
         {
             if (context.Tests.Any()) return;
             if (context.Options.Any()) return;
@@ -808,7 +788,7 @@ namespace API.Data
             context.SaveChanges();
         }
 
-        public static void InitializeCourseLessons (CourseContext context)
+        public static void InitializeCourseLessons(CourseContext context)
         {
             if (context.CourseLessons.Any()) return;
 

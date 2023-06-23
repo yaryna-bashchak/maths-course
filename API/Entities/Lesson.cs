@@ -9,7 +9,9 @@ namespace API.Entities
         public string UrlPractice { get; set; }
         public int Number { get; set; }
         public int Importance { get; set; } = 0;
-        public bool isCompleted { get; set; } = false;
+        public int TestScore { get; set; } = -1;
+        public bool IsTheoryCompleted { get; set; } = false;
+        public bool IsPracticeCompleted { get; set; } = false;
         public List<CourseLesson> CourseLessons { get; set; }
         public List<LessonKeyword> LessonKeywords { get; set; }
         public List<LessonPreviousLesson> PreviousLessons { get; set; } = new List<LessonPreviousLesson>();

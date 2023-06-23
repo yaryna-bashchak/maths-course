@@ -13,6 +13,8 @@ namespace API.Dtos.Lesson
         public string UrlPractice { get; set; }
         public int Number { get; set; }
         public int Importance { get; set; } = 0;
-        public bool IsCompleted { get; set; } = false;
+        public int TestScore { get; set; } = -1;
+        public bool IsTheoryCompleted { get; set; } = false;
+        public bool IsPracticeCompleted { get; set; } = false;
     }
 }

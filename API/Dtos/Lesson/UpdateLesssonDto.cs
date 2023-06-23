@@ -14,6 +14,8 @@ namespace API.Dtos.Lesson
         public string UrlPractice { get; set; }
         public int Number { get; set; } = -1;
         public int Importance { get; set; } = -1;
-        public int IsCompleted { get; set; } = -1;
+        public int TestScore { get; set; } = -1;
+        public int IsTheoryCompleted { get; set; } = -1;
+        public int IsPracticeCompleted { get; set; } = -1;
     }
 }

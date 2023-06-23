@@ -70,7 +70,9 @@ namespace API.Repositories.Implementation
                 dbLesson.UrlPractice = updatedLesson.UrlPractice ?? dbLesson.UrlPractice;
                 dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
                 dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
-                dbLesson.isCompleted = updatedLesson.IsCompleted != -1 ? (updatedLesson.IsCompleted != 0) : dbLesson.isCompleted;
+                dbLesson.TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : dbLesson.TestScore;
+                dbLesson.IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 ? (updatedLesson.IsTheoryCompleted != 0) : dbLesson.IsTheoryCompleted;
+                dbLesson.IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 ? (updatedLesson.IsPracticeCompleted != 0) : dbLesson.IsPracticeCompleted;
                 await _context.SaveChangesAsync();
 
                 var result = await GetLesson(updatedLesson.Id);
