@@ -8,6 +8,7 @@ import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Videos from "./Videos";
 import { useEffect, useState } from "react";
+import Tests from "./Tests";
 
 interface Props {
     lesson: Lesson;
@@ -106,6 +107,7 @@ export default function LessonItem({ lesson, isOpen, onItemClick }: Props) {
             <Collapse in={isOpen} timeout="auto" unmountOnExit>
                 <Typography variant="body1">{lesson.description}</Typography>
                 <Videos completed={completed} onTheoryClick={handleChangeTheory} onPracticeClick={handleChangePractice} />
+                <Tests lesson={lesson}/>
             </Collapse>
         </>
     )
