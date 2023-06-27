@@ -11,5 +11,6 @@ namespace API.Entities
         public Course Course { get; set; }
         public int LessonId { get; set; }
         public Lesson Lesson { get; set; }
+        public int MonthNumber { get; set; } = 1;
     }
 }

@@ -761,22 +761,34 @@ namespace API.Data
                 new Course
                 {
                     Title = "Повний курс",
-                    Description = "Цей курс містить всі теми, що потрібні для повної підготовки до ЗНО/НМТ. Розрахований на 8 місяців навчання.",
+                    Description = "Цей курс містить всі теми, що потрібні для повної підготовки до ЗНО/НМТ.",
+                    Duration = 8,
+                    PriceFull = 1850,
+                    PriceMonthly = 360,
                 },
                 new Course
                 {
                     Title = "Скорочений курс",
-                    Description = "Цей курс містить найнеобхідніші теми, що потрібні для ЗНО/НМТ. Розрахований на 5 місяців навчання.",
+                    Description = "Цей курс містить найнеобхідніші теми, що потрібні для ЗНО/НМТ.",
+                    Duration = 5,
+                    PriceFull = 1550,
+                    PriceMonthly = 360,
                 },
                 new Course
                 {
                     Title = "Алгебра",
                     Description = "Цей курс містить всі теми з алгебри, що потрібні для ЗНО/НМТ.",
+                    Duration = 5,
+                    PriceFull = 1250,
+                    PriceMonthly = 360,
                 },
                 new Course
                 {
                     Title = "Геометрія",
                     Description = "Цей курс містить всі теми з геометрії, що потрібні для ЗНО/НМТ.",
+                    Duration = 3,
+                    PriceFull = 950,
+                    PriceMonthly = 360,
                 },
             };
 
@@ -796,36 +808,120 @@ namespace API.Data
                 new CourseToLessons
                 {
                     CourseId = 1,
-                    LessonIds = Enumerable.Range(1, context.Lessons.Max(l => l.Id)).ToList(),
+                    MonthsLessons = new List<MonthToLessons> {
+                        new MonthToLessons {
+                            MonthNumber = 1,
+                            LessonIds = Enumerable.Range(1, 4).ToList(),
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 2,
+                            LessonIds = Enumerable.Range(5, 4).ToList(),
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 3,
+                            LessonIds = Enumerable.Range(9, 2).ToList(),
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 4,
+                            LessonIds = Enumerable.Range(11, 4).ToList(),
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 5,
+                            LessonIds = Enumerable.Range(15, 4).ToList(),
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 6,
+                            LessonIds = Enumerable.Range(19, 2).ToList(),
+                        },
+                    },
                 },
                 new CourseToLessons
                 {
                     CourseId = 2,
-                    LessonIds = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19 },
+                    MonthsLessons = new List<MonthToLessons> {
+                        new MonthToLessons {
+                            MonthNumber = 1,
+                            LessonIds = new List<int> { 1, 2, 3 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 2,
+                            LessonIds = new List<int> { 4, 5 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 3,
+                            LessonIds = new List<int> { 6, 7, 8, 9 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 4,
+                            LessonIds = new List<int> { 10, 11, 12, 13, 14 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 5,
+                            LessonIds = new List<int> { 15, 16, 19 },
+                        },
+                    },
                 },
                 new CourseToLessons
                 {
                     CourseId = 3,
-                    LessonIds = new List<int> { 1, 2, 3, 5, 6, 7, 8, 17, 18, 19, 20 },
+                    MonthsLessons = new List<MonthToLessons> {
+                        new MonthToLessons {
+                            MonthNumber = 1,
+                            LessonIds = new List<int> { 1, 2, 3 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 2,
+                            LessonIds = new List<int> { 5, 6, 7 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 3,
+                            LessonIds = new List<int> { 8, 17 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 4,
+                            LessonIds = new List<int> { 18 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 5,
+                            LessonIds = new List<int> { 19, 20 },
+                        },
+                    },
                 },
                 new CourseToLessons
                 {
                     CourseId = 4,
-                    LessonIds = new List<int> { 4, 9, 10, 11, 12, 13, 14, 15, 16 },
+                    MonthsLessons = new List<MonthToLessons> {
+                        new MonthToLessons {
+                            MonthNumber = 1,
+                            LessonIds = new List<int> { 4, 9, 10, 11 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 2,
+                            LessonIds = new List<int> { 12, 13 },
+                        },
+                        new MonthToLessons {
+                            MonthNumber = 3,
+                            LessonIds = new List<int> { 14, 15, 16 },
+                        },
+                    },
                 },
             };
 
             foreach (var courseToLessons in coursesToLessons)
             {
-                foreach (var lessonId in courseToLessons.LessonIds)
+                foreach (var monthToLessons in courseToLessons.MonthsLessons)
                 {
-                    context.CourseLessons.Add(
-                        new CourseLesson
-                        {
-                            CourseId = courseToLessons.CourseId,
-                            LessonId = lessonId,
-                        }
-                    );
+                    foreach (var lessonId in monthToLessons.LessonIds)
+                    {
+                        context.CourseLessons.Add(
+                            new CourseLesson
+                            {
+                                CourseId = courseToLessons.CourseId,
+                                MonthNumber = monthToLessons.MonthNumber,
+                                LessonId = lessonId,
+                            }
+                        );
+                    }
                 }
             }
 
@@ -843,6 +939,12 @@ namespace API.Data
     class CourseToLessons
     {
         public int CourseId { get; set; }
+        public List<MonthToLessons> MonthsLessons { get; set; }
+    }
+
+    class MonthToLessons
+    {
+        public int MonthNumber { get; set; }
         public List<int> LessonIds { get; set; }
     }
 
