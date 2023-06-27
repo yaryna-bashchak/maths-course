@@ -10,5 +10,6 @@ namespace API.Dtos.Lesson
         public int Id { get; set; }
         public string Title { get; set; }
         public int MonthNumber { get; set; }
+        public bool IsAvailable { get; set; } = false;
     }
 }

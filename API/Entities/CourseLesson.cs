@@ -12,5 +12,6 @@ namespace API.Entities
         public int LessonId { get; set; }
         public Lesson Lesson { get; set; }
         public int MonthNumber { get; set; } = 1;
+        public bool IsAvailable { get; set; } = false;
     }
 }

@@ -812,18 +812,22 @@ namespace API.Data
                         new MonthToLessons {
                             MonthNumber = 1,
                             LessonIds = Enumerable.Range(1, 4).ToList(),
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 2,
                             LessonIds = Enumerable.Range(5, 4).ToList(),
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 3,
                             LessonIds = Enumerable.Range(9, 2).ToList(),
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 4,
                             LessonIds = Enumerable.Range(11, 4).ToList(),
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 5,
@@ -842,10 +846,12 @@ namespace API.Data
                         new MonthToLessons {
                             MonthNumber = 1,
                             LessonIds = new List<int> { 1, 2, 3 },
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 2,
                             LessonIds = new List<int> { 4, 5 },
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 3,
@@ -854,6 +860,7 @@ namespace API.Data
                         new MonthToLessons {
                             MonthNumber = 4,
                             LessonIds = new List<int> { 10, 11, 12, 13, 14 },
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 5,
@@ -868,14 +875,17 @@ namespace API.Data
                         new MonthToLessons {
                             MonthNumber = 1,
                             LessonIds = new List<int> { 1, 2, 3 },
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 2,
                             LessonIds = new List<int> { 5, 6, 7 },
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 3,
                             LessonIds = new List<int> { 8, 17 },
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 4,
@@ -894,6 +904,7 @@ namespace API.Data
                         new MonthToLessons {
                             MonthNumber = 1,
                             LessonIds = new List<int> { 4, 9, 10, 11 },
+                            IsAvailable = true,
                         },
                         new MonthToLessons {
                             MonthNumber = 2,
@@ -918,6 +929,7 @@ namespace API.Data
                             {
                                 CourseId = courseToLessons.CourseId,
                                 MonthNumber = monthToLessons.MonthNumber,
+                                IsAvailable = monthToLessons.IsAvailable,
                                 LessonId = lessonId,
                             }
                         );
@@ -945,6 +957,7 @@ namespace API.Data
     class MonthToLessons
     {
         public int MonthNumber { get; set; }
+        public bool IsAvailable { get; set; }
         public List<int> LessonIds { get; set; }
     }
 

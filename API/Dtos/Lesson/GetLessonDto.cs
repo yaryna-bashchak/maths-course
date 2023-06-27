@@ -18,6 +18,7 @@ namespace API.Dtos.Lesson
         public int Importance { get; set; } = 0;
         public int TestScore { get; set; } = -1;
         public int MonthNumber { get; set; }
+        public bool IsAvailable { get; set; }
         public bool IsTheoryCompleted { get; set; } = false;
         public bool IsPracticeCompleted { get; set; } = false;
         public List<GetKeywordDto> Keywords { get; set; }
