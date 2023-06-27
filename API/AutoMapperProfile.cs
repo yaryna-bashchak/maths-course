@@ -36,11 +36,18 @@ namespace API
             CreateMap<AddTestDto, Test>();
             CreateMap<AddOptionDto, Option>();
 
-            CreateMap<Course, GetCourseDto>()
-                .ForMember(dto => dto.Lessons, c => c.MapFrom(c => c.CourseLessons.Select(cl => cl.Lesson)));
+            CreateMap<CourseLesson, GetLessonDto>()
+                .IncludeMembers(cl => cl.Lesson)
+                .ForMember(dto => dto.MonthNumber, opt => opt.MapFrom(cl => cl.MonthNumber));
 
+            CreateMap<Course, GetCourseDto>()
+                .ForMember(dto => dto.Lessons, opt => opt.MapFrom(c => c.CourseLessons));
+
+            CreateMap<CourseLesson, GetLessonPreviewDto>()
+                .IncludeMembers(cl => cl.Lesson)
+                .ForMember(dto => dto.MonthNumber, opt => opt.MapFrom(cl => cl.MonthNumber));
             CreateMap<Course, GetCoursePreviewDto>()
-                .ForMember(dto => dto.Lessons, c => c.MapFrom(c => c.CourseLessons.Select(cl => cl.Lesson)));
+                .ForMember(dto => dto.Lessons, c => c.MapFrom(c => c.CourseLessons));
             CreateMap<Lesson, GetLessonPreviewDto>();
         }
     }
