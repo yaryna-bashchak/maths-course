@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Dtos.Course;
 using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
