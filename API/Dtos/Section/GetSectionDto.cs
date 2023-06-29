@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Dtos.Lesson;
 
-namespace API.Entities
+namespace API.Dtos.Section
 {
-    public class Course
+    public class GetSectionDto
     {
         public int Id { get; set; }
+        public int Number { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public int Duration { get; set; } = 1;
-        public int PriceFull { get; set; }
-        public int PriceMonthly { get; set; }
-        public List<Section> Sections { get; set; }
+        public bool IsAvailable { get; set; } = false;
+        public List<GetLessonDto> Lessons { get; set; }
     }
 }

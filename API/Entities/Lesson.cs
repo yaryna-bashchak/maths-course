@@ -12,7 +12,7 @@ namespace API.Entities
         public int TestScore { get; set; } = -1;
         public bool IsTheoryCompleted { get; set; } = false;
         public bool IsPracticeCompleted { get; set; } = false;
-        public List<CourseLesson> CourseLessons { get; set; }
+        public List<SectionLesson> SectionLessons { get; set; }
         public List<LessonKeyword> LessonKeywords { get; set; }
         public List<LessonPreviousLesson> PreviousLessons { get; set; } = new List<LessonPreviousLesson>();
         public List<LessonPreviousLesson> PreviousLessonOf { get; set; } = new List<LessonPreviousLesson>();
