@@ -1,4 +1,6 @@
+using System.Globalization;
 using API.Entities;
+using API.Repositories.Implementation;
 
 namespace API.Data
 {
@@ -12,7 +14,7 @@ namespace API.Data
             InitializePreviousLessons(context);
             InitializeTests(context);
             InitializeCourses(context);
-            InitializeCourseLessons(context);
+            InitializeSectionLessons(context);
         }
         public static void InitializeLessons(CourseContext context)
         {
@@ -755,8 +757,9 @@ namespace API.Data
         public static void InitializeCourses(CourseContext context)
         {
             if (context.Courses.Any()) return;
+            if (context.Sections.Any()) return;
 
-            var courses = new List<Course>
+            var coursesSections = new List<Course>
             {
                 new Course
                 {
@@ -765,6 +768,54 @@ namespace API.Data
                     Duration = 8,
                     PriceFull = 1850,
                     PriceMonthly = 360,
+                    Sections = new List<Section>
+                    {
+                        new Section
+                        {
+                            Number = 1,
+                            Title = "Місяць 1",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 2,
+                            Title = "Місяць 2",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 3,
+                            Title = "Місяць 3",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 4,
+                            Title = "Місяць 4",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 5,
+                            Title = "Місяць 5",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 6,
+                            Title = "Місяць 6",
+                        },
+                        new Section
+                        {
+                            Number = 7,
+                            Title = "Місяць 7",
+                        },
+                        new Section
+                        {
+                            Number = 8,
+                            Title = "Місяць 8",
+                        },
+                    },
                 },
                 new Course
                 {
@@ -773,6 +824,37 @@ namespace API.Data
                     Duration = 5,
                     PriceFull = 1550,
                     PriceMonthly = 360,
+                    Sections = new List<Section>
+                    {
+                        new Section
+                        {
+                            Number = 1,
+                            Title = "Місяць 1",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 2,
+                            Title = "Місяць 2",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 3,
+                            Title = "Місяць 3",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 4,
+                            Title = "Місяць 4",
+                        },
+                        new Section
+                        {
+                            Number = 5,
+                            Title = "Місяць 5",
+                        },
+                    },
                 },
                 new Course
                 {
@@ -781,6 +863,37 @@ namespace API.Data
                     Duration = 5,
                     PriceFull = 1250,
                     PriceMonthly = 360,
+                    Sections = new List<Section>
+                    {
+                        new Section
+                        {
+                            Number = 1,
+                            Title = "Місяць 1",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 2,
+                            Title = "Місяць 2",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 3,
+                            Title = "Місяць 3",
+                        },
+                        new Section
+                        {
+                            Number = 4,
+                            Title = "Місяць 4",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 5,
+                            Title = "Місяць 5",
+                        },
+                    },
                 },
                 new Course
                 {
@@ -789,151 +902,157 @@ namespace API.Data
                     Duration = 3,
                     PriceFull = 950,
                     PriceMonthly = 360,
+                    Sections = new List<Section>
+                    {
+                        new Section
+                        {
+                            Number = 1,
+                            Title = "Місяць 1",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 2,
+                            Title = "Місяць 2",
+                            IsAvailable = true,
+                        },
+                        new Section
+                        {
+                            Number = 3,
+                            Title = "Місяць 3",
+                        },
+                    },
                 },
             };
 
-            foreach (var course in courses)
+            foreach (var courseSections in coursesSections)
             {
+                var course = new Course
+                {
+                    Title = courseSections.Title,
+                    Description = courseSections.Description,
+                    Duration = courseSections.Duration,
+                    PriceFull = courseSections.PriceFull,
+                    PriceMonthly = courseSections.PriceMonthly,
+                };
+
                 context.Courses.Add(course);
+                context.SaveChanges();
+
+                var courseId = context.Courses.Max(c => c.Id);
+
+                foreach (var section in courseSections.Sections)
+                {
+                    section.CourseId = courseId;
+                    context.Sections.Add(section);
+                }
             }
 
             context.SaveChanges();
         }
 
-        public static void InitializeCourseLessons(CourseContext context)
+        public static void InitializeSectionLessons(CourseContext context)
         {
-            if (context.CourseLessons.Any()) return;
+            if (context.SectionLessons.Any()) return;
 
-            var coursesToLessons = new List<CourseToLessons> {
-                new CourseToLessons
-                {
-                    CourseId = 1,
-                    MonthsLessons = new List<MonthToLessons> {
-                        new MonthToLessons {
-                            MonthNumber = 1,
-                            LessonIds = Enumerable.Range(1, 4).ToList(),
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 2,
-                            LessonIds = Enumerable.Range(5, 4).ToList(),
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 3,
-                            LessonIds = Enumerable.Range(9, 2).ToList(),
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 4,
-                            LessonIds = Enumerable.Range(11, 4).ToList(),
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 5,
-                            LessonIds = Enumerable.Range(15, 4).ToList(),
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 6,
-                            LessonIds = Enumerable.Range(19, 2).ToList(),
-                        },
-                    },
+            var sectionsToLessons = new List<SectionToLessons> {
+                new SectionToLessons {
+                    SectionId = 1,
+                    LessonIds = Enumerable.Range(1, 4).ToList(),
                 },
-                new CourseToLessons
-                {
-                    CourseId = 2,
-                    MonthsLessons = new List<MonthToLessons> {
-                        new MonthToLessons {
-                            MonthNumber = 1,
-                            LessonIds = new List<int> { 1, 2, 3 },
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 2,
-                            LessonIds = new List<int> { 4, 5 },
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 3,
-                            LessonIds = new List<int> { 6, 7, 8, 9 },
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 4,
-                            LessonIds = new List<int> { 10, 11, 12, 13, 14 },
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 5,
-                            LessonIds = new List<int> { 15, 16, 19 },
-                        },
-                    },
+                new SectionToLessons {
+                    SectionId = 2,
+                    LessonIds = Enumerable.Range(5, 4).ToList(),
                 },
-                new CourseToLessons
-                {
-                    CourseId = 3,
-                    MonthsLessons = new List<MonthToLessons> {
-                        new MonthToLessons {
-                            MonthNumber = 1,
-                            LessonIds = new List<int> { 1, 2, 3 },
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 2,
-                            LessonIds = new List<int> { 5, 6, 7 },
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 3,
-                            LessonIds = new List<int> { 8, 17 },
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 4,
-                            LessonIds = new List<int> { 18 },
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 5,
-                            LessonIds = new List<int> { 19, 20 },
-                        },
-                    },
+                new SectionToLessons {
+                    SectionId = 3,
+                    LessonIds = Enumerable.Range(9, 2).ToList(),
                 },
-                new CourseToLessons
-                {
-                    CourseId = 4,
-                    MonthsLessons = new List<MonthToLessons> {
-                        new MonthToLessons {
-                            MonthNumber = 1,
-                            LessonIds = new List<int> { 4, 9, 10, 11 },
-                            IsAvailable = true,
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 2,
-                            LessonIds = new List<int> { 12, 13 },
-                        },
-                        new MonthToLessons {
-                            MonthNumber = 3,
-                            LessonIds = new List<int> { 14, 15, 16 },
-                        },
-                    },
+                new SectionToLessons {
+                    SectionId = 4,
+                    LessonIds = Enumerable.Range(11, 3).ToList(),
+                },
+                new SectionToLessons {
+                    SectionId = 5,
+                    LessonIds = Enumerable.Range(14, 2).ToList(),
+                },
+                new SectionToLessons {
+                    SectionId = 6,
+                    LessonIds = Enumerable.Range(16, 1).ToList(),
+                },
+                new SectionToLessons {
+                    SectionId = 7,
+                    LessonIds = Enumerable.Range(17, 2).ToList(),
+                },
+                new SectionToLessons {
+                    SectionId = 8,
+                    LessonIds = Enumerable.Range(19, 2).ToList(),
+                },
+                new SectionToLessons {
+                    SectionId = 9,
+                    LessonIds = new List<int> { 1, 2, 3 },
+                },
+                new SectionToLessons {
+                    SectionId = 10,
+                    LessonIds = new List<int> { 4, 5 },
+                },
+                new SectionToLessons {
+                    SectionId = 11,
+                    LessonIds = new List<int> { 6, 7, 8, 9 },
+                },
+                new SectionToLessons {
+                    SectionId = 12,
+                    LessonIds = new List<int> { 10, 11, 12, 13, 14 },
+                },
+                new SectionToLessons {
+                    SectionId = 13,
+                    LessonIds = new List<int> { 15, 16, 19 },
+                },
+                new SectionToLessons {
+                    SectionId = 14,
+                    LessonIds = new List<int> { 1, 2, 3 },
+                },
+                new SectionToLessons {
+                    SectionId = 15,
+                    LessonIds = new List<int> { 5, 6, 7 },
+                },
+                new SectionToLessons {
+                    SectionId = 16,
+                    LessonIds = new List<int> { 8, 17 },
+                },
+                new SectionToLessons {
+                    SectionId = 18,
+                    LessonIds = new List<int> { 18 },
+                },
+                new SectionToLessons {
+                    SectionId = 19,
+                    LessonIds = new List<int> { 19, 20 },
+                },
+                new SectionToLessons {
+                    SectionId = 17,
+                    LessonIds = new List<int> { 4, 9, 10, 11 },
+                },
+                new SectionToLessons {
+                    SectionId = 20,
+                    LessonIds = new List<int> { 12, 13 },
+                },
+                new SectionToLessons {
+                    SectionId = 21,
+                    LessonIds = new List<int> { 14, 15, 16 },
                 },
             };
 
-            foreach (var courseToLessons in coursesToLessons)
+            foreach (var sectionToLessons in sectionsToLessons)
             {
-                foreach (var monthToLessons in courseToLessons.MonthsLessons)
+                foreach (var lessonId in sectionToLessons.LessonIds)
                 {
-                    foreach (var lessonId in monthToLessons.LessonIds)
-                    {
-                        context.CourseLessons.Add(
-                            new CourseLesson
-                            {
-                                CourseId = courseToLessons.CourseId,
-                                MonthNumber = monthToLessons.MonthNumber,
-                                IsAvailable = monthToLessons.IsAvailable,
-                                LessonId = lessonId,
-                            }
-                        );
-                    }
+                    context.SectionLessons.Add(
+                        new SectionLesson
+                        {
+                            SectionId = sectionToLessons.SectionId,
+                            LessonId = lessonId,
+                        }
+                    );
                 }
             }
 
@@ -941,44 +1060,37 @@ namespace API.Data
         }
     }
 
-    // helper classes to make seeding data into join tables easier
+// helper classes to make seeding data into join tables easier
     class LessonToKeywords
-    {
-        public int LessonId { get; set; }
-        public List<int> KeywordIds { get; set; }
-    }
+{
+    public int LessonId { get; set; }
+    public List<int> KeywordIds { get; set; }
+}
 
-    class CourseToLessons
-    {
-        public int CourseId { get; set; }
-        public List<MonthToLessons> MonthsLessons { get; set; }
-    }
+class SectionToLessons
+{
+    public int SectionId { get; set; }
+    public List<int> LessonIds { get; set; }
+}
 
-    class MonthToLessons
-    {
-        public int MonthNumber { get; set; }
-        public bool IsAvailable { get; set; }
-        public List<int> LessonIds { get; set; }
-    }
+class LessonToPreviousLessons
+{
+    public int LessonId { get; set; }
+    public List<int> PreviousLessonIds { get; set; }
+}
 
-    class LessonToPreviousLessons
-    {
-        public int LessonId { get; set; }
-        public List<int> PreviousLessonIds { get; set; }
-    }
+class LessonTests
+{
+    public int LessonId { get; set; }
+    public List<TestOptions> TestOptions { get; set; }
+}
 
-    class LessonTests
-    {
-        public int LessonId { get; set; }
-        public List<TestOptions> TestOptions { get; set; }
-    }
-
-    class TestOptions
-    {
-        public string Question { get; set; }
-        public string Type { get; set; } = "radio";
-        public string ImgUrl { get; set; } = "";
-        public List<Option> Options { get; set; }
-    }
+class TestOptions
+{
+    public string Question { get; set; }
+    public string Type { get; set; } = "radio";
+    public string ImgUrl { get; set; } = "";
+    public List<Option> Options { get; set; }
+}
 }
 

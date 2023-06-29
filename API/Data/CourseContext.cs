@@ -12,26 +12,32 @@ namespace API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LessonKeyword>()
-                .HasKey(lk => new { lk.LessonId, lk.KeywordId });  
+                .HasKey(lk => new { lk.LessonId, lk.KeywordId });
             modelBuilder.Entity<LessonKeyword>()
                 .HasOne(lk => lk.Lesson)
                 .WithMany(l => l.LessonKeywords)
-                .HasForeignKey(lk => lk.LessonId);  
+                .HasForeignKey(lk => lk.LessonId);
             modelBuilder.Entity<LessonKeyword>()
                 .HasOne(lk => lk.Keyword)
                 .WithMany(k => k.LessonKeywords)
                 .HasForeignKey(lk => lk.KeywordId);
 
-            modelBuilder.Entity<CourseLesson>()
-                .HasKey(cl => new { cl.CourseId, cl.LessonId });  
-            modelBuilder.Entity<CourseLesson>()
-                .HasOne(cl => cl.Course)
-                .WithMany(c => c.CourseLessons)
-                .HasForeignKey(cl => cl.CourseId);
-            modelBuilder.Entity<CourseLesson>()
+            modelBuilder.Entity<SectionLesson>()
+                .HasKey(cl => new { cl.SectionId, cl.LessonId });
+            modelBuilder.Entity<SectionLesson>()
+                .HasOne(cl => cl.Section)
+                .WithMany(c => c.SectionLessons)
+                .HasForeignKey(cl => cl.SectionId);
+            modelBuilder.Entity<SectionLesson>()
                 .HasOne(cl => cl.Lesson)
-                .WithMany(l => l.CourseLessons)
+                .WithMany(l => l.SectionLessons)
                 .HasForeignKey(cl => cl.LessonId);
+
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.Sections)
+                .WithOne(s => s.Course)
+                .HasForeignKey(s => s.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Test>()
                 .HasMany(t => t.Options)
@@ -58,8 +64,9 @@ namespace API.Data
         }
 
         public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<Section> Sections { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<CourseLesson> CourseLessons { get; set; }
+        public DbSet<SectionLesson> SectionLessons { get; set; }
         public DbSet<LessonPreviousLesson> PreviousLessons { get; set; }
         public DbSet<Keyword> Keywords { get; set; }
         public DbSet<LessonKeyword> LessonKeywords { get; set; }
