@@ -1,33 +1,40 @@
-import { List } from "@mui/material";
-import { Lesson } from "../../app/models/lesson";
+import { List, Typography } from "@mui/material";
+import { Course, Lesson } from "../../app/models/lesson";
 import LessonItem from "./LessonItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-interface Props {
-    lessons: Lesson[];
-    addLesson: () => void;
-}
+export default function CourseDetails() {
+    const [course, setCourse] = useState<Course>();
+    const [lessons, setLessons] = useState<Lesson[]>([]);
 
-export default function LessonList({ lessons, addLesson }: Props) {
+    useEffect(() => {
+        fetch('http://localhost:5000/api/courses/1')
+            .then(response => response.json())
+            .then(data => {
+                setCourse(data);
+                setLessons(data.lessons)
+            })
+    }, [])
+
     const [openIndex, setOpenIndex] = useState(-1);
 
     const handleItemClick = (index: number) => {
         setOpenIndex(openIndex !== index ? index : -1);
     };
-    
+
     return (
         <>
+            <Typography variant="h5">{course?.title}</Typography>
             <List>
                 {lessons.map((lesson) =>
-                    <LessonItem 
+                    <LessonItem
                         key={lesson.id}
                         lesson={lesson}
-                        isOpen={openIndex === lesson.id} 
+                        isOpen={openIndex === lesson.id}
                         onItemClick={handleItemClick}
                     />
                 )}
             </List>
-            <button onClick={addLesson}>Add lesson</button>
         </>
     )
 }

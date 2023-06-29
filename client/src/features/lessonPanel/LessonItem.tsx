@@ -1,4 +1,4 @@
-import { Collapse, ListItemButton, ListItemText, Typography } from "@mui/material";
+import { ListItemButton, ListItemText } from "@mui/material";
 import { Lesson } from "../../app/models/lesson";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
@@ -6,9 +6,7 @@ import { green, grey, yellow } from '@mui/material/colors';
 import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import Videos from "./Videos";
 import { useEffect, useState } from "react";
-import Tests from "./Tests";
 
 interface Props {
     lesson: Lesson;
@@ -18,14 +16,6 @@ interface Props {
 
 export default function LessonItem({ lesson, isOpen, onItemClick }: Props) {
     const [completed, setCompleted] = useState([lesson.isTheoryCompleted, lesson.isPracticeCompleted, (lesson.testScore >= 0)]);
-
-    const handleChangeTheory = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCompleted([event.target.checked, completed[1], completed[2]]);
-    };
-
-    const handleChangePractice = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCompleted([completed[0], event.target.checked, completed[2]]);
-    };
 
     type Stage = "completed" | "inProcess" | "notStarted";
 
@@ -104,11 +94,11 @@ export default function LessonItem({ lesson, isOpen, onItemClick }: Props) {
                 </ListItemText>
                 {isOpen ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={isOpen} timeout="auto" unmountOnExit>
+            {/* <Collapse in={isOpen} timeout="auto" unmountOnExit>
                 <Typography variant="body1">{lesson.description}</Typography>
                 <Videos completed={completed} onTheoryClick={handleChangeTheory} onPracticeClick={handleChangePractice} />
                 <Tests lesson={lesson}/>
-            </Collapse>
+            </Collapse> */}
         </>
     )
 }
