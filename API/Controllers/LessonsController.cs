@@ -1,7 +1,5 @@
-using API.Data;
 using API.Dtos.Lesson;
 using API.Repositories;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -10,16 +8,9 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class LessonsController : ControllerBase
     {
-        private CourseContext _context;
-        private IMapper _mapper;
         private ILessonsRepository _lessonsRepository;
-        public LessonsController(
-            CourseContext context,
-            IMapper mapper,
-            ILessonsRepository lessonsRepository)
+        public LessonsController(ILessonsRepository lessonsRepository)
         {
-            _mapper = mapper;
-            _context = context;
             _lessonsRepository = lessonsRepository;
         }
 

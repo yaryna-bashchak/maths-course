@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Data;
 using API.Dtos.Course;
 using AutoMapper;
@@ -26,7 +22,7 @@ namespace API.Repositories.Implementation
             try
             {
                 var dbCourse = await _context.Courses
-                    .Include(c => c.CourseLessons).ThenInclude(cl => cl.Lesson)
+                    .Include(c => c.Sections).ThenInclude(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
                     .FirstAsync(l => l.Id == id);
 
                 var course = _mapper.Map<GetCoursePreviewDto>(dbCourse);
@@ -43,9 +39,9 @@ namespace API.Repositories.Implementation
             try
             {
                 var dbCourse = await _context.Courses
-                    .Include(c => c.CourseLessons).ThenInclude(cl => cl.Lesson)
+                    .Include(c => c.Sections).ThenInclude(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
                         .ThenInclude(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                    .Include(c => c.CourseLessons).ThenInclude(cl => cl.Lesson)
+                    .Include(c => c.Sections).ThenInclude(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
                         .ThenInclude(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
                     .FirstAsync(l => l.Id == id);
 
