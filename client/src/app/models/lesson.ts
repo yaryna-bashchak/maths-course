@@ -1,10 +1,3 @@
-export interface Course {
-  id: number
-  title: string
-  description: string
-  lessons: Lesson[]
-}
-
 export interface Lesson {
   id: number
   title: string
@@ -18,6 +11,12 @@ export interface Lesson {
   isPracticeCompleted: boolean
   keywords?: Keyword[]
   previousLessons?: PreviousLesson[]
+}
+
+export interface LessonPreview {
+  id: number
+  title: string
+  description: string
 }
 
 export interface Keyword {
