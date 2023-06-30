@@ -1,13 +1,13 @@
 import { AccountCircle } from "@mui/icons-material";
-import { AppBar, Avatar, Box, IconButton, InputBase, List, ListItem, Menu, MenuItem, Toolbar, Typography, alpha, styled } from "@mui/material";
+import { AppBar, Avatar, Box, IconButton, List, ListItem, Menu, MenuItem, Toolbar, Typography, alpha, styled } from "@mui/material";
 import { useState } from "react";
-import SearchIcon from '@mui/icons-material/Search';
+// import SearchIcon from '@mui/icons-material/Search';
 import { NavLink } from "react-router-dom";
 
 const midLinks = [
-    { title: 'Про⠀нас', path: '' },
+    { title: 'Про⠀нас', path: '/#about-us' },
     { title: 'Курси', path: 'course/1' },
-    { title: 'Ціни', path: 'lesson/1' },
+    { title: 'Ціни', path: '/#price' },
 ]
 
 const rightLinks = [
@@ -15,7 +15,7 @@ const rightLinks = [
     { title: 'Зареєструватися', path: '/register' },
 ]
 
-const isAuthorized = false;
+const isAuthorized = true;
 
 const navStyles = {
     color: 'inherit',
