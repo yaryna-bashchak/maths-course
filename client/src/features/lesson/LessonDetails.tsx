@@ -3,11 +3,8 @@ import { useState, useEffect } from "react";
 import { Lesson } from "../../app/models/lesson";
 import Tests from "./Tests";
 import Videos from "./Videos";
-// import { Course } from "../../app/models/course";
 
 export default function LessonDetails() {
-    // const [course, setCourse] = useState<Course>();
-    
     const [lesson, setLesson] = useState<Lesson>();
     const [isTheoryCompleted, setIsTheoryCompleted] = useState<boolean>(false);
     const [isPracticeCompleted, setIsPracticeCompleted] = useState<boolean>(false);
@@ -18,13 +15,10 @@ export default function LessonDetails() {
         fetch('http://localhost:5000/api/lessons/1')
             .then(response => response.json())
             .then(data => {
-                // setCourse(data);
-                // const foundLesson = data.lessons.find((lesson: Lesson) => lesson.id === id);
                 setLesson(data);
                 if (data) {
                     setIsTheoryCompleted(data.isTheoryCompleted);
                     setIsPracticeCompleted(data.isPracticeCompleted);
-                    // testScore = data.testScore;
                 } else {
                     console.log(`No lesson found with id ${id}`);
                 }
@@ -32,20 +26,13 @@ export default function LessonDetails() {
     }, [])
 
     useEffect(() => {
-        let data = {};
+        if (lesson) {
+            const data = {
+                isTheoryCompleted: Number(isTheoryCompleted),
+                isPracticeCompleted: Number(isPracticeCompleted)
+            };
 
-        if (isTheoryCompleted !== lesson?.isTheoryCompleted) {
-            data = { ...data, isTheoryCompleted: Number(isTheoryCompleted) };
-            if (lesson) { lesson.isTheoryCompleted = isTheoryCompleted; }
-        }
-
-        if (isPracticeCompleted !== lesson?.isPracticeCompleted) {
-            data = { ...data, isPracticeCompleted: Number(isPracticeCompleted) };
-            if (lesson) { lesson.isPracticeCompleted = isPracticeCompleted; }
-        }
-
-        if (Object.keys(data).length > 0) {
-            fetch(`http://localhost:5000/api/Lessons/${lesson?.id}`, {
+            fetch(`http://localhost:5000/api/Lessons/${lesson.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

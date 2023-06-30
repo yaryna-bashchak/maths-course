@@ -18,7 +18,7 @@ function App() {
                 <Header />
                 <Container sx={{
                     pt: "90px",
-                    pb: "10px",
+                    pb: "20px",
                     width: "100%",
                     backgroundColor: "white",
                     [theme.breakpoints.up('md')]: {
