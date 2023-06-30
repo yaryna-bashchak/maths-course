@@ -1,7 +1,31 @@
 import { AccountCircle } from "@mui/icons-material";
-import { AppBar, Avatar, Box, IconButton, InputBase, Menu, MenuItem, Toolbar, Typography, alpha, styled } from "@mui/material";
+import { AppBar, Avatar, Box, IconButton, InputBase, List, ListItem, Menu, MenuItem, Toolbar, Typography, alpha, styled } from "@mui/material";
 import { useState } from "react";
 import SearchIcon from '@mui/icons-material/Search';
+import { NavLink } from "react-router-dom";
+
+const midLinks = [
+    { title: 'Про⠀нас', path: '' },
+    { title: 'Курси', path: 'course/1' },
+    { title: 'Ціни', path: 'lesson/1' },
+]
+
+const rightLinks = [
+    { title: 'Увійти', path: '/login' },
+    { title: 'Зареєструватися', path: '/register' },
+]
+
+const isAuthorized = false;
+
+const navStyles = {
+    color: 'inherit',
+    textDecoration: 'none',
+    fontSize: '14px',
+    lineHeight: 1.5,
+    '&:hover': {
+        color: 'grey.300',
+    }
+}
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -56,54 +80,87 @@ export default function Header() {
 
     return (
         <AppBar position="fixed" sx={{ top: 0, bottom: "auto" }}>
-            <Toolbar>
-                <Avatar alt="Logo" src="/images/header/logo.jpg" sx={{ mr: "10px" }} />
-                <Typography variant="h6">
-                    План ZNO-шника
-                </Typography>
-                <Search>
-                    <SearchIconWrapper>
-                        <SearchIcon />
-                    </SearchIconWrapper>
-                    <StyledInputBase
-                        placeholder="Знайти..."
-                        inputProps={{ 'aria-label': 'search' }}
-                    />
-                </Search>
-                <Box sx={{ flexGrow: 1 }} />
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleMenu}
-                    color="inherit"
-                >
-                    <AccountCircle />
-                    <Typography variant="body1" sx={{ ml: "5px" }}>
-                        Яринка
+            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box sx={{display: 'flex', alignItems: 'center'}}>
+                    <Avatar alt="Logo" src="/images/header/logo.jpg" sx={{ mr: "10px" }} />
+                    <Typography variant="h6" component={NavLink} to='/'
+                        sx={navStyles}>
+                        План ZNO-шника
                     </Typography>
-                </IconButton>
-                <Menu
-                    id="menu-appbar"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                >
-                    <MenuItem onClick={handleClose}>Профіль</MenuItem>
-                    <MenuItem onClick={handleClose}>Мої Курси</MenuItem>
-                    <MenuItem onClick={handleClose}>Всі Курси</MenuItem>
-                    <MenuItem onClick={handleClose}>Вийти</MenuItem>
-                </Menu>
+                    <Search>
+                        <SearchIconWrapper>
+                            <SearchIcon />
+                        </SearchIconWrapper>
+                        <StyledInputBase
+                            placeholder="Знайти..."
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </Search>
+                </Box>
+
+                <List sx={{ display: 'flex' }}>
+                    {midLinks.map(({ title, path }) => (
+                        <ListItem
+                            component={NavLink}
+                            to={path}
+                            key={path}
+                            sx={navStyles}
+                        >
+                            {title.toUpperCase()}
+                        </ListItem>
+                    ))}
+                </List>
+
+                {
+                    isAuthorized ?
+                        <Box>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleMenu}
+                                color="inherit"
+                            >
+                                <AccountCircle />
+                                <Typography variant="body1" sx={{ ml: "5px" }}>
+                                    Яринка
+                                </Typography>
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={handleClose}>Профіль</MenuItem>
+                                <MenuItem onClick={handleClose}>Мої Курси</MenuItem>
+                                <MenuItem onClick={handleClose}>Всі Курси</MenuItem>
+                                <MenuItem onClick={handleClose}>Вийти</MenuItem>
+                            </Menu>
+                        </Box> :
+                        <List sx={{ display: 'flex' }}>
+                            {rightLinks.map(({ title, path }) => (
+                                <ListItem
+                                    component={NavLink}
+                                    to={path}
+                                    key={path}
+                                    sx={navStyles}
+                                >
+                                    {title}
+                                </ListItem>
+                            ))}
+                        </List>
+                }
             </Toolbar>
         </AppBar>
     )
