@@ -7,6 +7,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Section } from "../../app/models/course";
 import { Lesson } from "../../app/models/lesson";
 import LessonItemShort from "./LessonItemShort";
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 interface Props {
     section: Section;
@@ -15,15 +16,18 @@ interface Props {
 }
 
 export default function SectionItem({ section, isOpen, onItemClick }: Props) {
-    type Stage = "completed" | "inProcess" | "notStarted";
+    type Stage = "unavailable" | "completed" | "inProcess" | "notStarted";
 
     const stages = {
+        unavailable: <LockOutlinedIcon sx={{ color: grey[400], mr: "5px" }} />,
         completed: <DoneOutlineIcon sx={{ color: green[500], mr: "5px" }} />,
         inProcess: <AccessTimeIcon sx={{ color: yellow[800], mr: "5px" }} />,
         notStarted: <CalculateOutlinedIcon sx={{ color: grey[500], mr: "5px" }} />,
     };
 
-    const stageOfLessonCompletion = (lesson: Lesson): Stage => {
+    const stageOfLessonCompletion = (lesson: Lesson, isAvailable: boolean): Stage => {
+        if(!isAvailable) return "unavailable";
+
         const completed = [lesson.isTheoryCompleted, lesson.isPracticeCompleted, (lesson.testScore >= 0)]
 
         if (completed.every(value => value === true)) {
@@ -35,7 +39,9 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
         }
     }
 
-    const stageOfSectionCompletion = (completed: Stage[]): Stage => {
+    const stageOfSectionCompletion = (completed: Stage[], isAvailable: boolean): Stage => {
+        if(!isAvailable) return "unavailable";
+
         if (completed.every(value => value === "completed")) {
             return "completed";
         } else if (completed.some(value => value !== "notStarted")) {
@@ -49,8 +55,9 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
         onItemClick(section.id);
     };
 
-    const sectionCompleted = section.lessons.map(lesson => stageOfLessonCompletion(lesson));
-    const stage = stageOfSectionCompletion(sectionCompleted);
+    const sectionCompleted = section.lessons.map(lesson => stageOfLessonCompletion(lesson, section.isAvailable));
+    const stage = stageOfSectionCompletion(sectionCompleted, section.isAvailable);
+    const countOfCompleted = sectionCompleted.filter(value => value === "completed").length;
 
     return (
         <>
@@ -67,7 +74,7 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
                 </ListItemIcon>
                 <ListItemText
                     primary={section.title}
-                    secondary="Завершено: 0/0"
+                    secondary={`Завершено: ${countOfCompleted}/${section.lessons.length}`}
                     sx={{
                         ".MuiListItemText-primary": {
                             fontSize: "16px",
@@ -83,7 +90,7 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
             </ListItemButton>
             <Collapse className="item-border" in={isOpen} timeout="auto" unmountOnExit sx={{ pl: "16px" }}>
                 {section.lessons.map((lesson, index) =>
-                    <LessonItemShort icon={stages[sectionCompleted[index]]} lesson={lesson} />
+                    <LessonItemShort key={lesson.id} icon={stages[sectionCompleted[index]]} lesson={lesson} />
                 )}
             </Collapse>
         </>

@@ -15,7 +15,7 @@ export interface Section {
   number: number
   title: string
   description: string
-  isAvailable: number
+  isAvailable: boolean
   lessons: Lesson[]
 }
 
