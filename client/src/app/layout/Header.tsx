@@ -27,45 +27,45 @@ const navStyles = {
     }
 }
 
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-    },
-}));
+// const Search = styled('div')(({ theme }) => ({
+//     position: 'relative',
+//     borderRadius: theme.shape.borderRadius,
+//     backgroundColor: alpha(theme.palette.common.white, 0.15),
+//     '&:hover': {
+//         backgroundColor: alpha(theme.palette.common.white, 0.25),
+//     },
+//     marginRight: theme.spacing(2),
+//     marginLeft: 0,
+//     width: '100%',
+//     [theme.breakpoints.up('sm')]: {
+//         marginLeft: theme.spacing(3),
+//         width: 'auto',
+//     },
+// }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
+// const SearchIconWrapper = styled('div')(({ theme }) => ({
+//     padding: theme.spacing(0, 2),
+//     height: '100%',
+//     position: 'absolute',
+//     pointerEvents: 'none',
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+// }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
-    },
-}));
+// const StyledInputBase = styled(InputBase)(({ theme }) => ({
+//     color: 'inherit',
+//     '& .MuiInputBase-input': {
+//         padding: theme.spacing(1, 1, 1, 0),
+//         // vertical padding + font size from searchIcon
+//         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+//         transition: theme.transitions.create('width'),
+//         width: '100%',
+//         [theme.breakpoints.up('md')]: {
+//             width: '20ch',
+//         },
+//     },
+// }));
 
 export default function Header() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -80,14 +80,14 @@ export default function Header() {
 
     return (
         <AppBar position="fixed" sx={{ top: 0, bottom: "auto" }}>
-            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Toolbar sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
                     <Avatar alt="Logo" src="/images/header/logo.jpg" sx={{ mr: "10px" }} />
                     <Typography variant="h6" component={NavLink} to='/'
                         sx={navStyles}>
                         План ZNO-шника
                     </Typography>
-                    <Search>
+                    {/* <Search>
                         <SearchIconWrapper>
                             <SearchIcon />
                         </SearchIconWrapper>
@@ -95,7 +95,7 @@ export default function Header() {
                             placeholder="Знайти..."
                             inputProps={{ 'aria-label': 'search' }}
                         />
-                    </Search>
+                    </Search> */}
                 </Box>
 
                 <List sx={{ display: 'flex' }}>
