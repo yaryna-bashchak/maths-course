@@ -1,6 +1,7 @@
 import { FormControl, RadioGroup, FormControlLabel, Radio, Typography, Box, Button } from "@mui/material";
 import React, { useState } from "react";
-import { Test } from "../../app/models/test";
+import { Test, Option } from "../../app/models/test";
+import { green, pink } from "@mui/material/colors";
 
 interface Props {
     test: Test;
@@ -34,22 +35,57 @@ export default function TestControl({
     index,
     isFinished,
 }: Props) {
-    const [value, setValue] = useState('');
+    const [checked, setChecked] = useState('');
+    const answerId = test.options.find(option => option.isAnswer === true)?.id;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue((event.target as HTMLInputElement).value);
+        setChecked((event.target as HTMLInputElement).value);
     };
 
     const checkAnswer = () => {
-        const answer = test.options.find(option => option.isAnswer === true);
-        const choosen = test.options.find(option => option.text === value);
-        return Number(answer === choosen);
+        return Number(Number(checked) === answerId);
     }
 
     const isAllCompleted = () => {
         const completedCount = completedSteps();
         const total = totalSteps();
         return completedCount === total;
+    }
+
+    const getStyles = (option: Option) => {
+        const greenStyle = {
+            color: green[800],
+            '&.Mui-checked': {
+                color: green[600],
+            },
+        };
+    
+        const pinkStyle = {
+            color: pink[800],
+            '&.Mui-checked': {
+                color: pink[600],
+            },
+        };
+
+        if (!(activeStep in completed)) {
+            return {};
+        }
+
+        if (option.id === Number(checked)) {
+            return option.id === answerId ? greenStyle : pinkStyle;
+        } else if (option.id === answerId) {
+            return greenStyle;
+        } else {
+            return {};
+        }
+    }
+
+    const getChecked = (option: Option) => {
+        const isStepCompleted = completed.hasOwnProperty(activeStep);
+        const isAnswer = option.id === answerId;
+        const isChecked = option.id === Number(checked);
+
+        return (isStepCompleted && isAnswer) || isChecked;
     }
 
     return (
@@ -74,7 +110,14 @@ export default function TestControl({
                             <RadioGroup onChange={handleChange}>
                                 {
                                     test.options.map(option => (
-                                        <FormControlLabel value={option.text} control={<Radio />} label={option.text} />
+                                        <FormControlLabel
+                                            value={option.id}
+                                            control={<Radio
+                                                sx={getStyles(option)} />}
+                                            label={option.text}
+                                            disabled={activeStep in completed}
+                                            checked={getChecked(option)}
+                                        />
                                     ))
                                 }
                             </RadioGroup>
@@ -89,13 +132,16 @@ export default function TestControl({
                             Назад
                         </Button>
                         <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleNext} sx={{ mr: 1 }}>
+                        <Button
+                            disabled={activeStep === totalSteps() - 1}
+                            onClick={handleNext}
+                            sx={{ mr: 1 }}>
                             Вперед
                         </Button>
                         {
                             activeStep !== totalSteps() &&
                             (isAllCompleted() ? (
-                                <Button onClick={handleFinish}>
+                                <Button variant="contained" onClick={handleFinish}>
                                     Завершити тест
                                 </Button>
                             ) : completed[activeStep] >= 0 ? (
