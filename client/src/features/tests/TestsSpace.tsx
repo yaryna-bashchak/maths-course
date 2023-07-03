@@ -54,7 +54,7 @@ export default function TestsSpace() {
         setActiveStep(step);
     };
 
-    const handleComplete = (score: number) => () => {
+    const handleComplete = (score: number) => {
         const newCompleted = { ...completed };
         setTestScore((prev) => prev + score);
         newCompleted[activeStep] = score;

@@ -1,4 +1,4 @@
-import { FormControl, RadioGroup, FormControlLabel, Radio, Typography, Box, Button } from "@mui/material";
+import { FormControl, RadioGroup, FormControlLabel, Radio, Typography, Box, Button, FormHelperText } from "@mui/material";
 import React, { useState } from "react";
 import { Test, Option } from "../../app/models/test";
 import { green, pink } from "@mui/material/colors";
@@ -7,7 +7,7 @@ interface Props {
     test: Test;
     handleNext: () => void;
     handleBack: () => void;
-    handleComplete: (score: number) => () => void;
+    handleComplete: (score: number) => void;
     handleFinish: () => void;
     handleReset: () => void;
     testScore: number;
@@ -36,14 +36,20 @@ export default function TestControl({
     isFinished,
 }: Props) {
     const [checked, setChecked] = useState('');
+    const [helperText, setHelperText] = useState(' ');
     const answerId = test.options.find(option => option.isAnswer === true)?.id;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked((event.target as HTMLInputElement).value);
+        setHelperText(' ');
     };
 
-    const checkAnswer = () => {
-        return Number(Number(checked) === answerId);
+    const submitAnswer = () => {
+        if (checked === '') {
+            setHelperText('Оберіть варіант перед тим, як відповісти')
+        } else {
+            handleComplete(Number(Number(checked) === answerId));
+        }
     }
 
     const isAllCompleted = () => {
@@ -120,6 +126,7 @@ export default function TestControl({
                                     ))
                                 }
                             </RadioGroup>
+                            <FormHelperText sx={{ color: 'red' }}>{helperText}</FormHelperText>
                         </FormControl>)}
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Button
@@ -144,7 +151,7 @@ export default function TestControl({
                                     Завершити тест
                                 </Button>
                             ) : !completed.hasOwnProperty(activeStep) ? (
-                                <Button onClick={handleComplete(checkAnswer())}>
+                                <Button onClick={submitAnswer}>
                                     Відповісти
                                 </Button>
                             ) : (
