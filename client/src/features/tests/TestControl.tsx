@@ -14,6 +14,7 @@ interface Props {
     completedSteps: () => number;
     completed: { [k: number]: number };
     activeStep: number;
+    index: number;
     isFinished: boolean;
 }
 
@@ -30,6 +31,7 @@ export default function TestControl({
     completedSteps,
     completed,
     activeStep,
+    index,
     isFinished,
 }: Props) {
     const [value, setValue] = useState('');
@@ -51,7 +53,7 @@ export default function TestControl({
     }
 
     return (
-        <div>
+        <div hidden={index !== activeStep}>
             {isFinished ? (
                 <>
                     <Typography sx={{ mt: 2, mb: 1 }}>

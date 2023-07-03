@@ -87,20 +87,25 @@ export default function TestsSpace() {
                     ))}
                 </Stepper>
             </Box>
-            <TestControl
-                test={tests[activeStep]}
-                handleNext={handleNext}
-                handleBack={handleBack}
-                handleComplete={handleComplete}
-                handleFinish={handleFinish}
-                handleReset={handleReset}
-                testScore={testScore}
-                totalSteps={totalSteps}
-                completedSteps={completedSteps}
-                completed={completed}
-                activeStep={activeStep}
-                isFinished={isFinished}
-            />
+            {
+                tests.map((test, index) => (
+                    <TestControl
+                        test={test}
+                        handleNext={handleNext}
+                        handleBack={handleBack}
+                        handleComplete={handleComplete}
+                        handleFinish={handleFinish}
+                        handleReset={handleReset}
+                        testScore={testScore}
+                        totalSteps={totalSteps}
+                        completedSteps={completedSteps}
+                        completed={completed}
+                        activeStep={activeStep}
+                        index={index}
+                        isFinished={isFinished}
+                    />
+                ))
+            }
         </>
     )
 }
