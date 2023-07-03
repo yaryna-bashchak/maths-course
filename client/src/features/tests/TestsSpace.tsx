@@ -1,9 +1,10 @@
-import { Box, Step, StepButton, Stepper, Typography } from "@mui/material";
+import { Box, Button, Step, StepButton, Stepper, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Test } from "../../app/models/test";
 import TestControl from "./TestControl";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function TestsSpace() {
     const [tests, setTests] = useState<Test[] | null>(null);
@@ -93,6 +94,9 @@ export default function TestsSpace() {
 
     return (
         <>
+            <Box sx={{ display: 'flex', justifyContent: 'start' }}>
+                <Button startIcon={<ArrowBackIcon/>} variant="outlined" component={Link} to={`/lesson/${id}`}>Назад до уроку</Button>
+            </Box>
             <Typography variant="h3">Тести</Typography>
             <Box sx={{ width: '100%' }}>
                 <Stepper nonLinear activeStep={activeStep}>

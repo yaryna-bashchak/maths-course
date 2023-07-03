@@ -83,7 +83,7 @@ export default function Header() {
     return (
         <AppBar position="fixed" sx={{ top: 0, bottom: "auto" }}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', [theme.breakpoints.up('md')]: { width: '70%' } }}>
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: "100%", [theme.breakpoints.up('md')]: { width: '70%' } }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar alt="Logo" src="/images/header/logo.jpg" sx={{ mr: "10px" }} />
                         <Typography variant="h6" component={NavLink} to='/'
