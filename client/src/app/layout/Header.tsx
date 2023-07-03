@@ -1,11 +1,11 @@
 import { AccountCircle } from "@mui/icons-material";
-import { AppBar, Avatar, Box, IconButton, List, ListItem, Menu, MenuItem, Toolbar, Typography, alpha, styled } from "@mui/material";
+import { AppBar, Avatar, Box, IconButton, List, ListItem, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { useState } from "react";
 // import SearchIcon from '@mui/icons-material/Search';
 import { NavLink } from "react-router-dom";
 
 const midLinks = [
-    { title: 'Про⠀нас', path: '/#about-us' },
+    { title: 'Про⠀нас', path: '' },
     { title: 'Курси', path: 'course/1' },
     { title: 'Ціни', path: '/#price' },
 ]
