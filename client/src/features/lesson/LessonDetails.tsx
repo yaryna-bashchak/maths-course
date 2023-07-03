@@ -33,20 +33,13 @@ export default function LessonDetails() {
                 isPracticeCompleted: Number(isPracticeCompleted)
             };
             
-            fetch(`http://localhost:5000/api/Lessons/${lesson.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
+            axios.put(`http://localhost:5000/api/Lessons/${lesson.id}`, data)
+            .then(response => {
+                console.log('Success:', response.data);
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTheoryCompleted, isPracticeCompleted]);
