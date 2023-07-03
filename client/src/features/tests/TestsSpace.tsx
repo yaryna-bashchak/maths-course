@@ -61,7 +61,10 @@ export default function TestsSpace() {
         setCompleted(newCompleted);
     };
 
-    const handleFinish = () => setIsFinished(true);
+    const handleFinish = () => {
+        setIsFinished(true);
+        putResult();
+    }
 
     const handleReset = () => {
         setActiveStep(0);
@@ -69,6 +72,20 @@ export default function TestsSpace() {
         setTestScore(0);
         setIsFinished(false);
     };
+
+    const putResult = () => {
+        const data = {
+            testScore: (100 * testScore / totalSteps()),
+        };
+
+        axios.put(`http://localhost:5000/api/Lessons/${id}`, data)
+            .then(response => {
+                console.log('Success:', response.data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
 
     if (loading) return <h3>Loading...</h3>
 

@@ -12,7 +12,7 @@ export default function Tests({ lesson }: Props) {
     return (
         <>
             <Typography variant="h5" sx={{mt: "5px", mb: "10px"}}>
-                Результат тестування: {(lesson.testScore !== -1) ? `${lesson.testScore}%` : "ще не складено"}
+                Результат тестування: {(lesson.testScore !== -1) ? `${lesson.testScore.toFixed(2)}%` : "ще не складено"}
             </Typography>
             <Button component={Link} to={`/lesson/${id}/test`} variant="contained" disableElevation>
                 Почати тест
