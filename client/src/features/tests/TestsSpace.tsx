@@ -59,7 +59,6 @@ export default function TestsSpace() {
         setTestScore((prev) => prev + score);
         newCompleted[activeStep] = score;
         setCompleted(newCompleted);
-        handleNext();
     };
 
     const handleFinish = () => setIsFinished(true);

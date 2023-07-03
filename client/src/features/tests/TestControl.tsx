@@ -59,7 +59,7 @@ export default function TestControl({
                 color: green[600],
             },
         };
-    
+
         const pinkStyle = {
             color: pink[800],
             '&.Mui-checked': {
@@ -112,8 +112,7 @@ export default function TestControl({
                                     test.options.map(option => (
                                         <FormControlLabel
                                             value={option.id}
-                                            control={<Radio
-                                                sx={getStyles(option)} />}
+                                            control={<Radio sx={getStyles(option)} />}
                                             label={option.text}
                                             disabled={activeStep in completed}
                                             checked={getChecked(option)}
@@ -144,13 +143,13 @@ export default function TestControl({
                                 <Button variant="contained" onClick={handleFinish}>
                                     Завершити тест
                                 </Button>
-                            ) : completed[activeStep] >= 0 ? (
-                                <Typography variant="caption" sx={{ display: 'inline-block' }}>
-                                    Тест {activeStep + 1} вже виконаний
-                                </Typography>
-                            ) : (
+                            ) : !completed.hasOwnProperty(activeStep) ? (
                                 <Button onClick={handleComplete(checkAnswer())}>
                                     Відповісти
+                                </Button>
+                            ) : (
+                                <Button variant="contained" onClick={handleNext}>
+                                    Продовжити
                                 </Button>
                             ))}
                     </Box>
