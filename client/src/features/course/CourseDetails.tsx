@@ -29,14 +29,14 @@ export default function CourseDetails() {
         setOpenIndex(openIndex !== index ? index : -1);
     };
 
-    if (loading) return <h3>Loading...</h3>
-    
-    if (!course) return <h3>Course not found</h3>
+    if (loading) return <LoadingComponent />
+
+    if (!course) return <NotFound />
 
     return (
         <>
             <Typography variant="h5">{course?.title}</Typography>
-            <List className="list-border" sx={{p: "0px", m: "8px 0px"}}>
+            <List className="list-border" sx={{ p: "0px", m: "8px 0px" }}>
                 {sections.map((section) =>
                     <SectionItem
                         key={section.id}

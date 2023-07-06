@@ -49,14 +49,14 @@ export default function LessonDetails() {
     const handleChangeTheory = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsTheoryCompleted(event.target.checked);
     };
-    
+
     const handleChangePractice = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsPracticeCompleted(event.target.checked);
     };
-    
-    if (loading) return <h3>Loading...</h3>
-    
-    if (!lesson) return <h3>Lesson not found</h3>
+
+    if (loading) return <LoadingComponent />
+
+    if (!lesson) return <NotFound />
 
     return (
         lesson ? (

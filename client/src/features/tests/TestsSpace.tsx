@@ -90,14 +90,14 @@ export default function TestsSpace() {
             });
     }
 
-    if (loading) return <h3>Loading...</h3>
+    if (loading) return <LoadingComponent />
 
-    if (!tests) return <h3>Tests not found</h3>
+    if (!tests) return <NotFound />
 
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'start' }}>
-                <Button startIcon={<ArrowBackIcon/>} variant="outlined" component={Link} to={`/lesson/${id}`}>Назад до уроку</Button>
+                <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/lesson/${id}`}>Назад до уроку</Button>
             </Box>
             <Typography variant="h3">Тести</Typography>
             <Box sx={{ width: '100%' }}>
