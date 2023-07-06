@@ -1,10 +1,12 @@
 import { Box, Button, Step, StepButton, Stepper, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Test } from "../../app/models/test";
 import TestControl from "./TestControl";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import agent from "../../app/api/agent";
+import NotFound from "../../app/errors/NotFound";
+import LoadingComponent from "../../app/layout/LoadingComponent";
 
 export default function TestsSpace() {
     const [tests, setTests] = useState<Test[] | null>(null);
@@ -19,9 +21,9 @@ export default function TestsSpace() {
     const { id } = useParams<{ id: string }>();
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/tests/lessonId/${id}`)
-            .then(response => {
-                setTests(response.data);
+        id && agent.Test.details(parseInt(id))
+            .then(tests => {
+                setTests(tests);
             })
             .catch(error => console.log(error))
             .finally(() => setLoading(false));
@@ -79,7 +81,7 @@ export default function TestsSpace() {
             testScore: (100 * testScore / totalSteps()),
         };
 
-        axios.put(`http://localhost:5000/api/Lessons/${id}`, data)
+        id && agent.Test.update(parseInt(id), data)
             .then(response => {
                 console.log('Success:', response.data);
             })

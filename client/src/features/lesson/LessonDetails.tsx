@@ -4,7 +4,9 @@ import { Lesson } from "../../app/models/lesson";
 import Tests from "./Tests";
 import Videos from "./Videos";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import agent from "../../app/api/agent";
+import NotFound from "../../app/errors/NotFound";
+import LoadingComponent from "../../app/layout/LoadingComponent";
 
 export default function LessonDetails() {
     const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -12,34 +14,34 @@ export default function LessonDetails() {
     const [isPracticeCompleted, setIsPracticeCompleted] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
     // let testScore = -1;
-    const {id} = useParams<{id: string}>();
+    const { id } = useParams<{ id: string }>();
 
-    
+
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/lessons/${id}`)
-            .then(response => {
-                setLesson(response.data);
-                setIsTheoryCompleted(response.data.isTheoryCompleted);
-                setIsPracticeCompleted(response.data.isPracticeCompleted);
+        id && agent.Lesson.details(parseInt(id))
+            .then(lesson => {
+                setLesson(lesson);
+                setIsTheoryCompleted(lesson.isTheoryCompleted);
+                setIsPracticeCompleted(lesson.isPracticeCompleted);
             })
             .catch(error => console.log(error))
             .finally(() => setLoading(false));
     }, [id])
-    
+
     useEffect(() => {
         if (lesson) {
             const data = {
                 isTheoryCompleted: Number(isTheoryCompleted),
                 isPracticeCompleted: Number(isPracticeCompleted)
             };
-            
-            axios.put(`http://localhost:5000/api/Lessons/${lesson.id}`, data)
-            .then(response => {
-                console.log('Success:', response.data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+
+            agent.Lesson.update(lesson.id, data)
+                .then(response => {
+                    console.log('Success:', response.data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTheoryCompleted, isPracticeCompleted]);
