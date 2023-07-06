@@ -1,9 +1,11 @@
-import { Typography } from "@mui/material";
-import { useEffect } from "react";
+import { Alert, AlertTitle, Button, ButtonGroup, Container, List, ListItem, ListItemText, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import agent from "../../app/api/agent";
 
 export default function HomePage() {
     const { hash } = useLocation();
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
         setTimeout(() => {
@@ -13,8 +15,38 @@ export default function HomePage() {
         }, 0);
     }, [hash]);
     
+    const getValidationError = () => {
+        agent.TestErrors.getValidationError()
+            .then(() => console.log())
+            .catch(error => setValidationErrors(error));
+    }
+
     return (
         <>
+            <Container>
+                <ButtonGroup fullWidth>
+                    <Button variant="contained" onClick={() => agent.TestErrors.get400Error().catch(error => console.log(error))}>Test 400 Error</Button>
+                    <Button variant="contained" onClick={() => agent.TestErrors.get401Error().catch(error => console.log(error))}>Test 401 Error</Button>
+                    <Button variant="contained" onClick={() => agent.TestErrors.get404Error().catch(error => console.log(error))}>Test 404 Error</Button>
+                    <Button variant="contained" onClick={() => agent.TestErrors.get500Error().catch(error => console.log(error))}>Test 500 Error</Button>
+                    <Button variant="contained" onClick={getValidationError}>Test Validation Error</Button>
+                </ButtonGroup>
+                {
+                    validationErrors.length > 0 &&
+                        <Alert severity="error">
+                            <AlertTitle>Validation Errors</AlertTitle>
+                            <List>
+                                {
+                                    validationErrors.map(error => (
+                                        <ListItem key={error}>
+                                            <ListItemText>{error}</ListItemText>
+                                        </ListItem>
+                                    ))
+                                }
+                            </List>
+                        </Alert>
+                }
+            </Container>
             <Typography variant="h2" id="about-us">
                 Про нас
             </Typography>
