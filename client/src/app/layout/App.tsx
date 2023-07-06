@@ -1,6 +1,8 @@
 import { Container, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
 
 function App() {
     const theme = createTheme({
@@ -14,6 +16,7 @@ function App() {
     return (
         <>
             <ThemeProvider theme={theme}>
+                <ToastContainer position="bottom-right" theme="colored"/>
                 <CssBaseline />
                 <Header />
                 <Container sx={{
