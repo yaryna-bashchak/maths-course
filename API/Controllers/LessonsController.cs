@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class LessonsController : ControllerBase
+    public class LessonsController : BaseApiController
     {
         private ILessonsRepository _lessonsRepository;
         public LessonsController(ILessonsRepository lessonsRepository)

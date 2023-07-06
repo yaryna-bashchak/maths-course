@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class SectionsController : ControllerBase
+    public class SectionsController : BaseApiController
     {
         private ISectionsRepository _sectionsRepository;
         public SectionsController(ISectionsRepository sectionsRepository)

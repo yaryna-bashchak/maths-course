@@ -8,9 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class LessonKeywordController : ControllerBase
+    public class LessonKeywordController : BaseApiController
     {
         public CourseContext Context { get; }
         public IMapper Mapper { get; }
