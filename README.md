@@ -1,4 +1,4 @@
-# Web API for maths course
+# Web App for maths course
  
 ---
 
@@ -16,13 +16,7 @@ To run the project and try by yourself see "How to run".
 
 ### Design document
 
-[here](https://docs.google.com/document/d/1XlmSuqfBuPStDvIS3_ynvv7dLMPP0R1j2E8-gBed0IU/edit?usp=sharing)
-
----
-
-### Pull Requests
-
-[here](https://github.com/yaryna-bashchak/maths-course/pulls?q=)
+[here](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing)
 
 ---
 
