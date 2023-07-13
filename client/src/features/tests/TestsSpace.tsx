@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { Test } from "../../app/models/test";
 import TestControl from "./TestControl";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
@@ -99,8 +100,8 @@ export default function TestsSpace() {
             <Box sx={{ display: 'flex', justifyContent: 'start' }}>
                 <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/lesson/${id}`}>Назад до уроку</Button>
             </Box>
-            <Typography variant="h3">Тести</Typography>
-            <Box sx={{ width: '100%' }}>
+            <Typography variant="h3" sx={{m: '10px 0px'}}>Тести</Typography>
+            <Box sx={{ width: '100%', m: '10px 0px' }}>
                 <Stepper nonLinear activeStep={activeStep}>
                     {tests.map((label, index) => (
                         <Step key={index} completed={completed[index] >= 0}>
@@ -110,23 +111,35 @@ export default function TestsSpace() {
                 </Stepper>
             </Box>
             {
-                tests.map((test, index) => (
-                    <TestControl
-                        test={test}
-                        handleNext={handleNext}
-                        handleBack={handleBack}
-                        handleComplete={handleComplete}
-                        handleFinish={handleFinish}
-                        handleReset={handleReset}
-                        testScore={testScore}
-                        totalSteps={totalSteps}
-                        completedSteps={completedSteps}
-                        completed={completed}
-                        activeStep={activeStep}
-                        index={index}
-                        isFinished={isFinished}
-                    />
-                ))
+                isFinished ? (
+                    <>
+                        <Typography sx={{ mt: 2, mb: 1 }}>
+                            Вітаю! Твій результат: {(100 * testScore / totalSteps()).toFixed(2)}%
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                            <Box sx={{ flex: '1 1 auto' }} />
+                            <Button endIcon={<ArrowForwardIcon />} variant="outlined" component={Link} to={`/lesson/${id ? parseInt(id) + 1 : 0}`}>До наступного уроку</Button>
+                        </Box>
+                    </>
+                ) : (
+                    tests.map((test, index) => (
+                        <TestControl
+                            test={test}
+                            handleNext={handleNext}
+                            handleBack={handleBack}
+                            handleComplete={handleComplete}
+                            handleFinish={handleFinish}
+                            handleReset={handleReset}
+                            testScore={testScore}
+                            totalSteps={totalSteps}
+                            completedSteps={completedSteps}
+                            completed={completed}
+                            activeStep={activeStep}
+                            index={index}
+                            isFinished={isFinished}
+                        />
+                    ))
+                )
             }
         </>
     )

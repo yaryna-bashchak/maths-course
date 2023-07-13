@@ -26,7 +26,6 @@ export default function TestControl({
     handleBack,
     handleComplete,
     handleFinish,
-    handleReset,
     testScore,
     totalSteps,
     completedSteps,
@@ -96,72 +95,60 @@ export default function TestControl({
 
     return (
         <div hidden={index !== activeStep}>
-            {isFinished ? (
-                <>
-                    <Typography sx={{ mt: 2, mb: 1 }}>
-                        Вітаю! Твій результат: {(100 * testScore / totalSteps()).toFixed(2)}%
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleReset}>Перескласти</Button>
-                    </Box>
-                </>
-            ) : (
-                <>
-                    {test && (
-                        <FormControl>
-                            <Typography variant="h5">
-                                {test.question}
-                            </Typography>
-                            <RadioGroup onChange={handleChange}>
-                                {
-                                    test.options.map(option => (
-                                        <FormControlLabel
-                                            value={option.id}
-                                            control={<Radio sx={getStyles(option)} />}
-                                            label={option.text}
-                                            disabled={activeStep in completed}
-                                            checked={getChecked(option)}
-                                        />
-                                    ))
-                                }
-                            </RadioGroup>
-                            <FormHelperText sx={{ color: 'red' }}>{helperText}</FormHelperText>
-                        </FormControl>)}
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Button
-                            color="inherit"
-                            disabled={activeStep === 0}
-                            onClick={handleBack}
-                            sx={{ mr: 1 }}
-                        >
-                            Назад
-                        </Button>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        <Button
-                            disabled={activeStep === totalSteps() - 1}
-                            onClick={handleNext}
-                            sx={{ mr: 1 }}>
-                            Вперед
-                        </Button>
-                        {
-                            activeStep !== totalSteps() &&
-                            (isAllCompleted() ? (
-                                <Button variant="contained" onClick={handleFinish}>
-                                    Завершити тест
-                                </Button>
-                            ) : !completed.hasOwnProperty(activeStep) ? (
-                                <Button onClick={submitAnswer}>
-                                    Відповісти
-                                </Button>
-                            ) : (
-                                <Button variant="contained" onClick={handleNext}>
-                                    Продовжити
-                                </Button>
-                            ))}
-                    </Box>
-                </>
-            )}
+            <>
+                {test && (
+                    <FormControl>
+                        <Typography variant="h5">
+                            {test.question}
+                        </Typography>
+                        <RadioGroup onChange={handleChange}>
+                            {
+                                test.options.map(option => (
+                                    <FormControlLabel
+                                        value={option.id}
+                                        control={<Radio sx={getStyles(option)} />}
+                                        label={option.text}
+                                        disabled={activeStep in completed}
+                                        checked={getChecked(option)}
+                                    />
+                                ))
+                            }
+                        </RadioGroup>
+                        <FormHelperText sx={{ color: 'red' }}>{helperText}</FormHelperText>
+                    </FormControl>)}
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    <Button
+                        color="inherit"
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        sx={{ mr: 1 }}
+                    >
+                        Назад
+                    </Button>
+                    <Box sx={{ flex: '1 1 auto' }} />
+                    <Button
+                        disabled={activeStep === totalSteps() - 1}
+                        onClick={handleNext}
+                        sx={{ mr: 1 }}>
+                        Вперед
+                    </Button>
+                    {
+                        activeStep !== totalSteps() &&
+                        (isAllCompleted() ? (
+                            <Button variant="contained" onClick={handleFinish}>
+                                Завершити тест
+                            </Button>
+                        ) : !completed.hasOwnProperty(activeStep) ? (
+                            <Button onClick={submitAnswer}>
+                                Відповісти
+                            </Button>
+                        ) : (
+                            <Button variant="contained" onClick={handleNext}>
+                                Продовжити
+                            </Button>
+                        ))}
+                </Box>
+            </>
         </div>
     );
 }
