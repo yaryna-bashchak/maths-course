@@ -1,9 +1,13 @@
-import { Typography } from "@mui/material";
+import { Button, ButtonGroup, Typography } from "@mui/material";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { CounterState, decrement, increment } from "./counterReducer";
 
 export default function HomePage() {
     const { hash } = useLocation();
+    const dispatch = useDispatch();
+    const { data, title } = useSelector((state: CounterState) => state);
     // const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
@@ -22,6 +26,17 @@ export default function HomePage() {
 
     return (
         <>
+            <Typography variant="h2">
+                {title}
+            </Typography>
+            <Typography variant="h5">
+                data: {data}
+            </Typography>
+            <ButtonGroup>
+                <Button onClick={() => dispatch(decrement())} variant="contained" color="error">Decrement</Button>
+                <Button onClick={() => dispatch(increment())} variant="contained" color="primary">Increment</Button>
+                <Button onClick={() => dispatch(increment(5))} variant="contained" color="secondary">Increment by 5</Button>
+            </ButtonGroup>
             {/* <Container>
                 <ButtonGroup fullWidth>
                     <Button variant="contained" onClick={() => agent.TestErrors.get400Error().catch(error => console.log(error))}>Test 400 Error</Button>
