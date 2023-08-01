@@ -1,13 +1,13 @@
 import { Button, ButtonGroup, Typography } from "@mui/material";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { CounterState, decrement, increment } from "./counterReducer";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { decrement, increment } from "./counterSlice";
 
 export default function HomePage() {
     const { hash } = useLocation();
-    const dispatch = useDispatch();
-    const { data, title } = useSelector((state: CounterState) => state);
+    const dispatch = useAppDispatch();
+    const { data, title } = useAppSelector(state => state.counter);
     // const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
@@ -33,8 +33,8 @@ export default function HomePage() {
                 data: {data}
             </Typography>
             <ButtonGroup>
-                <Button onClick={() => dispatch(decrement())} variant="contained" color="error">Decrement</Button>
-                <Button onClick={() => dispatch(increment())} variant="contained" color="primary">Increment</Button>
+                <Button onClick={() => dispatch(decrement(1))} variant="contained" color="error">Decrement</Button>
+                <Button onClick={() => dispatch(increment(1))} variant="contained" color="primary">Increment</Button>
                 <Button onClick={() => dispatch(increment(5))} variant="contained" color="secondary">Increment by 5</Button>
             </ButtonGroup>
             {/* <Container>
