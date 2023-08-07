@@ -13,9 +13,9 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: '', element: <HomePage /> },
-            { path: 'course/:id', element: <CourseDetails /> },
-            { path: 'lesson/:id', element: <LessonDetails /> },
-            { path: 'lesson/:id/test', element: <TestsSpace /> },
+            { path: 'course/:courseId', element: <CourseDetails /> },
+            { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
+            { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
             { path: 'server-error', element: <ServerError /> },
             { path: 'not-found', element: <NotFound /> },
             { path: '*', element: <Navigate replace to='not-found' /> },

@@ -7,14 +7,14 @@ interface Props {
 }
 
 export default function Tests({ lesson }: Props) {
-    const {id} = useParams<{id: string}>();
+    const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
 
     return (
         <>
             <Typography variant="h5" sx={{mt: "5px", mb: "10px"}}>
                 Результат тестування: {(lesson.testScore !== -1) ? `${lesson.testScore.toFixed(2)}%` : "ще не складено"}
             </Typography>
-            <Button component={Link} to={`/lesson/${id}/test`} variant="contained" disableElevation>
+            <Button component={Link} to={`/course/${courseId}/lesson/${lessonId}/test`} variant="contained" disableElevation>
                 Почати тест
             </Button>
         </>

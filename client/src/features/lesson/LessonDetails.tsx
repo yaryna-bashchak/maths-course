@@ -1,12 +1,13 @@
-import { Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Lesson } from "../../app/models/lesson";
 import Tests from "./Tests";
 import Videos from "./Videos";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function LessonDetails() {
     const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -14,11 +15,11 @@ export default function LessonDetails() {
     const [isPracticeCompleted, setIsPracticeCompleted] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
     // let testScore = -1;
-    const { id } = useParams<{ id: string }>();
+    const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
 
 
     useEffect(() => {
-        id && agent.Lesson.details(parseInt(id))
+        lessonId && agent.Lesson.details(parseInt(lessonId))
             .then(lesson => {
                 setLesson(lesson);
                 setIsTheoryCompleted(lesson.isTheoryCompleted);
@@ -26,7 +27,7 @@ export default function LessonDetails() {
             })
             .catch(error => console.log(error))
             .finally(() => setLoading(false));
-    }, [id])
+    }, [lessonId])
 
     useEffect(() => {
         if (lesson) {
@@ -61,7 +62,10 @@ export default function LessonDetails() {
     return (
         lesson ? (
             <>
-                <Typography variant="h5">{lesson.title}</Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'start', mb: '10px' }}>
+                    <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course/${courseId}`}>Назад до курсу</Button>
+                </Box>
+                <Typography variant="h5">{lesson.number}. {lesson.title}</Typography>
                 <Typography variant="body1">{lesson.description}</Typography>
                 <Videos isTheoryCompleted={isTheoryCompleted} isPracticeCompleted={isPracticeCompleted} onTheoryClick={handleChangeTheory} onPracticeClick={handleChangePractice} />
                 <Tests lesson={lesson} />

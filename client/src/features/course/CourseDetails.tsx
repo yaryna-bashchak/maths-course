@@ -11,17 +11,17 @@ export default function CourseDetails() {
     const [course, setCourse] = useState<Course>();
     const [sections, setSections] = useState<Section[]>([]);
     const [loading, setLoading] = useState(true);
-    const { id } = useParams<{ id: string }>();
+    const { courseId } = useParams<{ courseId: string }>();
 
     useEffect(() => {
-        id && agent.Course.details(parseInt(id))
+        courseId && agent.Course.details(parseInt(courseId))
             .then(course => {
                 setCourse(course);
                 setSections(course.sections);
             })
             .catch(error => console.log(error))
             .finally(() => setLoading(false));
-    }, [id])
+    }, [courseId])
 
     const [openIndex, setOpenIndex] = useState(-1);
 
@@ -41,6 +41,7 @@ export default function CourseDetails() {
                     <SectionItem
                         key={section.id}
                         section={section}
+                        courseId={parseInt(courseId ?? "0")}
                         isOpen={openIndex === section.id}
                         onItemClick={handleItemClick}
                     />

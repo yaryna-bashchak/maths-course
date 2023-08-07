@@ -19,16 +19,17 @@ export default function TestsSpace() {
     const [isFinished, setIsFinished] = useState(false);
 
     const [loading, setLoading] = useState(true);
-    const { id } = useParams<{ id: string }>();
+    const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
+
 
     useEffect(() => {
-        id && agent.Test.details(parseInt(id))
+        lessonId && agent.Test.details(parseInt(lessonId))
             .then(tests => {
                 setTests(tests);
             })
             .catch(error => console.log(error))
             .finally(() => setLoading(false));
-    }, [id])
+    }, [lessonId])
 
     const totalSteps = () => {
         return tests ? tests.length : 0;
@@ -82,7 +83,7 @@ export default function TestsSpace() {
             testScore: (100 * testScore / totalSteps()),
         };
 
-        id && agent.Test.update(parseInt(id), data)
+        lessonId && agent.Test.update(parseInt(lessonId), data)
             .then(response => {
                 console.log('Success:', response.data);
             })
@@ -98,7 +99,7 @@ export default function TestsSpace() {
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'start' }}>
-                <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/lesson/${id}`}>Назад до уроку</Button>
+                <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId}`}>Назад до уроку</Button>
             </Box>
             <Typography variant="h3" sx={{m: '10px 0px'}}>Тести</Typography>
             <Box sx={{ width: '100%', m: '10px 0px' }}>
@@ -118,7 +119,7 @@ export default function TestsSpace() {
                         </Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Box sx={{ flex: '1 1 auto' }} />
-                            <Button endIcon={<ArrowForwardIcon />} variant="outlined" component={Link} to={`/lesson/${id ? parseInt(id) + 1 : 0}`}>До наступного уроку</Button>
+                            <Button endIcon={<ArrowForwardIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId ? parseInt(lessonId) + 1 : 0}`}>До наступного уроку</Button>
                         </Box>
                     </>
                 ) : (
