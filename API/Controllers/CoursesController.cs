@@ -12,6 +12,19 @@ namespace API.Controllers
             _coursesRepository = coursesRepository;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<GetCoursePreviewDto>>> GetCourses()
+        {
+            var result = await _coursesRepository.GetCourses();
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
+
         [HttpGet("preview/{id}")]
         public async Task<ActionResult<GetCoursePreviewDto>> GetCoursePreview(int id)
         {

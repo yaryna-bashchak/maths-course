@@ -17,6 +17,21 @@ namespace API.Repositories.Implementation
             _mapper = mapper;
         }
 
+        public async Task<Result<List<GetCoursePreviewDto>>> GetCourses()
+        {
+            try
+            {
+                var dbCourses = _context.Courses;
+
+                var courses = await dbCourses.Select(c => _mapper.Map<GetCoursePreviewDto>(c)).ToListAsync();
+                return new Result<List<GetCoursePreviewDto>> { IsSuccess = true, Data = courses };
+            }
+            catch (System.Exception)
+            {
+                return new Result<List<GetCoursePreviewDto>> { IsSuccess = false, ErrorMessage = "Courses not found." };
+            }
+        }
+
         public async Task<Result<GetCoursePreviewDto>> GetCoursePreview(int id)
         {
             try
