@@ -1,11 +1,12 @@
-import { List, Typography } from "@mui/material";
+import { Box, Button, List, Typography } from "@mui/material";
 import SectionItem from "./SectionItem";
 import { useEffect, useState } from "react";
 import { Course, Section } from "../../app/models/course";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function CourseDetails() {
     const [course, setCourse] = useState<Course>();
@@ -35,6 +36,9 @@ export default function CourseDetails() {
 
     return (
         <>
+            <Box sx={{ display: 'flex', justifyContent: 'start', mb: '10px' }}>
+                <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course`}>Назад до курсів</Button>
+            </Box>
             <Typography variant="h5">{course?.title}</Typography>
             <List className="list-border" sx={{ p: "0px", m: "8px 0px" }}>
                 {sections.map((section) =>

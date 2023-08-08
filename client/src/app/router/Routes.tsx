@@ -6,6 +6,7 @@ import LessonDetails from "../../features/lesson/LessonDetails";
 import TestsSpace from "../../features/tests/TestsSpace";
 import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
+import CourseCatalog from "../../features/courses/CourseCatalog";
 
 export const router = createBrowserRouter([
     {
@@ -13,6 +14,7 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: '', element: <HomePage /> },
+            { path: 'course', element: <CourseCatalog /> },
             { path: 'course/:courseId', element: <CourseDetails /> },
             { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
             { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },

@@ -6,7 +6,7 @@ import { NavLink } from "react-router-dom";
 
 const midLinks = [
     { title: 'Про⠀нас', path: '' },
-    { title: 'Курси', path: 'course/1' },
+    { title: 'Курси', path: 'course' },
     { title: 'Ціни', path: '/#price' },
 ]
 

@@ -50,7 +50,7 @@ const requests = {
 }
 
 const Course = {
-  list: (id: number) => requests.get(`courses`),
+  list: () => requests.get(`courses`),
   details: (id: number) => requests.get(`courses/${id}`)
 }
 
