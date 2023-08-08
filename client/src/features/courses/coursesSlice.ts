@@ -16,6 +16,17 @@ export const fetchCoursesAsync = createAsyncThunk<Course[]>(
     }
 )
 
+export const fetchCourseAsync = createAsyncThunk<Course, number>(
+    'courses/fetchCourseAsync',
+    async (courseId) => {
+        try {
+            return await agent.Course.details(courseId);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+)
+
 export const coursesSlice = createSlice({
     name: 'courses',
     initialState: coursesAdapter.getInitialState({
@@ -34,7 +45,18 @@ export const coursesSlice = createSlice({
         });
         builder.addCase(fetchCoursesAsync.rejected, (state) => {
             state.status = 'idle';
-        })
+        });
+
+        builder.addCase(fetchCourseAsync.pending, (state) => {
+            state.status = 'pendingFetchCourse';
+        });
+        builder.addCase(fetchCourseAsync.fulfilled, (state, action) => {
+            coursesAdapter.upsertOne(state, action.payload);
+            state.status = 'idle';
+        });
+        builder.addCase(fetchCourseAsync.rejected, (state) => {
+            state.status = 'idle';
+        });
     }),
 })
 

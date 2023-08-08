@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import CourseCard from "./CourseCard";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { courseSelectors, fetchCoursesAsync } from "./courseSlice";
+import { courseSelectors, fetchCoursesAsync } from "./coursesSlice";
 import { Grid } from "@mui/material";
 
 export default function CourseCatalog() {
@@ -21,7 +21,7 @@ export default function CourseCatalog() {
             <Grid container spacing={4}>
                 {courses.map((course) =>
                     <Grid item xs={4} key={course.id}>
-                        <CourseCard course={course}/>
+                        <CourseCard course={course} />
                     </Grid>
                 )}
             </Grid>

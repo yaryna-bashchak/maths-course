@@ -1,28 +1,22 @@
 import { Box, Button, List, Typography } from "@mui/material";
 import SectionItem from "./SectionItem";
 import { useEffect, useState } from "react";
-import { Course, Section } from "../../app/models/course";
 import { Link, useParams } from "react-router-dom";
-import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { courseSelectors, fetchCourseAsync } from "../courses/coursesSlice";
 
 export default function CourseDetails() {
-    const [course, setCourse] = useState<Course>();
-    const [sections, setSections] = useState<Section[]>([]);
-    const [loading, setLoading] = useState(true);
+    const dispatch = useAppDispatch();
     const { courseId } = useParams<{ courseId: string }>();
+    const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
+    const {status} = useAppSelector(state => state.courses)
 
     useEffect(() => {
-        courseId && agent.Course.details(parseInt(courseId))
-            .then(course => {
-                setCourse(course);
-                setSections(course.sections);
-            })
-            .catch(error => console.log(error))
-            .finally(() => setLoading(false));
-    }, [courseId])
+        if(!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
+    }, [course, courseId, dispatch])
 
     const [openIndex, setOpenIndex] = useState(-1);
 
@@ -30,7 +24,7 @@ export default function CourseDetails() {
         setOpenIndex(openIndex !== index ? index : -1);
     };
 
-    if (loading) return <LoadingComponent />
+    if (status.includes('pending')) return <LoadingComponent />
 
     if (!course) return <NotFound />
 
@@ -41,7 +35,7 @@ export default function CourseDetails() {
             </Box>
             <Typography variant="h5">{course?.title}</Typography>
             <List className="list-border" sx={{ p: "0px", m: "8px 0px" }}>
-                {sections.map((section) =>
+                {course.sections.map((section) =>
                     <SectionItem
                         key={section.id}
                         section={section}
