@@ -12,7 +12,7 @@ export default function CourseDetails() {
     const dispatch = useAppDispatch();
     const { courseId } = useParams<{ courseId: string }>();
     const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
-    const {status} = useAppSelector(state => state.courses)
+    const {status} = useAppSelector(state => state.courses);
 
     useEffect(() => {
         if(!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));

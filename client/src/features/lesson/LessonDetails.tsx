@@ -1,61 +1,39 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Lesson } from "../../app/models/lesson";
 import Tests from "./Tests";
 import Videos from "./Videos";
 import { Link, useParams } from "react-router-dom";
-import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { courseSelectors, fetchCourseAsync } from "../courses/coursesSlice";
+import { Course } from "../../app/models/course";
+
+export function findLessonById(course: Course, lessonId: number): Lesson | null {
+    for (const section of course.sections) {
+        for (const lesson of section.lessons) {
+            if (lesson.id === lessonId) {
+                return lesson;
+            }
+        }
+    }
+    return null;
+}
 
 export default function LessonDetails() {
-    const [lesson, setLesson] = useState<Lesson | null>(null);
-    const [isTheoryCompleted, setIsTheoryCompleted] = useState<boolean>(false);
-    const [isPracticeCompleted, setIsPracticeCompleted] = useState<boolean>(false);
-    const [loading, setLoading] = useState(true);
-    // let testScore = -1;
+    const dispatch = useAppDispatch();
     const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
-
-
-    useEffect(() => {
-        lessonId && agent.Lesson.details(parseInt(lessonId))
-            .then(lesson => {
-                setLesson(lesson);
-                setIsTheoryCompleted(lesson.isTheoryCompleted);
-                setIsPracticeCompleted(lesson.isPracticeCompleted);
-            })
-            .catch(error => console.log(error))
-            .finally(() => setLoading(false));
-    }, [lessonId])
+    const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
+    const lesson = course ? findLessonById(course, parseInt(lessonId!)) : null;
+    const { status } = useAppSelector(state => state.courses);
 
     useEffect(() => {
-        if (lesson) {
-            const data = {
-                isTheoryCompleted: Number(isTheoryCompleted),
-                isPracticeCompleted: Number(isPracticeCompleted)
-            };
+        if(!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
+    }, [course, courseId, dispatch])
 
-            agent.Lesson.update(lesson.id, data)
-                .then(response => {
-                    console.log('Success:', response.data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isTheoryCompleted, isPracticeCompleted]);
-
-    const handleChangeTheory = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsTheoryCompleted(event.target.checked);
-    };
-
-    const handleChangePractice = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsPracticeCompleted(event.target.checked);
-    };
-
-    if (loading) return <LoadingComponent />
+    if (status === 'pendingFetchCourse') return <LoadingComponent />
 
     if (!lesson) return <NotFound />
 
@@ -67,7 +45,7 @@ export default function LessonDetails() {
                 </Box>
                 <Typography variant="h5">{lesson.number}. {lesson.title}</Typography>
                 <Typography variant="body1">{lesson.description}</Typography>
-                <Videos isTheoryCompleted={isTheoryCompleted} isPracticeCompleted={isPracticeCompleted} onTheoryClick={handleChangeTheory} onPracticeClick={handleChangePractice} />
+                <Videos />
                 <Tests lesson={lesson} />
             </>
         ) : null

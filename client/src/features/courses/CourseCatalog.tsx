@@ -19,7 +19,7 @@ export default function CourseCatalog() {
     return (
         <>
             <Grid container spacing={4}>
-                {courses.map((course) =>
+                {courses.sort((a, b) => a.id - b.id).map((course) =>
                     <Grid item xs={4} key={course.id}>
                         <CourseCard course={course} />
                     </Grid>
