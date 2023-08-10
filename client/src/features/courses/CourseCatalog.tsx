@@ -19,9 +19,9 @@ export default function CourseCatalog() {
     return (
         <>
             <Grid container spacing={4}>
-                {courses.sort((a, b) => a.id - b.id).map((course) =>
-                    <Grid item xs={4} key={course.id}>
-                        <CourseCard course={course} />
+                {courses.sort((a, b) => a.id - b.id).map((course, index) =>
+                    <Grid item xs={4} key={index}>
+                        <CourseCard courseId={index + 1} />
                     </Grid>
                 )}
             </Grid>

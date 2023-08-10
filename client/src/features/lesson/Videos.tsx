@@ -11,6 +11,7 @@ export default function Videos() {
     const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
     const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
     const lesson = course ? findLessonById(course, parseInt(lessonId!)) : null;
+    
     const handleContextMenu = (event: React.MouseEvent<HTMLVideoElement>) => {
         event.preventDefault();
     }

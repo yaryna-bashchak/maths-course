@@ -2,16 +2,17 @@ import { ListItemButton, ListItemText } from "@mui/material";
 import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
 import { yellow } from '@mui/material/colors';
 import { Lesson } from "../../app/models/lesson";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 interface Props {
     icon: JSX.Element;
     lesson: Lesson;
     isAvailable: boolean;
-    courseId: number;
 }
 
-export default function LessonItemShort({ icon, lesson, isAvailable, courseId }: Props) {
+export default function LessonItemShort({ icon, lesson, isAvailable }: Props) {
+    const { courseId } = useParams<{ courseId: string }>();
+
     return (
         <>
             <Link to={isAvailable ? `/course/${courseId}/lesson/${lesson.id}` : ''} style={{ textDecoration: 'none', color: 'rgba(0, 0, 0, 0.87)' }}>

@@ -39,7 +39,6 @@ export default function CourseDetails() {
                     <SectionItem
                         key={section.id}
                         section={section}
-                        courseId={parseInt(courseId ?? "0")}
                         isOpen={openIndex === section.id}
                         onItemClick={handleItemClick}
                     />

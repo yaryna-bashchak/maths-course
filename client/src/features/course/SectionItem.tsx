@@ -11,12 +11,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 interface Props {
     section: Section;
-    courseId: number;
     isOpen: boolean;
     onItemClick: (index: number) => void;
 }
 
-export default function SectionItem({ section, courseId, isOpen, onItemClick }: Props) {
+export default function SectionItem({ section, isOpen, onItemClick }: Props) { 
     type Stage = "unavailable" | "completed" | "inProcess" | "notStarted";
 
     const stages = {
@@ -99,7 +98,6 @@ export default function SectionItem({ section, courseId, isOpen, onItemClick }: 
                         icon={stages[sectionCompleted[index]]}
                         lesson={lesson}
                         isAvailable={section.isAvailable}
-                        courseId={courseId}
                     />
                 )}
             </Collapse>

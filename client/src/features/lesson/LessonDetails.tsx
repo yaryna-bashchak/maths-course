@@ -46,7 +46,7 @@ export default function LessonDetails() {
                 <Typography variant="h5">{lesson.number}. {lesson.title}</Typography>
                 <Typography variant="body1">{lesson.description}</Typography>
                 <Videos />
-                <Tests lesson={lesson} />
+                <Tests />
             </>
         ) : null
     )
