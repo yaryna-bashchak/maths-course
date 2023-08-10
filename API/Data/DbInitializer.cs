@@ -1021,15 +1021,15 @@ namespace API.Data
                     LessonIds = new List<int> { 8, 17 },
                 },
                 new SectionToLessons {
-                    SectionId = 18,
+                    SectionId = 17,
                     LessonIds = new List<int> { 18 },
                 },
                 new SectionToLessons {
-                    SectionId = 19,
+                    SectionId = 18,
                     LessonIds = new List<int> { 19, 20 },
                 },
                 new SectionToLessons {
-                    SectionId = 17,
+                    SectionId = 19,
                     LessonIds = new List<int> { 4, 9, 10, 11 },
                 },
                 new SectionToLessons {
