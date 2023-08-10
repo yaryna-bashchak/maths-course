@@ -2,41 +2,73 @@ import { FormControl, RadioGroup, FormControlLabel, Radio, Typography, Box, Butt
 import React, { useState } from "react";
 import { Test, Option } from "../../app/models/test";
 import { green, pink } from "@mui/material/colors";
+import { useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { testSelectors } from "./testsSlice";
+import { totalSteps } from "./TestsSpace";
+import { updateLessonAsync } from "../courses/coursesSlice";
 
 interface Props {
     test: Test;
-    handleNext: () => void;
-    handleBack: () => void;
-    handleComplete: (score: number) => void;
-    handleFinish: () => void;
-    handleReset: () => void;
-    testScore: number;
-    totalSteps: () => number;
-    completedSteps: () => number;
     completed: { [k: number]: number };
     activeStep: number;
     index: number;
-    isFinished: boolean;
+    currentTestScore: number;
+    setCurrentTestScore: React.Dispatch<React.SetStateAction<number>>;
+    setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+    setCompleted: React.Dispatch<React.SetStateAction<{ [k: number]: number; }>>;
+    setIsFinished: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
 
 export default function TestControl({
     test,
-    handleNext,
-    handleBack,
-    handleComplete,
-    handleFinish,
-    testScore,
-    totalSteps,
-    completedSteps,
     completed,
     activeStep,
     index,
-    isFinished,
+    currentTestScore,
+    setCurrentTestScore,
+    setActiveStep,
+    setCompleted,
+    setIsFinished,
 }: Props) {
+    const dispatch = useAppDispatch();
+    const { lessonId } = useParams<{ courseId: string, lessonId: string }>();
+    const tests = useAppSelector(testSelectors.selectAll);
     const [checked, setChecked] = useState('');
     const [helperText, setHelperText] = useState(' ');
     const answerId = test.options.find(option => option.isAnswer === true)?.id;
+
+    const handleNext = () => {
+        if (tests) {
+            let newActiveStep = tests.findIndex((test, i) => !(i in completed) && i > activeStep);
+
+            if (newActiveStep === -1) {
+                newActiveStep = tests.findIndex((test, i) => !(i in completed));
+            }
+
+            setActiveStep((newActiveStep >= 0) ? newActiveStep : activeStep + 1);
+        }
+    };
+
+    const completedSteps = () => {
+        return Object.keys(completed).length;
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    const handleComplete = (score: number) => {
+        const newCompleted = { ...completed };
+        setCurrentTestScore((prev) => prev + score);
+        newCompleted[activeStep] = score;
+        setCompleted(newCompleted);
+    };
+
+    const handleFinish = () => {
+        setIsFinished(true);
+        dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: {testScore: 100 * currentTestScore / totalSteps(tests)} }))
+    }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked((event.target as HTMLInputElement).value);
@@ -53,7 +85,7 @@ export default function TestControl({
 
     const isAllCompleted = () => {
         const completedCount = completedSteps();
-        const total = totalSteps();
+        const total = totalSteps(tests);
         return completedCount === total;
     }
 
@@ -127,13 +159,13 @@ export default function TestControl({
                     </Button>
                     <Box sx={{ flex: '1 1 auto' }} />
                     <Button
-                        disabled={activeStep === totalSteps() - 1}
+                        disabled={activeStep === totalSteps(tests) - 1}
                         onClick={handleNext}
                         sx={{ mr: 1 }}>
                         Вперед
                     </Button>
                     {
-                        activeStep !== totalSteps() &&
+                        activeStep !== totalSteps(tests) &&
                         (isAllCompleted() ? (
                             <Button variant="contained" onClick={handleFinish}>
                                 Завершити тест

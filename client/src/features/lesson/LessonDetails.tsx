@@ -31,7 +31,8 @@ export default function LessonDetails() {
 
     useEffect(() => {
         if(!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
-    }, [course, courseId, dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     if (status === 'pendingFetchCourse') return <LoadingComponent />
 

@@ -62,9 +62,7 @@ const Lesson = {
 }
 
 const Test = {
-  details: (lessonId: number) => requests.get(`tests/lessonId/${lessonId}`),
-  update: (lessonId: number, body: {}) =>
-    requests.put(`lessons/${lessonId}`, body)
+  details: (lessonId: number) => requests.get(`tests/lessonId/${lessonId}`)
 }
 
 const TestErrors = {
