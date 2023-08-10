@@ -45,7 +45,10 @@ export default function TestsSpace() {
 
     if (status === "pendingFetchTests" || courseStatus === 'pendingUpdateLesson') return <LoadingComponent />
 
-    if (tests.length === 0) return <NotFound />
+    if (tests.length === 0) {
+        if (!lesson) return <NotFound />
+        return <NotFound message="Ох, тестів до цього уроку ще немає" />
+    }
 
     return (
         <>
