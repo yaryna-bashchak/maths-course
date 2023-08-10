@@ -9,7 +9,7 @@ namespace API.Dtos.Lesson
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public int TestScore { get; set; } = -1;
+        public float TestScore { get; set; } = -1;
         public bool IsTheoryCompleted { get; set; } = false;
         public bool IsPracticeCompleted { get; set; } = false;
     }
