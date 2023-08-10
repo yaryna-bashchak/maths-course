@@ -1,6 +1,5 @@
 using API.Data;
 using API.Dtos.Course;
-using API.Dtos.Section;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +7,8 @@ namespace API.Repositories.Implementation
 {
     public class CoursesRepository : ICoursesRepository
     {
-        private CourseContext _context;
-        private IMapper _mapper;
+        private readonly CourseContext _context;
+        private readonly IMapper _mapper;
         public CoursesRepository(
             CourseContext context,
             IMapper mapper)
@@ -42,6 +41,9 @@ namespace API.Repositories.Implementation
                     .FirstAsync(l => l.Id == id);
 
                 var course = _mapper.Map<GetCoursePreviewDto>(dbCourse);
+
+                SortCoursePreviewAndRenumberLessons(course);
+
                 return new Result<GetCoursePreviewDto> { IsSuccess = true, Data = course };
             }
             catch (System.Exception)
@@ -63,27 +65,51 @@ namespace API.Repositories.Implementation
 
                 var course = _mapper.Map<GetCourseDto>(dbCourse);
 
-                course.Sections = course.Sections.OrderBy(s => s.Number).ToList();
-
-                for (int i = 0; i < course.Sections.Count; i++)
-                {
-                    course.Sections[i].Lessons = course.Sections[i].Lessons.OrderBy(l => l.Number).ToList();
-                }
-
-                int lessonCounter = 1;
-                foreach (var section in course.Sections)
-                {
-                    foreach (var lesson in section.Lessons)
-                    {
-                        lesson.Number = lessonCounter++;
-                    }
-                }
+                SortCourseAndRenumberLessons(course);
 
                 return new Result<GetCourseDto> { IsSuccess = true, Data = course };
             }
             catch (System.Exception)
             {
                 return new Result<GetCourseDto> { IsSuccess = false, ErrorMessage = "Course with the provided ID not found." };
+            }
+        }
+
+        private void SortCourseAndRenumberLessons(GetCourseDto course)
+        {
+            course.Sections = course.Sections.OrderBy(s => s.Number).ToList();
+
+            for (int i = 0; i < course.Sections.Count; i++)
+            {
+                course.Sections[i].Lessons = course.Sections[i].Lessons.OrderBy(l => l.Number).ToList();
+            }
+
+            int lessonCounter = 1;
+            foreach (var section in course.Sections)
+            {
+                foreach (var lesson in section.Lessons)
+                {
+                    lesson.Number = lessonCounter++;
+                }
+            }
+        }
+
+        private void SortCoursePreviewAndRenumberLessons(GetCoursePreviewDto course)
+        {
+            course.Sections = course.Sections.OrderBy(s => s.Number).ToList();
+
+            for (int i = 0; i < course.Sections.Count; i++)
+            {
+                course.Sections[i].Lessons = course.Sections[i].Lessons.OrderBy(l => l.Number).ToList();
+            }
+
+            int lessonCounter = 1;
+            foreach (var section in course.Sections)
+            {
+                foreach (var lesson in section.Lessons)
+                {
+                    lesson.Number = lessonCounter++;
+                }
             }
         }
     }
