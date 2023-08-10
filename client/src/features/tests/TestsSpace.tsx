@@ -35,7 +35,7 @@ export default function TestsSpace() {
     useEffect(() => {
         if (previousLessonId !== parseInt(lessonId ?? "")) dispatch(fetchTestsAsync(parseInt(lessonId ?? "")));
         if (!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 
@@ -43,7 +43,7 @@ export default function TestsSpace() {
         setActiveStep(step);
     };
 
-    if (status === "pendingFetchTests") return <LoadingComponent />
+    if (status === "pendingFetchTests" || courseStatus === 'pendingUpdateLesson') return <LoadingComponent />
 
     if (tests.length === 0) return <NotFound />
 
@@ -64,18 +64,15 @@ export default function TestsSpace() {
             </Box>
             {
                 isFinished ? (
-                    (
-                        (courseStatus !== 'pendingUpdateLesson') ?
-                            <>
-                                <Typography sx={{ mt: 2, mb: 1 }}>
-                                    Вітаю! Твій результат: {lesson && (lesson.testScore).toFixed(2)}%
-                                </Typography>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                    <Box sx={{ flex: '1 1 auto' }} />
-                                    <Button endIcon={<ArrowForwardIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId ? parseInt(lessonId) + 1 : 0}`}>До наступного уроку</Button>
-                                </Box>
-                            </> : <></>
-                    )
+                    <>
+                        <Typography sx={{ mt: 2, mb: 1 }}>
+                            Вітаю! Твій результат: {lesson && (lesson.testScore).toFixed(2)}%
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                            <Box sx={{ flex: '1 1 auto' }} />
+                            <Button endIcon={<ArrowForwardIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId ? parseInt(lessonId) + 1 : 0}`}>До наступного уроку</Button>
+                        </Box>
+                    </>
                 ) : (
                     tests.map((test, index) => (
                         <TestControl

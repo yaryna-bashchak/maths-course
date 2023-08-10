@@ -67,7 +67,7 @@ export default function TestControl({
 
     const handleFinish = () => {
         setIsFinished(true);
-        dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: {testScore: 100 * currentTestScore / totalSteps(tests)} }))
+        dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { testScore: 100 * currentTestScore / totalSteps(tests) } }))
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,33 +89,31 @@ export default function TestControl({
         return completedCount === total;
     }
 
-    const getStyles = (option: Option) => {
-        const greenStyle = {
+    const getRadioStyle = (option: Option) => {
+        if (!(activeStep in completed)) return {};
+
+        const isAnswer = option.id === answerId;
+        const isChecked = option.id === Number(checked);
+
+        if (isChecked) return isAnswer ? styles.greenRadio : styles.pinkRadio;
+        if (isAnswer) return styles.greenRadio;
+        return {};
+    }
+
+    const styles = {
+        greenRadio: {
             color: green[800],
             '&.Mui-checked': {
                 color: green[600],
             },
-        };
-
-        const pinkStyle = {
+        },
+        pinkRadio: {
             color: pink[800],
             '&.Mui-checked': {
                 color: pink[600],
             },
-        };
-
-        if (!(activeStep in completed)) {
-            return {};
         }
-
-        if (option.id === Number(checked)) {
-            return option.id === answerId ? greenStyle : pinkStyle;
-        } else if (option.id === answerId) {
-            return greenStyle;
-        } else {
-            return {};
-        }
-    }
+    };
 
     const getChecked = (option: Option) => {
         const isStepCompleted = completed.hasOwnProperty(activeStep);
@@ -138,7 +136,7 @@ export default function TestControl({
                                 test.options.map(option => (
                                     <FormControlLabel
                                         value={option.id}
-                                        control={<Radio sx={getStyles(option)} />}
+                                        control={<Radio sx={getRadioStyle(option)} />}
                                         label={option.text}
                                         disabled={activeStep in completed}
                                         checked={getChecked(option)}
