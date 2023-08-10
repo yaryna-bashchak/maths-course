@@ -6,7 +6,7 @@ export default function NotFound() {
         <Container component={Paper} sx={{ height: 400 }}>
             <Typography gutterBottom variant="h3">Упс! Ми не змогли знайти такої сторінки :{'('}</Typography>
             <Divider />
-            <Button fullWidth component={Link} to="/course/1">Повернутись до курсів</Button>
+            <Button fullWidth component={Link} to="/course">Повернутись до курсів</Button>
         </Container>
     )
 }

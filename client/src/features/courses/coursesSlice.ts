@@ -55,14 +55,15 @@ export const coursesSlice = createSlice({
       state.status = 'pendingFetchCourses'
     })
     builder.addCase(fetchCoursesAsync.fulfilled, (state, action) => {
-      const newCourses = action.payload.filter(
-        course => !state.ids.includes(course.id)
-      )
+      if (action.payload) {
+        const newCourses = action.payload.filter(
+          course => !state.ids.includes(course.id)
+        )
 
-      coursesAdapter.addMany(state, newCourses)
-
+        coursesAdapter.addMany(state, newCourses)
+        state.coursesLoaded = true
+      }
       state.status = 'idle'
-      state.coursesLoaded = true
     })
     builder.addCase(fetchCoursesAsync.rejected, state => {
       state.status = 'idle'
@@ -72,7 +73,9 @@ export const coursesSlice = createSlice({
       state.status = 'pendingFetchCourse'
     })
     builder.addCase(fetchCourseAsync.fulfilled, (state, action) => {
-      coursesAdapter.upsertOne(state, action.payload)
+      if (action.payload) {
+        coursesAdapter.upsertOne(state, action.payload)
+      }
       state.status = 'idle'
     })
     builder.addCase(fetchCourseAsync.rejected, state => {
