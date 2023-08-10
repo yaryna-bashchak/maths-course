@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit'
 import { counterSlice } from '../../features/home/counterSlice'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { coursesSlice } from '../../features/courses/coursesSlice'
+import { testsSlice } from '../../features/tests/testsSlice'
 
 export const store = configureStore({
   reducer: {
     counter: counterSlice.reducer,
-    courses: coursesSlice.reducer
+    courses: coursesSlice.reducer,
+    tests: testsSlice.reducer
   }
 })
 

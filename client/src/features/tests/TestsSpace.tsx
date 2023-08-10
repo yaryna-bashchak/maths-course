@@ -1,16 +1,21 @@
 import { Box, Button, Step, StepButton, Stepper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Test } from "../../app/models/test";
 import TestControl from "./TestControl";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { fetchTestsAsync, testSelectors } from "./testsSlice";
 
 export default function TestsSpace() {
-    const [tests, setTests] = useState<Test[] | null>(null);
+    const dispatch = useAppDispatch();
+    const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
+    const tests = useAppSelector(testSelectors.selectAll);
+    const { lessonId: previousLessonId, status } = useAppSelector(staet => staet.tests);
+
     const [activeStep, setActiveStep] = useState(0);
     const [completed, setCompleted] = useState<{
         [k: number]: number;
@@ -18,18 +23,9 @@ export default function TestsSpace() {
     const [testScore, setTestScore] = useState(0);
     const [isFinished, setIsFinished] = useState(false);
 
-    const [loading, setLoading] = useState(true);
-    const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
-
-
     useEffect(() => {
-        lessonId && agent.Test.details(parseInt(lessonId))
-            .then(tests => {
-                setTests(tests);
-            })
-            .catch(error => console.log(error))
-            .finally(() => setLoading(false));
-    }, [lessonId])
+        if (previousLessonId !== parseInt(lessonId ?? "")) dispatch(fetchTestsAsync(parseInt(lessonId ?? "")));
+    }, [dispatch, lessonId, previousLessonId])
 
     const totalSteps = () => {
         return tests ? tests.length : 0;
@@ -92,16 +88,16 @@ export default function TestsSpace() {
             });
     }
 
-    if (loading) return <LoadingComponent />
+    if (status === "pendingFetchTests") return <LoadingComponent />
 
-    if (!tests) return <NotFound />
+    if (tests.length === 0) return <NotFound />
 
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'start' }}>
                 <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId}`}>Назад до уроку</Button>
             </Box>
-            <Typography variant="h3" sx={{m: '10px 0px'}}>Тести</Typography>
+            <Typography variant="h3" sx={{ m: '10px 0px' }}>Тести</Typography>
             <Box sx={{ width: '100%', m: '10px 0px' }}>
                 <Stepper nonLinear activeStep={activeStep}>
                     {tests.map((label, index) => (
