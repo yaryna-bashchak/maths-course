@@ -12,21 +12,42 @@ export default function CourseDetails() {
     const dispatch = useAppDispatch();
     const { courseId } = useParams<{ courseId: string }>();
     const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
-    const {status} = useAppSelector(state => state.courses);
+    const { status } = useAppSelector(state => state.courses);
 
     useEffect(() => {
-        if(!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
-    }, [course, courseId, dispatch])
+        if (!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
-    const [openIndex, setOpenIndex] = useState(-1);
+    useEffect(() => {
+        if (course) {
+            const index = firstUncompletedSection();
+            setOpenIndex(index);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [course]);
+    
+    const firstUncompletedSection = () => {
+        if (course) {
+            for (let i = 0; i < course.sections.length; i++) {
+                if (!course.sections[i].lessons.every(l =>
+                    l.isPracticeCompleted && l.isTheoryCompleted && l.testScore >= 0
+                ))
+                    return course.sections[i].id;
+            }
+        }
+        return -1;
+    }
+
+    const [openIndex, setOpenIndex] = useState(firstUncompletedSection());
 
     const handleItemClick = (index: number) => {
         setOpenIndex(openIndex !== index ? index : -1);
     };
 
-    if (status.includes('pending')) return <LoadingComponent />
+    if (status.includes('pending')) return <LoadingComponent />;
 
-    if (!course) return <NotFound />
+    if (!course) return <NotFound />;
 
     return (
         <>
