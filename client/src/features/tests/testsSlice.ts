@@ -11,11 +11,11 @@ const testsAdapter = createEntityAdapter<Test>()
 
 export const fetchTestsAsync = createAsyncThunk<Test[], number>(
   'tests/fetchTestsAsync',
-  async lessonId => {
+  async (lessonId, thunkAPI) => {
     try {
       return await agent.Test.details(lessonId)
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.data })
     }
   }
 )
@@ -38,7 +38,8 @@ export const testsSlice = createSlice({
       }
       state.status = 'idle'
     })
-    builder.addCase(fetchTestsAsync.rejected, state => {
+    builder.addCase(fetchTestsAsync.rejected, (state, action) => {
+      console.log(action.payload)
       state.status = 'idle'
     })
   }

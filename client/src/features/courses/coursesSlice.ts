@@ -12,22 +12,22 @@ const coursesAdapter = createEntityAdapter<Course>()
 
 export const fetchCoursesAsync = createAsyncThunk<Course[]>(
   'courses/fetchCoursesAsync',
-  async () => {
+  async (_, thunkAPI) => {
     try {
       return await agent.Course.list()
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.data })
     }
   }
 )
 
 export const fetchCourseAsync = createAsyncThunk<Course, number>(
   'courses/fetchCourseAsync',
-  async courseId => {
+  async (courseId, thunkAPI) => {
     try {
       return await agent.Course.details(courseId)
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.data })
     }
   }
 )
@@ -55,17 +55,18 @@ export const coursesSlice = createSlice({
       state.status = 'pendingFetchCourses'
     })
     builder.addCase(fetchCoursesAsync.fulfilled, (state, action) => {
-      if (action.payload) {
+      //if (action.payload) {
         const newCourses = action.payload.filter(
           course => !state.ids.includes(course.id)
         )
 
         coursesAdapter.addMany(state, newCourses)
         state.coursesLoaded = true
-      }
+      //}
       state.status = 'idle'
     })
-    builder.addCase(fetchCoursesAsync.rejected, state => {
+    builder.addCase(fetchCoursesAsync.rejected, (state, action) => {
+      console.log(action.payload)
       state.status = 'idle'
     })
 
@@ -73,12 +74,13 @@ export const coursesSlice = createSlice({
       state.status = 'pendingFetchCourse'
     })
     builder.addCase(fetchCourseAsync.fulfilled, (state, action) => {
-      if (action.payload) {
+      //if (action.payload) {
         coursesAdapter.upsertOne(state, action.payload)
-      }
+      //}
       state.status = 'idle'
     })
-    builder.addCase(fetchCourseAsync.rejected, state => {
+    builder.addCase(fetchCourseAsync.rejected, (state, action) => {
+      console.log(action.payload)
       state.status = 'idle'
     })
 
