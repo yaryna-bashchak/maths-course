@@ -37,3 +37,9 @@ export interface SectionPreview {
   isAvailable: number
   lessons: LessonPreview[]
 }
+
+export interface LessonParams {
+  maxImportance: number;
+  onlyUncompleted: boolean;
+  searchTerm?: string;
+}
