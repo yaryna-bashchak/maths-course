@@ -3,12 +3,29 @@ import {
   createEntityAdapter,
   createSlice
 } from '@reduxjs/toolkit'
-import { Course } from '../../app/models/course'
+import { Course, LessonParams } from '../../app/models/course'
 import agent from '../../app/api/agent'
 import { RootState } from '../../app/store/configureStore'
 import { Lesson } from '../../app/models/lesson'
 
+interface CoursesState {
+  coursesLoaded: boolean
+  status: string
+  lessonParams: LessonParams
+}
+
 const coursesAdapter = createEntityAdapter<Course>()
+
+function getAxiosParams (lessonParams: LessonParams) {
+  const params = new URLSearchParams()
+  if (lessonParams.maxImportance < 2)
+    params.append('maxImportance', lessonParams.maxImportance.toString())
+  if (lessonParams.onlyUncompleted)
+    params.append('onlyUncompleted', lessonParams.onlyUncompleted.toString())
+  if (lessonParams.searchTerm)
+    params.append('searchTerm', lessonParams.searchTerm)
+  return params
+}
 
 export const fetchCoursesAsync = createAsyncThunk<Course[]>(
   'courses/fetchCoursesAsync',
@@ -21,16 +38,18 @@ export const fetchCoursesAsync = createAsyncThunk<Course[]>(
   }
 )
 
-export const fetchCourseAsync = createAsyncThunk<Course, number>(
-  'courses/fetchCourseAsync',
-  async (courseId, thunkAPI) => {
-    try {
-      return await agent.Course.details(courseId)
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ error: error.data })
-    }
+export const fetchCourseAsync = createAsyncThunk<
+  Course,
+  number,
+  { state: RootState }
+>('courses/fetchCourseAsync', async (courseId, thunkAPI) => {
+  const params = getAxiosParams(thunkAPI.getState().courses.lessonParams)
+  try {
+    return await agent.Course.details(courseId, params)
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ error: error.data })
   }
-)
+})
 
 export const updateLessonAsync = createAsyncThunk<
   Lesson,
@@ -45,23 +64,35 @@ export const updateLessonAsync = createAsyncThunk<
 
 export const coursesSlice = createSlice({
   name: 'courses',
-  initialState: coursesAdapter.getInitialState({
+  initialState: coursesAdapter.getInitialState<CoursesState>({
     coursesLoaded: false,
-    status: 'idle'
+    status: 'idle',
+    lessonParams: {
+      maxImportance: 2,
+      onlyUncompleted: false
+    }
   }),
-  reducers: {},
+  reducers: {
+    setLessonParams: (state, action) => {
+      //state.status = 'pendingFetchCourse'
+      state.lessonParams = {
+        ...state.lessonParams,
+        ...action.payload
+      }
+    }
+  },
   extraReducers: builder => {
     builder.addCase(fetchCoursesAsync.pending, state => {
       state.status = 'pendingFetchCourses'
     })
     builder.addCase(fetchCoursesAsync.fulfilled, (state, action) => {
       //if (action.payload) {
-        const newCourses = action.payload.filter(
-          course => !state.ids.includes(course.id)
-        )
+      const newCourses = action.payload.filter(
+        course => !state.ids.includes(course.id)
+      )
 
-        coursesAdapter.addMany(state, newCourses)
-        state.coursesLoaded = true
+      coursesAdapter.addMany(state, newCourses)
+      state.coursesLoaded = true
       //}
       state.status = 'idle'
     })
@@ -75,7 +106,7 @@ export const coursesSlice = createSlice({
     })
     builder.addCase(fetchCourseAsync.fulfilled, (state, action) => {
       //if (action.payload) {
-        coursesAdapter.upsertOne(state, action.payload)
+      coursesAdapter.upsertOne(state, action.payload)
       //}
       state.status = 'idle'
     })
@@ -118,3 +149,5 @@ export const coursesSlice = createSlice({
 export const courseSelectors = coursesAdapter.getSelectors(
   (state: RootState) => state.courses
 )
+
+export const { setLessonParams } = coursesSlice.actions;
