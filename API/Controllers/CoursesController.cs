@@ -1,5 +1,6 @@
 using API.Dtos.Course;
 using API.Repositories;
+using API.RequestHelper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -39,9 +40,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<GetCourseDto>> GetCourse(int id)
+        public async Task<ActionResult<GetCourseDto>> GetCourse(int id, [FromQuery] LessonParams lessonParams)
         {
-            var result = await _coursesRepository.GetCourse(id);
+            var result = await _coursesRepository.GetCourse(id, lessonParams.MaxImportance, lessonParams.OnlyUncompleted, lessonParams.SearchTerm);
 
             if (!result.IsSuccess)
             {
