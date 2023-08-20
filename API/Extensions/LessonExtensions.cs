@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using API.Dtos.Course;
-using API.Entities;
 
 namespace API.Extensions
 {
@@ -26,7 +20,7 @@ namespace API.Extensions
             return course;
         }
 
-        public static GetCourseDto Filter(this GetCourseDto course, int maxImportance = 2, bool onlyUncompleted = false)
+        public static GetCourseDto Filter(this GetCourseDto course, int? maxImportance = 2, bool? onlyUncompleted = false)
         {
             if (maxImportance < 2)
             {
@@ -36,7 +30,7 @@ namespace API.Extensions
                 }
             }
 
-            if (onlyUncompleted)
+            if (onlyUncompleted ?? false)
             {
                 foreach (var section in course.Sections)
                 {

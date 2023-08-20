@@ -18,7 +18,7 @@ namespace API.Repositories.Implementation
             _mapper = mapper;
         }
 
-        public async Task<Result<GetCourseDto>> GetCourse(int id, int maxImportance, bool onlyUncompleted, string searchTerm)
+        public async Task<Result<GetCourseDto>> GetCourse(int id, int? maxImportance, bool? onlyUncompleted, string searchTerm)
         {
             try
             {
