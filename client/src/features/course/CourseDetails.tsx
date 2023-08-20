@@ -7,6 +7,7 @@ import LoadingComponent from "../../app/layout/LoadingComponent";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { courseSelectors, fetchCourseAsync } from "../courses/coursesSlice";
+import Filters from "./Filters";
 
 export default function CourseDetails() {
     const dispatch = useAppDispatch();
@@ -16,17 +17,17 @@ export default function CourseDetails() {
 
     useEffect(() => {
         if (!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [course])
 
     useEffect(() => {
         if (course) {
             const index = firstUncompletedSection();
             setOpenIndex(index);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [course]);
-    
+
     const firstUncompletedSection = () => {
         if (course) {
             for (let i = 0; i < course.sections.length; i++) {
@@ -54,7 +55,10 @@ export default function CourseDetails() {
             <Box sx={{ display: 'flex', justifyContent: 'start', mb: '10px' }}>
                 <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course`}>Назад до курсів</Button>
             </Box>
-            <Typography variant="h5">{course?.title}</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'start', gap: '10px' }}>
+                <Typography variant="h5">{course?.title}</Typography>
+                <Filters />
+            </Box>
             <List className="list-border" sx={{ p: "0px", m: "8px 0px" }}>
                 {course.sections.map((section) =>
                     <SectionItem
