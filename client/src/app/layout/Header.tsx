@@ -15,7 +15,7 @@ const rightLinks = [
     { title: 'Зареєструватися', path: '/register' },
 ]
 
-const isAuthorized = true;
+const isAuthorized = false;
 
 const navStyles = {
     color: 'inherit',

@@ -18,6 +18,8 @@ export const router = createBrowserRouter([
             { path: 'course/:courseId', element: <CourseDetails /> },
             { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
             { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
+            { path: 'register', element: <NotFound /> },
+            { path: 'login', element: <NotFound /> },
             { path: 'server-error', element: <ServerError /> },
             { path: 'not-found', element: <NotFound /> },
             { path: '*', element: <Navigate replace to='not-found' /> },
