@@ -54,20 +54,20 @@ export default function CourseDetails() {
     };
 
 
-    if (status.includes('pending') && course?.sections.length === 0) return <LoadingComponent />;
-    if (!course) return <NotFound />;
+    if (status.includes('pending') && (!course || course?.sections.length === 0)) return <LoadingComponent />;
+    if (!status.includes('pending') && !course) return <NotFound />;
 
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'start', mb: '10px' }}>
                 <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course`}>Назад до курсів</Button>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'start', gap: '10px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'start', alignItems: "center", gap: '10px' }}>
                 <Typography variant="h5">{course?.title}</Typography>
                 <Filters />
             </Box>
             <List className="list-border" sx={{ p: "0px", m: "8px 0px" }}>
-                {course.sections.map((section) =>
+                {course && course.sections.map((section) =>
                     section.lessons.length !== 0 ?
                         individualCourseLoaded[parseInt(courseId!)] ?
                             <SectionItem
