@@ -12,6 +12,7 @@ interface CoursesState {
   coursesLoaded: boolean
   status: string
   lessonParams: LessonParams
+  individualCourseLoaded: { [courseId: number]: boolean };
 }
 
 const coursesAdapter = createEntityAdapter<Course>()
@@ -69,8 +70,10 @@ export const coursesSlice = createSlice({
     status: 'idle',
     lessonParams: {
       maxImportance: 2,
-      onlyUncompleted: false
-    }
+      onlyUncompleted: false,
+      courseId: 0
+    },
+    individualCourseLoaded: {}
   }),
   reducers: {
     setLessonParams: (state, action) => {
@@ -78,6 +81,15 @@ export const coursesSlice = createSlice({
       state.lessonParams = {
         ...state.lessonParams,
         ...action.payload
+      }
+      const { courseId, status } = action.payload
+      state.individualCourseLoaded[courseId] = status
+    },
+    resetLessonParams: (state, action) => {
+      state.lessonParams = {
+        maxImportance: 2,
+        onlyUncompleted: false,
+        courseId: action.payload.courseId
       }
     }
   },
@@ -108,6 +120,7 @@ export const coursesSlice = createSlice({
       //if (action.payload) {
       coursesAdapter.upsertOne(state, action.payload)
       //}
+      state.individualCourseLoaded[action.payload.id] = true
       state.status = 'idle'
     })
     builder.addCase(fetchCourseAsync.rejected, (state, action) => {
@@ -150,4 +163,4 @@ export const courseSelectors = coursesAdapter.getSelectors(
   (state: RootState) => state.courses
 )
 
-export const { setLessonParams } = coursesSlice.actions;
+export const { setLessonParams, resetLessonParams } = coursesSlice.actions

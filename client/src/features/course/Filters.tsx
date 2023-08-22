@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { grey, yellow } from '@mui/material/colors';
-import { fetchCourseAsync, setLessonParams } from "../courses/coursesSlice";
+import { setLessonParams } from "../courses/coursesSlice";
 import { useParams } from "react-router-dom";
 
 export default function Filters() {
@@ -48,16 +48,14 @@ export default function Filters() {
             <Button sx={getBoolButtonStyle(lessonParams.maxImportance === 0)} variant="outlined" size="small"
                 endIcon={<StarPurple500RoundedIcon />}
                 onClick={() => {
-                    dispatch(setLessonParams({ maxImportance: Math.abs(lessonParams.maxImportance - 2) }));
-                    dispatch(fetchCourseAsync(parseInt(courseId!)));
+                    dispatch(setLessonParams({ maxImportance: Math.abs(lessonParams.maxImportance - 2), courseId: parseInt(courseId!), status: false }));
                 }}>
                 лише без зірочок
             </Button>
             <Button sx={getBoolButtonStyle(lessonParams.onlyUncompleted)} variant="outlined" size="small"
                 endIcon={<AccessTimeIcon />}
                 onClick={() => {
-                    dispatch(setLessonParams({ onlyUncompleted: !lessonParams.onlyUncompleted }))
-                    dispatch(fetchCourseAsync(parseInt(courseId!)));
+                    dispatch(setLessonParams({ onlyUncompleted: !lessonParams.onlyUncompleted, courseId: parseInt(courseId!), status: false }))
                 }}>
                 лише не завершені
             </Button>

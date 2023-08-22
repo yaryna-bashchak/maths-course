@@ -42,4 +42,5 @@ export interface LessonParams {
   maxImportance: number;
   onlyUncompleted: boolean;
   searchTerm?: string;
+  courseId: number;
 }
