@@ -78,11 +78,11 @@ public class CoursesControllerTests
         };
 
         _mockRepository
-            .Setup(x => x.GetCourse(It.IsAny<int>()))
+            .Setup(x => x.GetCourse(It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>()))
             .Returns(Task.FromResult(new Result<GetCourseDto> { IsSuccess = true, Data = validCourse }));
 
         //Act
-        var result = await _mockRepository.Object.GetCourse(id);
+        var result = await _mockRepository.Object.GetCourse(id, null, null, null);
 
         //Assert
         Assert.Equal(validCourse.Id, result.Data.Id);
@@ -98,11 +98,11 @@ public class CoursesControllerTests
         var id = 15;
 
         _mockRepository
-            .Setup(x => x.GetCourse(It.IsAny<int>()))
+            .Setup(x => x.GetCourse(It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>()))
             .Returns(Task.FromResult(new Result<GetCourseDto> { IsSuccess = false, ErrorMessage = "Course with the provided ID not found." }));
 
         //Act
-        var result = await _mockRepository.Object.GetCourse(id);
+        var result = await _mockRepository.Object.GetCourse(id, null, null, null);
 
         //Assert
         Assert.False(result.IsSuccess);
