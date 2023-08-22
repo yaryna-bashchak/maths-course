@@ -68,12 +68,19 @@ export default function CourseDetails() {
             </Box>
             <List className="list-border" sx={{ p: "0px", m: "8px 0px" }}>
                 {course.sections.map((section) =>
-                    <SectionItem
-                        key={section.id}
-                        section={section}
-                        isOpen={openIndex === section.id}
-                        onItemClick={handleItemClick}
-                    />
+                    section.lessons.length !== 0 ?
+                        individualCourseLoaded[parseInt(courseId!)] ?
+                            <SectionItem
+                                key={section.id}
+                                section={section}
+                                isOpen={openIndex === section.id}
+                                onItemClick={handleItemClick}
+                            /> :
+                            <SectionSkeleton
+                                key={section.id}
+                                section={section}
+                                isOpen={openIndex === section.id}
+                            /> : <></>
                 )}
             </List>
         </>

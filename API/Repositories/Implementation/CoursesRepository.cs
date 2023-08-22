@@ -30,8 +30,8 @@ namespace API.Repositories.Implementation
                     .FirstAsync(l => l.Id == id);
                 
                 var course = _mapper.Map<GetCourseDto>(dbCourse)
-                    .Filter(maxImportance, onlyUncompleted)
                     .SortAndRenumberLessons()
+                    .Filter(maxImportance, onlyUncompleted)
                     .Search(searchTerm);
 
                 return new Result<GetCourseDto> { IsSuccess = true, Data = course };
