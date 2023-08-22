@@ -1,16 +1,17 @@
-import { Button } from "@mui/material";
+import { Button, TextField, debounce } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { grey, yellow } from '@mui/material/colors';
 import { setLessonParams } from "../courses/coursesSlice";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 
 export default function Filters() {
     const dispatch = useAppDispatch();
     const { lessonParams } = useAppSelector(state => state.courses);
     const { courseId } = useParams<{ courseId: string }>();
-
+    const [searchTerm, setSearchTerm] = useState(lessonParams.searchTerm);
 
     const getBoolButtonStyle = (state: boolean) => {
         if (state) return styles.checked;
@@ -42,9 +43,23 @@ export default function Filters() {
             },
         }
     };
+    
+    const debouncedSearch = debounce((event: any) => {
+        dispatch(setLessonParams({ searchTerm: event.target.value, courseId: parseInt(courseId!), status: false }))
+    }, 1000)
 
     return (
         <>
+            <TextField
+                label='Знайти...'
+                variant='outlined'
+                size="small"
+                value={searchTerm || ''}
+                onChange={(event: any) => {
+                    setSearchTerm(event.target.value);
+                    debouncedSearch(event);
+                }}
+            />
             <Button sx={getBoolButtonStyle(lessonParams.maxImportance === 0)} variant="outlined" size="small"
                 endIcon={<StarPurple500RoundedIcon />}
                 onClick={() => {
