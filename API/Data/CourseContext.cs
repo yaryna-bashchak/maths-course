@@ -1,9 +1,11 @@
 using API.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    public class CourseContext : DbContext
+    public class CourseContext : IdentityDbContext<User>
     {
         public CourseContext(DbContextOptions options) : base(options)
         {
@@ -11,6 +13,14 @@ namespace API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityRole>()
+                .HasData(
+                    new IdentityRole { Name = "Member", NormalizedName = "MEMBER" },
+                    new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" }
+                );
+
             modelBuilder.Entity<LessonKeyword>()
                 .HasKey(lk => new { lk.LessonId, lk.KeywordId });
             modelBuilder.Entity<LessonKeyword>()
