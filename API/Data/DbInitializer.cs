@@ -1,13 +1,15 @@
 using System.Globalization;
 using API.Entities;
 using API.Repositories.Implementation;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(CourseContext context)
+        public static async Task Initialize(CourseContext context, UserManager<User> userManager)
         {
+            await InitializeUsers(userManager);
             InitializeLessons(context);
             InitializeKeywords(context);
             InitializeLessonKeywords(context);
@@ -16,6 +18,31 @@ namespace API.Data
             InitializeCourses(context);
             InitializeSectionLessons(context);
         }
+
+        public static async Task InitializeUsers(UserManager<User> userManager)
+        {
+            if (!userManager.Users.Any())
+            {
+                var user = new User
+                {
+                    UserName = "bob",
+                    Email = "bob@gmail.com"
+                };
+
+                await userManager.CreateAsync(user, "Pa$$w0rd");
+                await userManager.AddToRoleAsync(user, "Member");
+
+                var admin = new User
+                {
+                    UserName = "yaryna",
+                    Email = "plan.znoshnika@gmail.com"
+                };
+
+                await userManager.CreateAsync(admin, "Pa$$w0rd");
+                await userManager.AddToRolesAsync(admin, new [] {"Member", "Admin"});
+            }
+        }
+
         public static void InitializeLessons(CourseContext context)
         {
             if (context.Lessons.Any()) return;
