@@ -9,12 +9,21 @@ import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { fetchTestsAsync, testSelectors } from "./testsSlice";
 import { findLessonById } from "../lesson/LessonDetails";
-import { courseSelectors, fetchCourseAsync } from "../courses/coursesSlice";
+import { courseSelectors, fetchCourseAsync, initializeCourseStatus } from "../courses/coursesSlice";
 import { Test } from "../../app/models/test";
+import { LessonParams } from "../../app/models/course";
 
 export function totalSteps(tests: Test[]): number {
     return tests ? tests.length : 0;
 };
+
+function isLoading(lessonParams: LessonParams, status: string, courseStatus: string) {
+    return !lessonParams || status.includes('pending') || courseStatus.includes('pending');
+}
+
+function isNotFound(status: string, courseStatus: string, previousLessonId: number, lessonId: number, tests: Test[]) {
+    return !status.includes('pending') && !courseStatus.includes('pending') && (previousLessonId !== lessonId || tests.length === 0);
+}
 
 export default function TestsSpace() {
     const dispatch = useAppDispatch();
@@ -32,20 +41,27 @@ export default function TestsSpace() {
     }>({});
     const [isFinished, setIsFinished] = useState(false);
 
+    const { lessonParams } = useAppSelector(state => state.courses.individualCourseStatus[parseInt(courseId!)]) || {};
+
     useEffect(() => {
-        if (previousLessonId !== parseInt(lessonId ?? "")) dispatch(fetchTestsAsync(parseInt(lessonId ?? "")));
+        if (!lessonParams)
+            dispatch(initializeCourseStatus({ courseId: parseInt(courseId!) }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [lessonParams]);
+
+    useEffect(() => {
+        if (previousLessonId !== parseInt(lessonId!)) dispatch(fetchTestsAsync(parseInt(lessonId!)));
         if (!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
 
     const handleStep = (step: number) => () => {
         setActiveStep(step);
     };
 
-    if (status === "pendingFetchTests" || courseStatus === 'pendingUpdateLesson') return <LoadingComponent />
+    if (isLoading(lessonParams, status, courseStatus)) return <LoadingComponent />
 
-    if (tests.length === 0) {
+    if (isNotFound(status, courseStatus, previousLessonId, parseInt(lessonId!), tests)) {
         if (!lesson) return <NotFound />
         return <NotFound message="Ох, тестів до цього уроку ще немає" />
     }

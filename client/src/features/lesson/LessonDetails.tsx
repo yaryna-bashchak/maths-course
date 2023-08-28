@@ -8,8 +8,8 @@ import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { courseSelectors, fetchCourseAsync } from "../courses/coursesSlice";
-import { Course } from "../../app/models/course";
+import { courseSelectors, fetchCourseAsync, initializeCourseStatus } from "../courses/coursesSlice";
+import { Course, LessonParams } from "../../app/models/course";
 
 export function findLessonById(course: Course, lessonId: number): Lesson | null {
     for (const section of course.sections) {
@@ -22,21 +22,38 @@ export function findLessonById(course: Course, lessonId: number): Lesson | null 
     return null;
 }
 
+function isLoading(course: Course | undefined, courseLoaded: boolean, lessonParams: LessonParams, status: string) {
+    return (!course || !course.sections?.length) && !courseLoaded && (!lessonParams || status.includes('pending'));
+}
+
+function isNotFound(course: Course | undefined, lesson: Lesson | null, status: string) {
+    return (!course || !course.sections?.length || !lesson) && !status.includes('pending');
+}
+
 export default function LessonDetails() {
     const dispatch = useAppDispatch();
     const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
     const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
     const lesson = course ? findLessonById(course, parseInt(lessonId!)) : null;
     const { status } = useAppSelector(state => state.courses);
+    const courseStatus = useAppSelector(state => state.courses.individualCourseStatus[parseInt(courseId!)]);
+    const { courseLoaded, lessonParams } = courseStatus || {};
 
     useEffect(() => {
-        if(!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (!lessonParams)
+            dispatch(initializeCourseStatus({ courseId: parseInt(courseId!) }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [courseStatus]);
+
+    useEffect(() => {
+        if (!course || course?.sections.length === 0) dispatch(fetchCourseAsync(parseInt(courseId!)));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    if (status === 'pendingFetchCourse') return <LoadingComponent />
+    if (isLoading(course, courseLoaded, lessonParams, status)) return <LoadingComponent />;
 
-    if (!lesson) return <NotFound />
+    if (isNotFound(course, lesson, status)) return <NotFound />;
+
 
     return (
         lesson ? (
