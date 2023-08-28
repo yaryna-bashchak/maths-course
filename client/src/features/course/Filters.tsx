@@ -9,9 +9,10 @@ import { useState } from "react";
 
 export default function Filters() {
     const dispatch = useAppDispatch();
-    const { lessonParams } = useAppSelector(state => state.courses);
     const { courseId } = useParams<{ courseId: string }>();
-    const [searchTerm, setSearchTerm] = useState(lessonParams.searchTerm);
+    const courseStatus = useAppSelector(state => state.courses.individualCourseStatus[parseInt(courseId!)]);
+    const { lessonParams } = courseStatus || {};
+    const [searchTerm, setSearchTerm] = useState(lessonParams?.searchTerm || '');
 
     const getBoolButtonStyle = (state: boolean) => {
         if (state) return styles.checked;
@@ -43,37 +44,40 @@ export default function Filters() {
             },
         }
     };
-    
+
     const debouncedSearch = debounce((event: any) => {
-        dispatch(setLessonParams({ searchTerm: event.target.value, courseId: parseInt(courseId!), status: false }))
+        dispatch(setLessonParams({ searchTerm: event.target.value, courseId: parseInt(courseId!) }))
     }, 1000)
 
     return (
         <>
-            <TextField
-                label='Знайти...'
-                variant='outlined'
-                size="small"
-                value={searchTerm || ''}
-                onChange={(event: any) => {
-                    setSearchTerm(event.target.value);
-                    debouncedSearch(event);
-                }}
-            />
-            <Button sx={getBoolButtonStyle(lessonParams.maxImportance === 0)} variant="outlined" size="small"
-                endIcon={<StarPurple500RoundedIcon />}
-                onClick={() => {
-                    dispatch(setLessonParams({ maxImportance: Math.abs(lessonParams.maxImportance - 2), courseId: parseInt(courseId!), status: false }));
-                }}>
-                лише без зірочок
-            </Button>
-            <Button sx={getBoolButtonStyle(lessonParams.onlyUncompleted)} variant="outlined" size="small"
-                endIcon={<AccessTimeIcon />}
-                onClick={() => {
-                    dispatch(setLessonParams({ onlyUncompleted: !lessonParams.onlyUncompleted, courseId: parseInt(courseId!), status: false }))
-                }}>
-                лише не завершені
-            </Button>
+            {lessonParams ?
+                <>
+                    <TextField
+                        label='Знайти...'
+                        variant='outlined'
+                        size="small"
+                        value={searchTerm || ''}
+                        onChange={(event: any) => {
+                            setSearchTerm(event.target.value);
+                            debouncedSearch(event);
+                        }}
+                    />
+                    <Button sx={getBoolButtonStyle(lessonParams.maxImportance === 0)} variant="outlined" size="small"
+                        endIcon={<StarPurple500RoundedIcon />}
+                        onClick={() => {
+                            dispatch(setLessonParams({ maxImportance: Math.abs(lessonParams.maxImportance - 2), courseId: parseInt(courseId!) }));
+                        }}>
+                        лише без зірочок
+                    </Button>
+                    <Button sx={getBoolButtonStyle(lessonParams.onlyUncompleted)} variant="outlined" size="small"
+                        endIcon={<AccessTimeIcon />}
+                        onClick={() => {
+                            dispatch(setLessonParams({ onlyUncompleted: !lessonParams.onlyUncompleted, courseId: parseInt(courseId!) }))
+                        }}>
+                        лише не завершені
+                    </Button>
+                </> : <></>}
         </>
     )
 }
