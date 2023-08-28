@@ -11,8 +11,12 @@ import { Lesson } from '../../app/models/lesson'
 interface CoursesState {
   coursesLoaded: boolean
   status: string
-  lessonParams: LessonParams
-  individualCourseLoaded: { [courseId: number]: boolean };
+  individualCourseStatus: {
+    [courseId: number]: {
+      courseLoaded: boolean
+      lessonParams: LessonParams
+    }
+  }
 }
 
 const coursesAdapter = createEntityAdapter<Course>()
@@ -44,7 +48,9 @@ export const fetchCourseAsync = createAsyncThunk<
   number,
   { state: RootState }
 >('courses/fetchCourseAsync', async (courseId, thunkAPI) => {
-  const params = getAxiosParams(thunkAPI.getState().courses.lessonParams)
+  const params = getAxiosParams(
+    thunkAPI.getState().courses.individualCourseStatus[courseId].lessonParams
+  )
   try {
     return await agent.Course.details(courseId, params)
   } catch (error: any) {
@@ -63,34 +69,42 @@ export const updateLessonAsync = createAsyncThunk<
   }
 })
 
+export function initLessonParams (): LessonParams {
+  return {
+    maxImportance: 2,
+    onlyUncompleted: false
+  }
+}
+
 export const coursesSlice = createSlice({
   name: 'courses',
   initialState: coursesAdapter.getInitialState<CoursesState>({
     coursesLoaded: false,
     status: 'idle',
-    lessonParams: {
-      maxImportance: 2,
-      onlyUncompleted: false,
-      courseId: 0
-    },
-    individualCourseLoaded: {}
+    individualCourseStatus: {}
   }),
   reducers: {
     setLessonParams: (state, action) => {
       //state.status = 'pendingFetchCourse'
-      state.lessonParams = {
-        ...state.lessonParams,
-        ...action.payload
+      const { courseId } = action.payload
+      state.individualCourseStatus[courseId] = {
+        lessonParams: {
+          ...state.individualCourseStatus[courseId].lessonParams,
+          ...action.payload
+        },
+        courseLoaded: false
       }
-      const { courseId, status } = action.payload
-      state.individualCourseLoaded[courseId] = status
+      //state.individualCourseStatus[courseId].status = 'reloading'
     },
-    resetLessonParams: (state, action) => {
-      state.lessonParams = {
-        maxImportance: 2,
-        onlyUncompleted: false,
-        courseId: action.payload.courseId
+    initializeCourseStatus: (state, action) => {
+      const { courseId } = action.payload
+      if (!state.individualCourseStatus[courseId]) {
+        state.individualCourseStatus[courseId] = {
+          courseLoaded: false,
+          lessonParams: initLessonParams()
+        }
       }
+      //state.status = 'pendingFetchCourse'
     }
   },
   extraReducers: builder => {
@@ -120,7 +134,7 @@ export const coursesSlice = createSlice({
       //if (action.payload) {
       coursesAdapter.upsertOne(state, action.payload)
       //}
-      state.individualCourseLoaded[action.payload.id] = true
+      state.individualCourseStatus[action.payload.id].courseLoaded = true
       state.status = 'idle'
     })
     builder.addCase(fetchCourseAsync.rejected, (state, action) => {
@@ -163,4 +177,4 @@ export const courseSelectors = coursesAdapter.getSelectors(
   (state: RootState) => state.courses
 )
 
-export const { setLessonParams, resetLessonParams } = coursesSlice.actions
+export const { setLessonParams, initializeCourseStatus } = coursesSlice.actions
