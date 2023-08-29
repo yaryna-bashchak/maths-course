@@ -1,5 +1,4 @@
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
@@ -10,15 +9,20 @@ import Container from '@mui/material/Container';
 import { Link } from 'react-router-dom';
 import { Paper } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useState } from 'react';
 import agent from '../../app/api/agent';
 import { FieldValues, useForm } from 'react-hook-form';
 
 export default function Login() {
-    const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+    const { register, handleSubmit, formState: { isSubmitting, errors, isValid } } = useForm({
+        mode: 'onTouched',
+    });
 
     const submitForm = async (data: FieldValues) => {
-        await agent.Account.login(data);
+        try {
+            await agent.Account.login(data);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -33,24 +37,27 @@ export default function Login() {
             <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate sx={{ mt: 1 }}>
                 <TextField
                     margin="normal"
-                    required
                     fullWidth
                     label="Нік"
                     autoComplete="username"
                     autoFocus
-                    {...register('username')}
+                    {...register('username', { required: 'Будь ласка, вкажіть нік' })}
+                    error={!!errors.username}
+                    helperText={errors?.username?.message as string}
                 />
                 <TextField
                     margin="normal"
-                    required
                     fullWidth
                     label="Пароль"
                     type="password"
                     autoComplete="current-password"
-                    {...register('password')}
+                    {...register('password', { required: 'Будь ласка, вкажіть пароль' })}
+                    error={!!errors.password}
+                    helperText={errors?.password?.message as string}
                 />
                 <LoadingButton
                     loading={isSubmitting}
+                    disabled={!isValid}
                     type="submit"
                     fullWidth
                     variant="contained"
