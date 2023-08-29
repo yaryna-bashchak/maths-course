@@ -7,6 +7,8 @@ import TestsSpace from "../../features/tests/TestsSpace";
 import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
 import CourseCatalog from "../../features/courses/CourseCatalog";
+import Login from "../../features/account/Login";
+import Register from "../../features/account/Register";
 
 export const router = createBrowserRouter([
     {
@@ -18,8 +20,8 @@ export const router = createBrowserRouter([
             { path: 'course/:courseId', element: <CourseDetails /> },
             { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
             { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
-            { path: 'register', element: <NotFound /> },
-            { path: 'login', element: <NotFound /> },
+            { path: 'register', element: <Register /> },
+            { path: 'login', element: <Login /> },
             { path: 'server-error', element: <ServerError /> },
             { path: 'not-found', element: <NotFound /> },
             { path: '*', element: <Navigate replace to='not-found' /> },
