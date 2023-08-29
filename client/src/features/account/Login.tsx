@@ -9,21 +9,16 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Link } from 'react-router-dom';
 import { Paper } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
+import agent from '../../app/api/agent';
+import { FieldValues, useForm } from 'react-hook-form';
 
 export default function Login() {
-    const [values, setValues] = useState({
-        username: '',
-        password: '',
-    })
+    const { register, handleSubmit, formState: { isSubmitting } } = useForm();
 
-    const handleSubmit = () => {
-        console.log(values);
-    };
-
-    const handleInputChange = (event: any) => {
-        const {name, value} = event.target;
-        setValues({...values, [name]: value})
+    const submitForm = async (data: FieldValues) => {
+        await agent.Account.login(data);
     }
 
     return (
@@ -35,37 +30,34 @@ export default function Login() {
             <Typography component="h1" variant="h5">
                 Вхід
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate sx={{ mt: 1 }}>
                 <TextField
                     margin="normal"
                     required
                     fullWidth
                     label="Нік"
-                    name="username"
                     autoComplete="username"
                     autoFocus
-                    onChange={handleInputChange}
-                    value={values.username}
+                    {...register('username')}
                 />
                 <TextField
                     margin="normal"
                     required
                     fullWidth
-                    name="password"
                     label="Пароль"
                     type="password"
                     autoComplete="current-password"
-                    onChange={handleInputChange}
-                    value={values.password}
+                    {...register('password')}
                 />
-                <Button
+                <LoadingButton
+                    loading={isSubmitting}
                     type="submit"
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                 >
                     Увійти
-                </Button>
+                </LoadingButton>
                 <Grid container>
                     <Grid item>
                         <Link to="/register">
