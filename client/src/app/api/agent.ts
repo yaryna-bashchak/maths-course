@@ -66,6 +66,12 @@ const Test = {
   details: (lessonId: number) => requests.get(`tests/lessonId/${lessonId}`)
 }
 
+const Account = {
+  login: (values: any) => requests.post('account/login', values),
+  register: (values: any) => requests.post('account/register', values),
+  currentUser: () => requests.get('account/currentUser'),
+}
+
 const TestErrors = {
   get400Error: () => requests.get('buggy/bad-request'),
   get401Error: () => requests.get('buggy/unauthorised'),
@@ -78,6 +84,7 @@ const agent = {
   Course,
   Lesson,
   Test,
+  Account,
   TestErrors
 }
 
