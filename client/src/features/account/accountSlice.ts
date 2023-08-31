@@ -3,6 +3,7 @@ import { User } from '../../app/models/user'
 import { FieldValues } from 'react-hook-form'
 import agent from '../../app/api/agent'
 import { router } from '../../app/router/Routes'
+import { toast } from 'react-toastify'
 
 interface AccountState {
   user: User | null
@@ -58,18 +59,21 @@ export const accountSlice = createSlice({
     }
   },
   extraReducers: builder => {
+    builder.addCase(fetchCurrentUser.rejected, state => {
+      state.user = null
+      localStorage.removeItem('user')
+      toast.error('Сеанс завершився - будь ласка, увійдіть в акаунт ще раз')
+      router.navigate('/')
+    })
     builder.addMatcher(
       isAnyOf(singInUser.fulfilled, fetchCurrentUser.fulfilled),
       (state, action) => {
         state.user = action.payload
       }
     )
-    builder.addMatcher(
-      isAnyOf(singInUser.rejected, fetchCurrentUser.rejected),
-      (state, action) => {
-        console.log(action.payload)
-      }
-    )
+    builder.addMatcher(isAnyOf(singInUser.rejected), (state, action) => {
+      console.log(action.payload)
+    })
   }
 })
 
