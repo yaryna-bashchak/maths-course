@@ -35,6 +35,11 @@ export const fetchCurrentUser = createAsyncThunk<User>(
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data })
     }
+  },
+  {
+    condition: () => {
+      return Boolean(localStorage.getItem('user'))
+    }
   }
 )
 
