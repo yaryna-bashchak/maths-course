@@ -1,8 +1,8 @@
-import { AccountCircle } from "@mui/icons-material";
-import { AppBar, Avatar, Box, IconButton, List, ListItem, Menu, MenuItem, Toolbar, Typography, useTheme } from "@mui/material";
-import { useState } from "react";
+import { AppBar, Avatar, Box, List, ListItem, Toolbar, Typography, useTheme } from "@mui/material";
 // import SearchIcon from '@mui/icons-material/Search';
 import { NavLink } from "react-router-dom";
+import SignedInMenu from "./SignedInMenu";
+import { useAppSelector } from "../store/configureStore";
 
 const midLinks = [
     { title: 'Про⠀нас', path: '' },
@@ -14,8 +14,6 @@ const rightLinks = [
     { title: 'Увійти', path: '/login' },
     { title: 'Зареєструватися', path: '/register' },
 ]
-
-const isAuthorized = false;
 
 const navStyles = {
     color: 'inherit',
@@ -69,16 +67,7 @@ const navStyles = {
 
 export default function Header() {
     const theme = useTheme();
-
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const { user } = useAppSelector(state => state.account);
 
     return (
         <AppBar position="fixed" sx={{ top: 0, bottom: "auto" }}>
@@ -115,42 +104,8 @@ export default function Header() {
                     </List>
 
                     {
-                        isAuthorized ?
-                            <Box>
-                                <IconButton
-                                    size="large"
-                                    aria-label="account of current user"
-                                    aria-controls="menu-appbar"
-                                    aria-haspopup="true"
-                                    onClick={handleMenu}
-                                    color="inherit"
-                                >
-                                    <AccountCircle />
-                                    <Typography variant="body1" sx={{ ml: "5px" }}>
-                                        Яринка
-                                    </Typography>
-                                </IconButton>
-                                <Menu
-                                    id="menu-appbar"
-                                    anchorEl={anchorEl}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    keepMounted
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    open={Boolean(anchorEl)}
-                                    onClose={handleClose}
-                                >
-                                    <MenuItem onClick={handleClose}>Профіль</MenuItem>
-                                    <MenuItem onClick={handleClose}>Мої Курси</MenuItem>
-                                    <MenuItem onClick={handleClose}>Всі Курси</MenuItem>
-                                    <MenuItem onClick={handleClose}>Вийти</MenuItem>
-                                </Menu>
-                            </Box> :
+                        user ?
+                            <SignedInMenu /> :
                             <List sx={{ display: 'flex' }}>
                                 {rightLinks.map(({ title, path }) => (
                                     <ListItem
