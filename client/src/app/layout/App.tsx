@@ -3,19 +3,29 @@ import Header from "./Header";
 import { Outlet, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAppDispatch } from "../store/configureStore";
 import { fetchCurrentUser } from "../../features/account/accountSlice";
+import LoadingComponent from "./LoadingComponent";
 
 function App() {
     const dispatch = useAppDispatch();
     const location = useLocation();
     const whiteBackgroundNotNeeded = ["/login", "/register"]
     const isWhiteBackgroundNeeded = !whiteBackgroundNotNeeded.includes(location.pathname);
-    
+    const [loading, setLoading] = useState(true);
+
+    const initApp = useCallback(async () => {
+        try {
+            await dispatch(fetchCurrentUser());
+        } catch (error) {
+            console.log(error);
+        }
+    }, [dispatch]);
+
     useEffect(() => {
-        dispatch(fetchCurrentUser());
-    }, [dispatch])
+        initApp().then(() => setLoading(false));
+    }, [initApp])
 
     const theme = createTheme({
         palette: {
@@ -31,18 +41,20 @@ function App() {
                 <ToastContainer position="bottom-right" theme="colored" />
                 <CssBaseline />
                 <Header />
-                <Container sx={{
-                    pt: "90px",
-                    pb: "20px",
-                    width: "100%",
-                    backgroundColor: isWhiteBackgroundNeeded ? "white" : "none",
-                    [theme.breakpoints.up('md')]: {
-                        width: '70%',
-                        // mawWidth: "1200px",
-                    },
-                }}>
-                <Outlet />
-                </Container>
+                {loading ? <LoadingComponent />
+                    : <Container sx={{
+                        pt: "90px",
+                        pb: "20px",
+                        width: "100%",
+                        backgroundColor: isWhiteBackgroundNeeded ? "white" : "none",
+                        [theme.breakpoints.up('md')]: {
+                            width: '70%',
+                            // mawWidth: "1200px",
+                        },
+                    }}>
+                        <Outlet />
+                    </Container>
+                }
             </ThemeProvider >
         </>
     );
