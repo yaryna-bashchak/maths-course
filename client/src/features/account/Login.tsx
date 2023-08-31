@@ -68,7 +68,7 @@ export default function Login() {
                 <Grid container>
                     <Grid item>
                         <Link to="/register">
-                            {"Ще не маєш акаунта? Зареєструватися"}
+                            {"Ще не маєте акаунта? Зареєструватися"}
                         </Link>
                     </Grid>
                 </Grid>

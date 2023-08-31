@@ -35,7 +35,7 @@ export default function SignedInMenu() {
             >
                 <MenuItem onClick={handleClose}>Профіль</MenuItem>
                 <MenuItem onClick={handleClose}>Мої курси</MenuItem>
-                <MenuItem onClick={() => dispatch(signOut())}>Logout</MenuItem>
+                <MenuItem onClick={() => dispatch(signOut())}>Вийти</MenuItem>
             </Menu>
         </div>
     );
