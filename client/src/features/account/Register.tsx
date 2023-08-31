@@ -6,16 +6,32 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Paper } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useForm } from 'react-hook-form';
 import agent from '../../app/api/agent';
+import { toast } from 'react-toastify';
 
 export default function Register() {
-    const { register, handleSubmit, formState: { isSubmitting, errors, isValid } } = useForm({
+    const navigate = useNavigate();
+    const { register, handleSubmit, setError, formState: { isSubmitting, errors, isValid } } = useForm({
         mode: 'onTouched',
     });
+
+    const handleApiErrors = (errors: any) => {
+        if (errors) {
+            errors.forEach((error: string) => {
+                if (error.includes('Password')) {
+                    setError('password', { message: error });
+                } else if (error.includes('Email')) {
+                    setError('email', { message: error });
+                } else if (error.includes('Username')) {
+                    setError('username', { message: error });
+                }
+            });
+        }
+    }
 
     return (
         <Container component={Paper} maxWidth="xs" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 4 }}>
@@ -27,7 +43,12 @@ export default function Register() {
                 Реєстрація
             </Typography>
             <Box component="form"
-                onSubmit={handleSubmit(data => agent.Account.register(data))}
+                onSubmit={handleSubmit(data => agent.Account.register(data)
+                    .then(() => {
+                        toast.success('Ви успішно зареєстровані! Тепер можете увійти');
+                        navigate('/login');
+                    })
+                    .catch(error => handleApiErrors(error)))}
                 noValidate sx={{ mt: 1 }}
             >
                 <TextField
@@ -45,7 +66,13 @@ export default function Register() {
                     fullWidth
                     label="Електронна пошта"
                     autoComplete="email"
-                    {...register('email', { required: 'Будь ласка, вкажіть вашу електронну пошту' })}
+                    {...register('email', {
+                        required: 'Будь ласка, вкажіть вашу електронну пошту',
+                        pattern: {
+                            value: /^\w+[\w-.]*@\w+((-\w+)|(\w*))\.[a-z]{2,3}$/,
+                            message: 'Недійсна електронна пошта'
+                        }
+                    })}
                     error={!!errors.email}
                     helperText={errors?.email?.message as string}
                 />
@@ -55,7 +82,13 @@ export default function Register() {
                     label="Пароль"
                     type="password"
                     autoComplete="current-password"
-                    {...register('password', { required: 'Будь ласка, придумайте пароль' })}
+                    {...register('password', {
+                        required: 'Будь ласка, придумайте пароль',
+                        pattern: {
+                            value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$/,
+                            message: 'Пароль має містити як мінімум одну малу літеру, одну велику та одну цифру і складати з 6-12 символів'
+                        }
+                    })}
                     error={!!errors.password}
                     helperText={errors?.password?.message as string}
                 />
