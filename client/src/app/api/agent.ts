@@ -1,12 +1,19 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 import { router } from '../router/Routes'
+import { store } from '../store/configureStore'
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 300))
 
 axios.defaults.baseURL = 'http://localhost:5000/api/'
 
 const responseBody = (response: AxiosResponse) => response.data
+
+axios.interceptors.request.use(config => {
+  const token = store.getState().account.user?.token
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 
 axios.interceptors.response.use(
   async response => {
@@ -29,7 +36,7 @@ axios.interceptors.response.use(
         toast.error(data.title)
         break
       case 401:
-        toast.error(data.title)
+        toast.error(data.title || 'Unauthorised')
         break
       case 500:
         router.navigate('/server-error', { state: { error: data } })
@@ -53,7 +60,8 @@ const requests = {
 const Course = {
   list: () => requests.get(`courses`),
   preview: (id: number) => requests.get(`courses/preview/${id}`),
-  details: (id: number, params: URLSearchParams) => requests.get(`courses/${id}`, params)
+  details: (id: number, params: URLSearchParams) =>
+    requests.get(`courses/${id}`, params)
 }
 
 const Lesson = {
@@ -69,7 +77,7 @@ const Test = {
 const Account = {
   login: (values: any) => requests.post('account/login', values),
   register: (values: any) => requests.post('account/register', values),
-  currentUser: () => requests.get('account/currentUser'),
+  currentUser: () => requests.get('account/currentUser')
 }
 
 const TestErrors = {
