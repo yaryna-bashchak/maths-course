@@ -3,12 +3,20 @@ import Header from "./Header";
 import { Outlet, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"
+import { useEffect } from "react";
+import { useAppDispatch } from "../store/configureStore";
+import { fetchCurrentUser } from "../../features/account/accountSlice";
 
 function App() {
+    const dispatch = useAppDispatch();
     const location = useLocation();
     const whiteBackgroundNotNeeded = ["/login", "/register"]
     const isWhiteBackgroundNeeded = !whiteBackgroundNotNeeded.includes(location.pathname);
     
+    useEffect(() => {
+        dispatch(fetchCurrentUser());
+    }, [dispatch])
+
     const theme = createTheme({
         palette: {
             background: {
