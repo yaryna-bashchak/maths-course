@@ -1,13 +1,9 @@
-import { Button, ButtonGroup, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { decrement, increment } from "./counterSlice";
 
 export default function HomePage() {
     const { hash } = useLocation();
-    const dispatch = useAppDispatch();
-    const { data, title } = useAppSelector(state => state.counter);
     // const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     useEffect(() => {
@@ -26,17 +22,6 @@ export default function HomePage() {
 
     return (
         <>
-            <Typography variant="h2">
-                {title}
-            </Typography>
-            <Typography variant="h5">
-                data: {data}
-            </Typography>
-            <ButtonGroup>
-                <Button onClick={() => dispatch(decrement(1))} variant="contained" color="error">Decrement</Button>
-                <Button onClick={() => dispatch(increment(1))} variant="contained" color="primary">Increment</Button>
-                <Button onClick={() => dispatch(increment(5))} variant="contained" color="secondary">Increment by 5</Button>
-            </ButtonGroup>
             {/* <Container>
                 <ButtonGroup fullWidth>
                     <Button variant="contained" onClick={() => agent.TestErrors.get400Error().catch(error => console.log(error))}>Test 400 Error</Button>
