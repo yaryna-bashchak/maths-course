@@ -45,7 +45,7 @@ namespace API.Repositories.Implementation
                 dbSection.Title = updatedSection.Title ?? dbSection.Title;
                 dbSection.Description = updatedSection.Description ?? dbSection.Description;
                 dbSection.Number = updatedSection.Number != -1 ? updatedSection.Number : dbSection.Number;
-                dbSection.IsAvailable = updatedSection.IsAvailable != -1 ? (updatedSection.IsAvailable != 0) : dbSection.IsAvailable;
+                //dbSection.IsAvailable = updatedSection.IsAvailable != -1 ? (updatedSection.IsAvailable != 0) : dbSection.IsAvailable;
 
                 if (updatedSection.LessonIdsToAdd != null)
                 {

@@ -11,9 +11,9 @@ namespace API.Entities
         public int Number { get; set; } = 1;
         public string Title { get; set; } = "Місяць 1";
         public string Description { get; set; }
-        public bool IsAvailable { get; set; } = false;
         public int CourseId { get; set; }
         public Course Course { get; set; }
         public List<SectionLesson> SectionLessons { get; set; }
+        public List<UserSection> UserSections { get; set; }
     }
 }

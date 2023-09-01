@@ -4,6 +4,7 @@ namespace API.Entities
 {
     public class User : IdentityUser
     {
-        
+        public List<UserSection> UserSections { get; set; }
+        public List<UserLesson> UserLessons { get; set; }
     }
 }
