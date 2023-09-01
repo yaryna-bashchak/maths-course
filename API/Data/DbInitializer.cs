@@ -801,31 +801,26 @@ namespace API.Data
                         {
                             Number = 1,
                             Title = "Місяць 1",
-                            IsAvailable = true,
                         },
                         new Section
                         {
                             Number = 2,
                             Title = "Місяць 2",
-                            IsAvailable = true,
                         },
                         new Section
                         {
                             Number = 3,
                             Title = "Місяць 3",
-                            IsAvailable = true,
                         },
                         new Section
                         {
                             Number = 4,
                             Title = "Місяць 4",
-                            IsAvailable = true,
                         },
                         new Section
                         {
                             Number = 5,
                             Title = "Місяць 5",
-                            IsAvailable = true,
                         },
                         new Section
                         {
@@ -857,19 +852,16 @@ namespace API.Data
                         {
                             Number = 1,
                             Title = "Місяць 1",
-                            IsAvailable = true,
                         },
                         new Section
                         {
                             Number = 2,
                             Title = "Місяць 2",
-                            IsAvailable = true,
                         },
                         new Section
                         {
                             Number = 3,
                             Title = "Місяць 3",
-                            IsAvailable = true,
                         },
                         new Section
                         {
@@ -896,13 +888,11 @@ namespace API.Data
                         {
                             Number = 1,
                             Title = "Місяць 1",
-                            IsAvailable = true,
                         },
                         new Section
                         {
                             Number = 2,
                             Title = "Місяць 2",
-                            IsAvailable = true,
                         },
                         new Section
                         {
@@ -913,7 +903,6 @@ namespace API.Data
                         {
                             Number = 4,
                             Title = "Місяць 4",
-                            IsAvailable = true,
                         },
                         new Section
                         {
@@ -935,13 +924,11 @@ namespace API.Data
                         {
                             Number = 1,
                             Title = "Місяць 1",
-                            IsAvailable = true,
                         },
                         new Section
                         {
                             Number = 2,
                             Title = "Місяць 2",
-                            IsAvailable = true,
                         },
                         new Section
                         {

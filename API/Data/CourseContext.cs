@@ -43,6 +43,28 @@ namespace API.Data
                 .WithMany(l => l.SectionLessons)
                 .HasForeignKey(cl => cl.LessonId);
 
+            modelBuilder.Entity<UserSection>()
+                .HasKey(us => new { us.SectionId, us.UserId });
+            modelBuilder.Entity<UserSection>()
+                .HasOne(us => us.Section)
+                .WithMany(u => u.UserSections)
+                .HasForeignKey(us => us.SectionId);
+            modelBuilder.Entity<UserSection>()
+                .HasOne(cl => cl.User)
+                .WithMany(l => l.UserSections)
+                .HasForeignKey(cl => cl.UserId);
+
+            modelBuilder.Entity<UserLesson>()
+                .HasKey(us => new { us.LessonId, us.UserId });
+            modelBuilder.Entity<UserLesson>()
+                .HasOne(us => us.Lesson)
+                .WithMany(u => u.UserLessons)
+                .HasForeignKey(us => us.LessonId);
+            modelBuilder.Entity<UserLesson>()
+                .HasOne(cl => cl.User)
+                .WithMany(l => l.UserLessons)
+                .HasForeignKey(cl => cl.UserId);
+
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.Sections)
                 .WithOne(s => s.Course)
@@ -82,5 +104,7 @@ namespace API.Data
         public DbSet<LessonKeyword> LessonKeywords { get; set; }
         public DbSet<Test> Tests { get; set; }
         public DbSet<Option> Options { get; set; }
+        public DbSet<UserSection> UserSections { get; set; }
+        public DbSet<UserLesson> UserLessons { get; set; }
     }
 }
