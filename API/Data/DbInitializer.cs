@@ -17,6 +17,159 @@ namespace API.Data
             InitializeTests(context);
             InitializeCourses(context);
             InitializeSectionLessons(context);
+            InitializeUserSections(context);
+            InitializeUserLessons(context);
+        }
+
+        private static void InitializeUserSections(CourseContext context)
+        {
+            if (context.UserSections.Any()) return;
+
+            var usersToSections = new List<UserToSections> {
+                new() {
+                    UserName = "bob",
+                    SectionIds = Enumerable.Range(1, 5).ToList(),
+                },
+                new() {
+                    UserName = "yaryna",
+                    SectionIds = Enumerable.Range(1, 21).ToList(),
+                },
+                new() {
+                    UserName = "sam",
+                    SectionIds = new List<int> { 1, 10, 11 },
+                },
+            };
+
+            foreach (var userToSections in usersToSections)
+            {
+                foreach (var sectionId in userToSections.SectionIds)
+                {
+                    var user = context.Users.FirstOrDefault(user => user.UserName == userToSections.UserName);
+                    if (user != null)
+                    {
+                        context.UserSections.Add(
+                            new UserSection
+                            {
+                                UserId = user.Id,
+                                SectionId = sectionId,
+                                isAvailable = true,
+                            }
+                        );
+                    }
+                }
+            }
+
+            context.SaveChanges();
+        }
+
+        private static void InitializeUserLessons(CourseContext context)
+        {
+            if (context.UserLessons.Any()) return;
+
+            var usersToLessons = new List<UserToLessons> {
+                new() {
+                    UserName = "bob",
+                    LessonsInfo = new List<UserLessonInfo> {
+                        new() {
+                            LessonId = 1,
+                            TestScore = 100,
+                        },
+                        new() {
+                            LessonId = 2,
+                            TestScore = 100,
+                        },
+                        new() {
+                            LessonId = 3,
+                            TestScore = 90,
+                        },
+                        new() {
+                            LessonId = 4,
+                            TestScore = 50,
+                        },
+                        new() {
+                            LessonId = 5,
+                            TestScore = 85,
+                        },
+                    },
+                },
+                new() {
+                    UserName = "yaryna",
+                    LessonsInfo = new List<UserLessonInfo> {
+                        new() {
+                            LessonId = 1,
+                            TestScore = 100,
+                        },
+                        new() {
+                            LessonId = 2,
+                            TestScore = 100,
+                        },
+                        new() {
+                            LessonId = 3,
+                            TestScore = 90,
+                        },
+                        new() {
+                            LessonId = 4,
+                            TestScore = 50,
+                        },
+                        new() {
+                            LessonId = 5,
+                            TestScore = 85,
+                        },
+                        new() {
+                            LessonId = 9,
+                            TestScore = 85,
+                        },
+                        new() {
+                            LessonId = 10,
+                            TestScore = 100,
+                        },
+                    },
+                },
+                new() {
+                    UserName = "sam",
+                    LessonsInfo = new List<UserLessonInfo> {
+                        new() {
+                            LessonId = 3,
+                            TestScore = 90,
+                        },
+                        new() {
+                            LessonId = 4,
+                            TestScore = 50,
+                        },
+                        new() {
+                            LessonId = 9,
+                            TestScore = 85,
+                        },
+                        new() {
+                            LessonId = 10,
+                            TestScore = 100,
+                        },
+                    },
+                },
+            };
+
+            foreach (var userToLessons in usersToLessons)
+            {
+                foreach (var lessonInfo in userToLessons.LessonsInfo)
+                {
+                    var user = context.Users.FirstOrDefault(user => user.UserName == userToLessons.UserName);
+                    if (user != null)
+                    {
+                        context.UserLessons.Add(
+                            new UserLesson
+                            {
+                                UserId = user.Id,
+                                LessonId = lessonInfo.LessonId,
+                                IsTheoryCompleted = lessonInfo.IsTheoryCompleted,
+                                IsPracticeCompleted = lessonInfo.IsPracticeCompleted,
+                                TestScore = lessonInfo.TestScore,
+                            }
+                        );
+                    }
+                }
+            }
+
+            context.SaveChanges();
         }
 
         public static async Task InitializeUsers(UserManager<User> userManager)
@@ -39,7 +192,7 @@ namespace API.Data
                 };
 
                 await userManager.CreateAsync(admin, "Pa$$w0rd");
-                await userManager.AddToRolesAsync(admin, new [] {"Member", "Admin"});
+                await userManager.AddToRolesAsync(admin, new[] { "Member", "Admin" });
             }
         }
 
@@ -1074,37 +1227,57 @@ namespace API.Data
         }
     }
 
-// helper classes to make seeding data into join tables easier
+    // helper classes to make seeding data into join tables easier
     class LessonToKeywords
-{
-    public int LessonId { get; set; }
-    public List<int> KeywordIds { get; set; }
-}
+    {
+        public int LessonId { get; set; }
+        public List<int> KeywordIds { get; set; }
+    }
 
-class SectionToLessons
-{
-    public int SectionId { get; set; }
-    public List<int> LessonIds { get; set; }
-}
+    class SectionToLessons
+    {
+        public int SectionId { get; set; }
+        public List<int> LessonIds { get; set; }
+    }
 
-class LessonToPreviousLessons
-{
-    public int LessonId { get; set; }
-    public List<int> PreviousLessonIds { get; set; }
-}
+    class UserToSections
+    {
+        public string UserName { get; set; }
+        public List<int> SectionIds { get; set; }
+    }
 
-class LessonTests
-{
-    public int LessonId { get; set; }
-    public List<TestOptions> TestOptions { get; set; }
-}
+    class UserToLessons
+    {
+        public string UserName { get; set; }
+        public List<UserLessonInfo> LessonsInfo { get; set; }
+    }
 
-class TestOptions
-{
-    public string Question { get; set; }
-    public string Type { get; set; } = "radio";
-    public string ImgUrl { get; set; } = "";
-    public List<Option> Options { get; set; }
-}
+    class UserLessonInfo
+    {
+        public int LessonId { get; set; }
+        public bool IsTheoryCompleted { get; set; } = false;
+        public bool IsPracticeCompleted { get; set; } = false;
+        public float? TestScore { get; set; }
+    }
+
+    class LessonToPreviousLessons
+    {
+        public int LessonId { get; set; }
+        public List<int> PreviousLessonIds { get; set; }
+    }
+
+    class LessonTests
+    {
+        public int LessonId { get; set; }
+        public List<TestOptions> TestOptions { get; set; }
+    }
+
+    class TestOptions
+    {
+        public string Question { get; set; }
+        public string Type { get; set; } = "radio";
+        public string ImgUrl { get; set; } = "";
+        public List<Option> Options { get; set; }
+    }
 }
 
