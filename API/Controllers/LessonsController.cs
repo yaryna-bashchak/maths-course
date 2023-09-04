@@ -41,7 +41,8 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GetLessonDto>> GetLesson(int id)
         {
-            var result = await _lessonsRepository.GetLesson(id);
+            var username = User.Identity.Name ?? "";
+            var result = await _lessonsRepository.GetLesson(id, username);
 
             if (!result.IsSuccess)
             {

@@ -33,16 +33,19 @@ namespace API.Repositories.Implementation
             return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
         }
 
-        public async Task<Result<GetLessonDto>> GetLesson(int id)
+        public async Task<Result<GetLessonDto>> GetLesson(int id, string username)
         {
-            try
+            var user = await _userManager.FindByNameAsync(username);
+
+            
             {
                 var dbLesson = await _context.Lessons
                     .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                     .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+                    .Include(l => l.UserLessons)
                     .FirstAsync(l => l.Id == id);
 
-                var lesson = _mapper.Map<GetLessonDto>(dbLesson);
+                var lesson = _mapper.Map<GetLessonDto>(dbLesson, opts => opts.Items["UserId"] = user?.Id);
                 return new Result<GetLessonDto> { IsSuccess = true, Data = lesson };
             }
             catch (System.Exception)
@@ -102,7 +105,7 @@ namespace API.Repositories.Implementation
 
                 await _context.SaveChangesAsync();
 
-                var result = await GetLesson(id);
+                var result = await GetLesson(id, username);
                 return new Result<GetLessonDto> { IsSuccess = true, Data = result.Data };
             }
             catch (System.Exception)
