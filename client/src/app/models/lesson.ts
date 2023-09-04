@@ -6,7 +6,7 @@ export interface Lesson {
   urlPractice: string
   number: number
   importance: number
-  testScore: number
+  testScore?: number
   isTheoryCompleted: boolean
   isPracticeCompleted: boolean
   keywords?: Keyword[]

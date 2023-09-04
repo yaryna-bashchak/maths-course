@@ -85,7 +85,7 @@ export default function TestsSpace() {
                 isFinished ? (
                     <>
                         <Typography sx={{ mt: 2, mb: 1 }}>
-                            Вітаю! Твій результат: {lesson && (lesson.testScore).toFixed(2)}%
+                            Вітаю! Твій результат: {lesson?.testScore && (lesson.testScore).toFixed(2)}%
                         </Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Box sx={{ flex: '1 1 auto' }} />

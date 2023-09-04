@@ -28,7 +28,7 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
     const stageOfLessonCompletion = (lesson: Lesson, isAvailable: boolean): Stage => {
         if(!isAvailable) return "unavailable";
 
-        const completed = [lesson.isTheoryCompleted, lesson.isPracticeCompleted, (lesson.testScore >= 0)]
+        const completed = [lesson.isTheoryCompleted, lesson.isPracticeCompleted, Boolean(lesson.testScore)]
 
         if (completed.every(value => value === true)) {
             return "completed";

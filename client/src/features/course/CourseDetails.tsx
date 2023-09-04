@@ -41,7 +41,7 @@ export default function CourseDetails() {
         if (course) {
             for (let i = 0; i < course.sections.length; i++) {
                 if (!course.sections[i].lessons.every(l =>
-                    l.isPracticeCompleted && l.isTheoryCompleted && l.testScore >= 0
+                    l.isPracticeCompleted && l.isTheoryCompleted && l.testScore
                 ))
                     return course.sections[i].id;
             }
