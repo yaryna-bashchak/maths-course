@@ -105,6 +105,12 @@ export const coursesSlice = createSlice({
         }
       }
       //state.status = 'pendingFetchCourse'
+    },
+    clearCourses: (state) => {
+      state.entities = {};
+      state.ids = [];
+      state.coursesLoaded = false;
+      state.individualCourseStatus = {};
     }
   },
   extraReducers: builder => {
@@ -177,4 +183,4 @@ export const courseSelectors = coursesAdapter.getSelectors(
   (state: RootState) => state.courses
 )
 
-export const { setLessonParams, initializeCourseStatus } = coursesSlice.actions
+export const { setLessonParams, initializeCourseStatus, clearCourses } = coursesSlice.actions
