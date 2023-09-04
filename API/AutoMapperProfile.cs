@@ -20,7 +20,18 @@ namespace API
         {
             CreateMap<Lesson, GetLessonDto>()
                 .ForMember(dto => dto.Keywords, l => l.MapFrom(l => l.LessonKeywords.Select(lk => lk.Keyword)))
-                .ForMember(dto => dto.PreviousLessons, l => l.MapFrom(l => l.PreviousLessons.Select(lpl => lpl.PreviousLesson)));
+                .ForMember(dto => dto.PreviousLessons, l => l.MapFrom(l => l.PreviousLessons.Select(lpl => lpl.PreviousLesson)))
+                .AfterMap((src, dest, context) =>
+                {
+                    var userId = context.Items["UserId"] as string;
+                    var userLesson = src.UserLessons.FirstOrDefault(ul => ul.UserId == userId);
+                    if (userLesson != null)
+                    {
+                        dest.IsTheoryCompleted = userLesson.IsTheoryCompleted;
+                        dest.IsPracticeCompleted = userLesson.IsPracticeCompleted;
+                        dest.TestScore = userLesson.TestScore;
+                    }
+                });
             CreateMap<Lesson, GetLessonPreviewDto>();
             CreateMap<AddLessonDto, Lesson>();
             CreateMap<Lesson, GetPreviousLessonDto>();

@@ -31,11 +31,13 @@ namespace API.Repositories.Implementation
             try
             {
                 var dbCourse = await _context.Courses
+                    .Include(c => c.Sections).ThenInclude(s => s.UserSections)
                     .Include(c => c.Sections).ThenInclude(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
                         .ThenInclude(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                     .Include(c => c.Sections).ThenInclude(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
                         .ThenInclude(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                    .Include(c => c.Sections).ThenInclude(s => s.UserSections)
+                    .Include(c => c.Sections).ThenInclude(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                        .ThenInclude(l => l.UserLessons)
                     .FirstAsync(l => l.Id == id);
 
                 var course = _mapper.Map<GetCourseDto>(dbCourse, opts => opts.Items["UserId"] = user?.Id)
@@ -43,9 +45,9 @@ namespace API.Repositories.Implementation
                     .Filter(maxImportance, onlyUncompleted)
                     .Search(searchTerm);
 
-                if (user == null)
+                foreach (var section in course.Sections)
                 {
-                    foreach (var section in course.Sections)
+                    if (!section.IsAvailable)
                     {
                         var lessonPreviews = _mapper.Map<List<GetLessonPreviewDto>>(section.Lessons);
                         var lessons = _mapper.Map<List<GetLessonDto>>(lessonPreviews);
