@@ -1,7 +1,10 @@
 using API.Data;
 using API.Dtos.Course;
+using API.Dtos.Lesson;
+using API.Entities;
 using API.Extensions;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories.Implementation
@@ -10,16 +13,21 @@ namespace API.Repositories.Implementation
     {
         private readonly CourseContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
         public CoursesRepository(
             CourseContext context,
+            UserManager<User> userManager,
             IMapper mapper)
         {
+            _userManager = userManager;
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<Result<GetCourseDto>> GetCourse(int id, int? maxImportance, bool? onlyUncompleted, string searchTerm)
+        public async Task<Result<GetCourseDto>> GetCourse(int id, int? maxImportance, bool? onlyUncompleted, string searchTerm, string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
+
             try
             {
                 var dbCourse = await _context.Courses
@@ -27,9 +35,10 @@ namespace API.Repositories.Implementation
                         .ThenInclude(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                     .Include(c => c.Sections).ThenInclude(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
                         .ThenInclude(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+                    .Include(c => c.Sections).ThenInclude(s => s.UserSections)
                     .FirstAsync(l => l.Id == id);
-                
-                var course = _mapper.Map<GetCourseDto>(dbCourse)
+
+                var course = _mapper.Map<GetCourseDto>(dbCourse, opts => opts.Items["UserId"] = user?.Id)
                     .SortAndRenumberLessons()
                     .Filter(maxImportance, onlyUncompleted)
                     .Search(searchTerm);

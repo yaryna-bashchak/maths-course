@@ -42,7 +42,8 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GetCourseDto>> GetCourse(int id, [FromQuery] LessonParams lessonParams)
         {
-            var result = await _coursesRepository.GetCourse(id, lessonParams.MaxImportance, lessonParams.OnlyUncompleted, lessonParams.SearchTerm);
+            var username = User.Identity.Name ?? "";
+            var result = await _coursesRepository.GetCourse(id, lessonParams.MaxImportance, lessonParams.OnlyUncompleted, lessonParams.SearchTerm, username);
 
             if (!result.IsSuccess)
             {
