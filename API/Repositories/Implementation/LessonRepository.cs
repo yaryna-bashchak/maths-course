@@ -36,9 +36,8 @@ namespace API.Repositories.Implementation
         public async Task<Result<GetLessonDto>> GetLesson(int id, string username)
         {
             var user = await _userManager.FindByNameAsync(username);
-
             
-            {
+            try {
                 var dbLesson = await _context.Lessons
                     .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                     .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
