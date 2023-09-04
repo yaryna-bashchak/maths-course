@@ -3,18 +3,22 @@ using API.Data;
 using API.Dtos.Lesson;
 using API.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories.Implementation
 {
     public class LessonsRepository : ILessonsRepository
     {
-        private CourseContext _context;
-        private IMapper _mapper;
+        private readonly CourseContext _context;
+        private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
         public LessonsRepository(
             CourseContext context,
+            UserManager<User> userManager,
             IMapper mapper)
         {
+            _userManager = userManager;
             _context = context;
             _mapper = mapper;
         }
@@ -58,8 +62,10 @@ namespace API.Repositories.Implementation
             return new Result<List<GetLessonDto>> { IsSuccess = true, Data = result.Data };
         }
 
-        public async Task<Result<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson)
+        public async Task<Result<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson, string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
+
             try
             {
                 var dbLesson = await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);
@@ -70,9 +76,30 @@ namespace API.Repositories.Implementation
                 dbLesson.UrlPractice = updatedLesson.UrlPractice ?? dbLesson.UrlPractice;
                 dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
                 dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
-                //dbLesson.TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : dbLesson.TestScore;
-                //dbLesson.IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 ? (updatedLesson.IsTheoryCompleted != 0) : dbLesson.IsTheoryCompleted;
-                //dbLesson.IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 ? (updatedLesson.IsPracticeCompleted != 0) : dbLesson.IsPracticeCompleted;
+
+                if (user != null)
+                {
+                    UserLesson userLesson = await _context.UserLessons
+                        .Where(sl => sl.LessonId == id).FirstOrDefaultAsync(sl => sl.UserId == user.Id);
+
+                    if (userLesson == null)
+                    {
+                        _context.UserLessons.Add(
+                            new UserLesson
+                            {
+                                LessonId = id,
+                                UserId = user.Id,
+                                IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 && (updatedLesson.IsTheoryCompleted != 0),
+                                IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 && (updatedLesson.IsPracticeCompleted != 0),
+                                TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : null,
+                            });
+                    } else {
+                        userLesson.IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 ? (updatedLesson.IsTheoryCompleted != 0) : userLesson.IsTheoryCompleted;
+                        userLesson.IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 ? (updatedLesson.IsPracticeCompleted != 0) : userLesson.IsPracticeCompleted;
+                        userLesson.TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : userLesson.TestScore;
+                    }
+                }
+
                 await _context.SaveChangesAsync();
 
                 var result = await GetLesson(id);

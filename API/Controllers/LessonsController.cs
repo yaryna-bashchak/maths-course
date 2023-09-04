@@ -93,7 +93,8 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson)
         {
-            var result = await _lessonsRepository.UpdateLesson(id, updatedLesson);
+            var username = User.Identity.Name ?? "";
+            var result = await _lessonsRepository.UpdateLesson(id, updatedLesson, username);
 
             if (!result.IsSuccess)
             {
