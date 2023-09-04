@@ -15,7 +15,8 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection)
         {
-            var result = await _sectionsRepository.UpdateSection(id, updatedSection);
+            var username = User.Identity.Name ?? "";
+            var result = await _sectionsRepository.UpdateSection(id, updatedSection, username);
 
             if (!result.IsSuccess)
             {

@@ -3,18 +3,22 @@ using API.Data;
 using API.Dtos.Section;
 using API.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories.Implementation
 {
     public class SectionsRepository : ISectionsRepository
     {
-        private CourseContext _context;
-        private IMapper _mapper;
+        private readonly CourseContext _context;
+        private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
         public SectionsRepository(
             CourseContext context,
+            UserManager<User> userManager,
             IMapper mapper)
         {
+            _userManager = userManager;
             _context = context;
             _mapper = mapper;
         }
@@ -36,8 +40,10 @@ namespace API.Repositories.Implementation
             }
         }
 
-        public async Task<Result<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection)
+        public async Task<Result<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection, string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
+
             try
             {
                 var dbSection = await _context.Sections.FirstAsync(l => l.Id == id);
@@ -45,7 +51,25 @@ namespace API.Repositories.Implementation
                 dbSection.Title = updatedSection.Title ?? dbSection.Title;
                 dbSection.Description = updatedSection.Description ?? dbSection.Description;
                 dbSection.Number = updatedSection.Number != -1 ? updatedSection.Number : dbSection.Number;
-                //dbSection.IsAvailable = updatedSection.IsAvailable != -1 ? (updatedSection.IsAvailable != 0) : dbSection.IsAvailable;
+
+                if (user != null && updatedSection.IsAvailable != -1)
+                {
+                    UserSection userSection = await _context.UserSections
+                        .Where(sl => sl.SectionId == id).FirstOrDefaultAsync(sl => sl.UserId == user.Id);
+
+                    if (userSection == null)
+                    {
+                        _context.UserSections.Add(
+                            new UserSection
+                            {
+                                SectionId = id,
+                                UserId = user.Id,
+                                isAvailable = updatedSection.IsAvailable != 0,
+                            });
+                    } else {
+                        userSection.isAvailable = updatedSection.IsAvailable != 0;
+                    }
+                }
 
                 if (updatedSection.LessonIdsToAdd != null)
                 {
