@@ -24,6 +24,8 @@ namespace API
             CreateMap<Lesson, GetLessonPreviewDto>();
             CreateMap<AddLessonDto, Lesson>();
             CreateMap<Lesson, GetPreviousLessonDto>();
+            CreateMap<GetLessonDto, GetLessonPreviewDto>();
+            CreateMap<GetLessonPreviewDto, GetLessonDto>();
 
             CreateMap<Keyword, GetKeywordDto>();
             CreateMap<AddKeywordDto, Keyword>();
@@ -39,7 +41,13 @@ namespace API
             CreateMap<AddOptionDto, Option>();
 
             CreateMap<Section, GetSectionDto>()
-                .ForMember(dto => dto.Lessons, opt => opt.MapFrom(s => s.SectionLessons.Select(sl => sl.Lesson)));
+                .ForMember(dto => dto.Lessons, opt => opt.MapFrom(s => s.SectionLessons.Select(sl => sl.Lesson)))
+                .ForMember(dto => dto.IsAvailable, opt => opt.MapFrom((src, _, _, context) =>
+                {
+                    var userId = context.Items["UserId"] as string;
+                    var userSection = src.UserSections.FirstOrDefault(us => us.UserId == userId);
+                    return userSection?.isAvailable ?? false;
+                }));
             CreateMap<Section, GetSectionPreviewDto>()
                 .ForMember(dto => dto.Lessons, opt => opt.MapFrom(s => s.SectionLessons.Select(sl => sl.Lesson)));
 

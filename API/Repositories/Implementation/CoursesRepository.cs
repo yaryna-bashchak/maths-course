@@ -43,6 +43,16 @@ namespace API.Repositories.Implementation
                     .Filter(maxImportance, onlyUncompleted)
                     .Search(searchTerm);
 
+                if (user == null)
+                {
+                    foreach (var section in course.Sections)
+                    {
+                        var lessonPreviews = _mapper.Map<List<GetLessonPreviewDto>>(section.Lessons);
+                        var lessons = _mapper.Map<List<GetLessonDto>>(lessonPreviews);
+                        section.Lessons = lessons;
+                    }
+                }
+
                 return new Result<GetCourseDto> { IsSuccess = true, Data = course };
             }
             catch (System.Exception)
