@@ -15,7 +15,8 @@ namespace API.Controllers
         [HttpGet("lessonId/{lessonId}")]
         public async Task<ActionResult<List<GetTestDto>>> GetTestsOfLesson(int lessonId)
         {
-            var result = await _testsRepository.GetTestsOfLesson(lessonId);
+            var username = User.Identity.Name ?? "";
+            var result = await _testsRepository.GetTestsOfLesson(lessonId, username);
 
             if (!result.IsSuccess)
             {
@@ -28,7 +29,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<List<GetTestDto>>> AddTest(AddTestDto newTest)
         {
-            var result = await _testsRepository.AddTest(newTest);
+            var username = User.Identity.Name ?? "";
+            var result = await _testsRepository.AddTest(newTest, username);
 
             if (!result.IsSuccess)
             {
@@ -41,7 +43,8 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<ActionResult<List<GetTestDto>>> DeleteTest(int id)
         {
-            var result = await _testsRepository.DeleteTest(id);
+            var username = User.Identity.Name ?? "";
+            var result = await _testsRepository.DeleteTest(id, username);
 
             if (!result.IsSuccess)
             {

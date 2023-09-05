@@ -32,7 +32,7 @@ export default function TestControl({
     setIsFinished,
 }: Props) {
     const dispatch = useAppDispatch();
-    const { lessonId } = useParams<{ courseId: string, lessonId: string }>();
+    const { lessonId, courseId } = useParams<{ courseId: string, lessonId: string }>();
     const tests = useAppSelector(testSelectors.selectAll);
     const [checked, setChecked] = useState('');
     const [helperText, setHelperText] = useState(' ');
@@ -67,7 +67,7 @@ export default function TestControl({
 
     const handleFinish = () => {
         setIsFinished(true);
-        dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { testScore: 100 * currentTestScore / totalSteps(tests) } }))
+        dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { testScore: 100 * currentTestScore / totalSteps(tests), courseId } }))
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

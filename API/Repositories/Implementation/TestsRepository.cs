@@ -2,6 +2,7 @@ using API.Data;
 using API.Dtos.Test;
 using API.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories.Implementation
@@ -10,16 +11,22 @@ namespace API.Repositories.Implementation
     {
         private CourseContext _context;
         private IMapper _mapper;
+        private readonly UserManager<User> _userManager;
         public TestsRepository(
             CourseContext context,
+            UserManager<User> userManager,
             IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
-        public async Task<Result<List<GetTestDto>>> GetTestsOfLesson(int lessonId)
+        public async Task<Result<List<GetTestDto>>> GetTestsOfLesson(int lessonId, string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return new Result<List<GetTestDto>> { IsSuccess = false, ErrorMessage = "Unauthorized user." };
+
             var dbTests = _context.Tests
                 .Include(t => t.Options)
                 .Where(t => t.Lesson.Id == lessonId);
@@ -33,8 +40,11 @@ namespace API.Repositories.Implementation
             return new Result<List<GetTestDto>> { IsSuccess = true, Data = tests };
         }
 
-        public async Task<Result<List<GetTestDto>>> AddTest(AddTestDto newTest)
+        public async Task<Result<List<GetTestDto>>> AddTest(AddTestDto newTest, string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return new Result<List<GetTestDto>> { IsSuccess = false, ErrorMessage = "Unauthorized user." };
+
             try
             {
                 var test = _mapper.Map<Test>(newTest);
@@ -42,7 +52,7 @@ namespace API.Repositories.Implementation
                 await _context.Tests.AddAsync(test);
                 await _context.SaveChangesAsync();
 
-                var result = await GetTestsOfLesson(newTest.LessonId);
+                var result = await GetTestsOfLesson(newTest.LessonId, username);
                 return new Result<List<GetTestDto>> { IsSuccess = true, Data = result.Data };
             }
             catch (System.Exception)
@@ -51,8 +61,11 @@ namespace API.Repositories.Implementation
             }
         }
 
-        public async Task<Result<List<GetTestDto>>> DeleteTest(int id)
+        public async Task<Result<List<GetTestDto>>> DeleteTest(int id, string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return new Result<List<GetTestDto>> { IsSuccess = false, ErrorMessage = "Unauthorized user." };
+
             try
             {
                 var dbTest = await _context.Tests.FirstAsync(t => t.Id == id);
@@ -61,7 +74,7 @@ namespace API.Repositories.Implementation
                 _context.Tests.Remove(dbTest);
                 await _context.SaveChangesAsync();
 
-                var result = await GetTestsOfLesson(lessonId);
+                var result = await GetTestsOfLesson(lessonId, username);
 
                 if (result.IsSuccess == false)
                 {
