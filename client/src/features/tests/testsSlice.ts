@@ -26,7 +26,13 @@ export const testsSlice = createSlice({
     lessonId: 0,
     status: 'idle'
   }),
-  reducers: {},
+  reducers: {
+    clearTests: state => {
+      state.entities = {}
+      state.ids = []
+      state.lessonId = 0
+    }
+  },
   extraReducers: builder => {
     builder.addCase(fetchTestsAsync.pending, state => {
       state.status = 'pendingFetchTests'
@@ -48,3 +54,5 @@ export const testsSlice = createSlice({
 export const testSelectors = testsAdapter.getSelectors(
   (state: RootState) => state.tests
 )
+
+export const { clearTests } = testsSlice.actions

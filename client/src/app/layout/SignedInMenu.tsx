@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../store/configureStore";
 import { signOut } from "../../features/account/accountSlice";
 import { AccountCircle } from "@mui/icons-material";
 import { clearCourses } from "../../features/courses/coursesSlice";
+import { clearTests } from "../../features/tests/testsSlice";
 
 export default function SignedInMenu() {
     const dispatch = useAppDispatch();
@@ -39,6 +40,7 @@ export default function SignedInMenu() {
                 <MenuItem onClick={() => {
                     dispatch(signOut());
                     dispatch(clearCourses());
+                    dispatch(clearTests());
                 }}>Вийти</MenuItem>
             </Menu>
         </div>

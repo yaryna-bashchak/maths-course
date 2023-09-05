@@ -13,6 +13,7 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { useAppDispatch } from '../../app/store/configureStore';
 import { singInUser } from './accountSlice';
 import { clearCourses } from '../courses/coursesSlice';
+import { clearTests } from '../tests/testsSlice';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function Login() {
     const submitForm = async (data: FieldValues) => {
         try {
             dispatch(clearCourses());
+            dispatch(clearTests());
             await dispatch(singInUser(data));
             navigate(location.state?.from || '/course');
         } catch (error: any) {
