@@ -20,6 +20,7 @@ public class CoursesControllerTests
     {
         //Arrange
         var id = 1;
+        var username = "bob";
 
         var validCourse = new GetCourseDto
         {
@@ -78,11 +79,11 @@ public class CoursesControllerTests
         };
 
         _mockRepository
-            .Setup(x => x.GetCourse(It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>()))
+            .Setup(x => x.GetCourse(It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(Task.FromResult(new Result<GetCourseDto> { IsSuccess = true, Data = validCourse }));
 
         //Act
-        var result = await _mockRepository.Object.GetCourse(id, null, null, null);
+        var result = await _mockRepository.Object.GetCourse(id, null, null, null, username);
 
         //Assert
         Assert.Equal(validCourse.Id, result.Data.Id);
@@ -96,13 +97,14 @@ public class CoursesControllerTests
     {
         //Arrange
         var id = 15;
+        var username = "bob";
 
         _mockRepository
-            .Setup(x => x.GetCourse(It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>()))
+            .Setup(x => x.GetCourse(It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(Task.FromResult(new Result<GetCourseDto> { IsSuccess = false, ErrorMessage = "Course with the provided ID not found." }));
 
         //Act
-        var result = await _mockRepository.Object.GetCourse(id, null, null, null);
+        var result = await _mockRepository.Object.GetCourse(id, null, null, null, username);
 
         //Assert
         Assert.False(result.IsSuccess);

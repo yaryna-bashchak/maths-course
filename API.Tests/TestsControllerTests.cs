@@ -17,6 +17,7 @@ public class TestsControllerTests
     {
         //Arrange
         var id = 1;
+        var username = "bob";
 
         var validTests = new List<GetTestDto>
         {
@@ -38,11 +39,11 @@ public class TestsControllerTests
         };
 
         _mockRepository
-            .Setup(x => x.GetTestsOfLesson(It.IsAny<int>()))
+            .Setup(x => x.GetTestsOfLesson(It.IsAny<int>(), It.IsAny<string>()))
             .Returns(Task.FromResult(new Result<List<GetTestDto>> { IsSuccess = true, Data = validTests }));
 
         //Act
-        var result = await _mockRepository.Object.GetTestsOfLesson(id);
+        var result = await _mockRepository.Object.GetTestsOfLesson(id, username);
 
         //Assert
         Assert.True(result.IsSuccess);
@@ -56,13 +57,14 @@ public class TestsControllerTests
     {
         //Arrange
         var id = 30;
+        var username = "bob";
 
         _mockRepository
-            .Setup(x => x.GetTestsOfLesson(It.IsAny<int>()))
+            .Setup(x => x.GetTestsOfLesson(It.IsAny<int>(), It.IsAny<string>()))
             .Returns(Task.FromResult(new Result<List<GetTestDto>> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." }));
 
         //Act
-        var result = await _mockRepository.Object.GetTestsOfLesson(id);
+        var result = await _mockRepository.Object.GetTestsOfLesson(id, username);
 
         //Assert
         Assert.False(result.IsSuccess);
