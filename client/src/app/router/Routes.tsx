@@ -9,17 +9,20 @@ import ServerError from "../errors/ServerError";
 import CourseCatalog from "../../features/courses/CourseCatalog";
 import Login from "../../features/account/Login";
 import Register from "../../features/account/Register";
+import RequireAuth from "./RequireAuth";
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <App />,
         children: [
+            { element: <RequireAuth />, children: [
+                { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
+                { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
+            ]},
             { path: '', element: <HomePage /> },
             { path: 'course', element: <CourseCatalog /> },
             { path: 'course/:courseId', element: <CourseDetails /> },
-            { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
-            { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
             { path: 'register', element: <Register /> },
             { path: 'login', element: <Login /> },
             { path: 'server-error', element: <ServerError /> },
