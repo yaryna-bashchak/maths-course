@@ -35,7 +35,6 @@ export default function LessonDetails() {
     const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
     const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
     const lesson = course ? findLessonById(course, parseInt(lessonId!)) : null;
-    const { user } = useAppSelector(state => state.account);
     const { status } = useAppSelector(state => state.courses);
     const courseStatus = useAppSelector(state => state.courses.individualCourseStatus[parseInt(courseId!)]);
     const { courseLoaded, lessonParams } = courseStatus || {};
@@ -64,12 +63,8 @@ export default function LessonDetails() {
                 </Box>
                 <Typography variant="h5">{lesson.number}. {lesson.title}</Typography>
                 <Typography variant="body1">{lesson.description}</Typography>
-                {user ?
-                    <>
-                        <Videos />
-                        <Tests />
-                    </> : <></>
-                }
+                <Videos />
+                <Tests />
             </>
         ) : null
     )

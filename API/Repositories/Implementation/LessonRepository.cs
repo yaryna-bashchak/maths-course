@@ -13,12 +13,15 @@ namespace API.Repositories.Implementation
         private readonly CourseContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly ICoursesRepository _coursesRepository;
         public LessonsRepository(
             CourseContext context,
             UserManager<User> userManager,
+            ICoursesRepository coursesRepository,
             IMapper mapper)
         {
             _userManager = userManager;
+            _coursesRepository = coursesRepository;
             _context = context;
             _mapper = mapper;
         }
@@ -67,7 +70,18 @@ namespace API.Repositories.Implementation
         public async Task<Result<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson, string username)
         {
             var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Unauthorized user." };
 
+            if (updatedLesson.courseId == -1) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "You should provide course ID." };
+            var courseResult = await _coursesRepository.GetCourse(updatedLesson.courseId, null, null, "", username);
+            if (!courseResult.IsSuccess) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = courseResult.ErrorMessage };
+
+            var section = courseResult.Data.Sections.FirstOrDefault(s => s.Lessons.Any(l => l.Id == id));
+            if (section == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+
+            var isLessonAvailable = section?.IsAvailable;
+            if (!isLessonAvailable.HasValue || !isLessonAvailable.Value) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson is not available." };
+            
             try
             {
                 var dbLesson = await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);

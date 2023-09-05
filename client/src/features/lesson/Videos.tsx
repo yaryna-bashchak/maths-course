@@ -24,7 +24,7 @@ export default function Videos() {
                     label="Theory"
                     control={
                         <Checkbox checked={lesson?.isTheoryCompleted} onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                            dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { isTheoryCompleted: Number(event.target.checked) } }
+                            dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { isTheoryCompleted: Number(event.target.checked), courseId } }
                             ))
                         }
                         />
@@ -36,7 +36,7 @@ export default function Videos() {
                 <FormControlLabel
                     label="Practice"
                     control={<Checkbox checked={lesson?.isPracticeCompleted} onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { isPracticeCompleted: Number(event.target.checked) } }
+                        dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { isPracticeCompleted: Number(event.target.checked), courseId } }
                         ))
                     }
                     />}

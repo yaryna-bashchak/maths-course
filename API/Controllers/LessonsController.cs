@@ -99,6 +99,7 @@ namespace API.Controllers
 
             if (!result.IsSuccess)
             {
+                if (result.ErrorMessage.Contains("Unauthorized")) return Unauthorized();
                 return NotFound(result.ErrorMessage);
             }
 
