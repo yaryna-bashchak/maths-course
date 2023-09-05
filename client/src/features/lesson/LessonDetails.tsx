@@ -30,6 +30,11 @@ function isNotFound(course: Course | undefined, lesson: Lesson | null, status: s
     return (!course || !course.sections?.length || !lesson) && !status.includes('pending');
 }
 
+export function isAvailable(course: Course | undefined, lessonId: string) {
+    const section = course ? course.sections.find(s => s.lessons.some(l => l.id === parseInt(lessonId))) : null;
+    return section?.isAvailable;
+}
+
 export default function LessonDetails() {
     const dispatch = useAppDispatch();
     const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();
@@ -52,8 +57,7 @@ export default function LessonDetails() {
 
     if (isLoading(course, courseLoaded, lessonParams, status)) return <LoadingComponent />;
 
-    if (isNotFound(course, lesson, status)) return <NotFound />;
-
+    if (isNotFound(course, lesson, status) || !isAvailable(course, lessonId!)) return <NotFound />;
 
     return (
         lesson ? (

@@ -8,7 +8,7 @@ import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { fetchTestsAsync, testSelectors } from "./testsSlice";
-import { findLessonById } from "../lesson/LessonDetails";
+import { findLessonById, isAvailable } from "../lesson/LessonDetails";
 import { courseSelectors, fetchCourseAsync, initializeCourseStatus } from "../courses/coursesSlice";
 import { Test } from "../../app/models/test";
 import { LessonParams } from "../../app/models/course";
@@ -61,7 +61,7 @@ export default function TestsSpace() {
 
     if (isLoading(lessonParams, status, courseStatus)) return <LoadingComponent />
 
-    if (isNotFound(status, courseStatus, previousLessonId, parseInt(lessonId!), tests)) {
+    if (isNotFound(status, courseStatus, previousLessonId, parseInt(lessonId!), tests) || !isAvailable(course, lessonId!)) {
         if (!lesson) return <NotFound />
         return <NotFound message="Ох, тестів до цього уроку ще немає" />
     }
