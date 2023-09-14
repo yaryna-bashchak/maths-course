@@ -1,4 +1,4 @@
-# Web App for maths course
+# Web App for math courses
 
 ## About project
 
