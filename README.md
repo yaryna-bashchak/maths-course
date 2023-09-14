@@ -2,7 +2,7 @@
 
 ## About project
 
-This is a Web App for taking the math courses. For now, here is a web API that helps you interact with a database that stores math courses data, and the client side to take courses (log in, see which lessons have already been completed, choose next lesson to complete, watch videos, take tests and see the result).
+This is a Web App for taking the math courses using basically **.NET** for the Back-end, and **React and Redux** for the Front-end. For now, here is a web API that helps you interact with a database that stores math courses data, and the client side to take courses (log in, see which lessons have already been completed, choose next lesson to complete, watch videos, take tests and see the result).
 
 More about business logic, database schema, component diagram you can see in [design document](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing).
 
