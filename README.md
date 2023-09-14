@@ -2,7 +2,7 @@
 
 ## About project
 
-This is a Web App for the maths course. For now, here is a web API that helps you interact with a database that stores math course data, and the client side to take courses (see which lessons have already been completed, choose next lesson to complete, watch videos, take tests and see the result).
+This is a Web App for taking the math courses. For now, here is a web API that helps you interact with a database that stores math courses data, and the client side to take courses (log in, see which lessons have already been completed, choose next lesson to complete, watch videos, take tests and see the result).
 
 More about business logic, database schema, component diagram you can see in [design document](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing).
 
@@ -45,18 +45,29 @@ If you want to test how the Web API works it would be enough to run only API fol
 ## Examples
 
 ### Web App
+To see what the courses look like inside, you should log in.
 
-For example, you can open a 1st course by selecting "Курси" tab on the top bar. Here you can see what stage each lesson is at (completed, in progress, not started) and how many completed lessons are in each section.
+> Use a demo account:
+> - username: bob
+> - password: Pa$$w0rd
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/1a738e03-53aa-4fb7-8518-902395464cfc)
+>There won't be any confidential information about the courses here, so that's fine.
 
-Then you can choose the lesson you want and start passing it.
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/91527a47-f2d8-4906-8c57-080c72a2c09d)
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/7771c91d-7ca2-4299-8c9c-953d1bab2fe5)
+Now, you have access to some sections in 1st course. Open it by selecting "Курси" tab on the top bar and choose "Дізнатись більше". 
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/0757c31e-ce2d-4621-8c7c-bc2962a95a7b)
+
+Here you can see what stage each lesson is at (completed, in progress, not started) and how many completed lessons are in each section.
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/3b98855b-e1fb-4ba2-9256-d8a3acf6b06f)
+
+Then you can try how filters work and choose the lesson you want and start passing it.
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/3a9f6766-a572-47af-ac49-ca322640057a)
+
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/9d9d1c94-140b-4d21-815f-07226ece4be9)
 
 Also you can take the tests.
-
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/fe65f99e-f85f-4000-8063-5b8eb5d7e95d)
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/4d59ae85-bad7-4849-b6d2-6a39b86f78e8)
 
 After answering, you immediately see whether you are right or not.
 
