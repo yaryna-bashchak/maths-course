@@ -34,7 +34,7 @@ namespace API.Extensions
             {
                 foreach (var section in course.Sections)
                 {
-                    section.Lessons = section.Lessons.Where(l => !l.IsPracticeCompleted || !l.IsTheoryCompleted || l.TestScore < 0).ToList();
+                    section.Lessons = section.Lessons.Where(l => !l.IsPracticeCompleted || !l.IsTheoryCompleted || l.TestScore == null).ToList();
                 }
             }
 

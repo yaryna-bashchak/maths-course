@@ -65,7 +65,6 @@ const Course = {
 }
 
 const Lesson = {
-  // list: (id: number) => requests.get(`lessons`),
   details: (id: number) => requests.get(`lessons/${id}`),
   update: (id: number, body: {}) => requests.put(`lessons/${id}`, body)
 }
