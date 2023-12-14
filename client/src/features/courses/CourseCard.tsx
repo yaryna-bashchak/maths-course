@@ -9,10 +9,10 @@ interface Props {
 
 export default function CourseCard({ courseId }: Props) {
     const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
-    
+
     return (
         <>
-            <Card>
+            <Card sx={{ width: '90%', maxWidth: '300px', minWidth: '250px'}}>
                 <CardMedia
                     sx={{ height: 140 }}
                     image="https://lifeimg.pravda.com/images/doc/8/2/8252751-vipdesignusa-depositphotos.jpg"
@@ -34,7 +34,7 @@ export default function CourseCard({ courseId }: Props) {
                     <Button component={Link} to={`/course/${course?.id}`} size="small">Дізнатись більше</Button>
                     <Button size="small" variant="contained">Купити</Button>
                 </CardActions>
-            </Card>
+            </Card >
         </>
     )
 }

@@ -65,7 +65,7 @@ export default function CourseDetails() {
             <Box sx={{ display: 'flex', justifyContent: 'start', mb: '10px' }}>
                 <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course`}>Назад до курсів</Button>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'start', alignItems: "center", gap: '10px' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'start', alignItems: "center", gap: '10px' }}>
                 <Typography variant="h5">{course?.title}</Typography>
                 <Filters />
             </Box>

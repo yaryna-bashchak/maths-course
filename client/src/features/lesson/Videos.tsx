@@ -21,7 +21,7 @@ export default function Videos() {
             <div className="video-wrapper">
                 <video src="\videos\🍒 УРОК 7. ТЕОРІЯ _ буквенні вирази, ОДЗ, властивості дробів.mp4" controls controlsList="nodownload" onContextMenu={handleContextMenu}></video>
                 <FormControlLabel
-                    label="Theory"
+                    label="Теорія"
                     control={
                         <Checkbox checked={lesson?.isTheoryCompleted} onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                             dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { isTheoryCompleted: Number(event.target.checked), courseId } }
@@ -34,7 +34,7 @@ export default function Videos() {
             <div className="video-wrapper">
                 <video src="\videos\🍒УРОК 7. ПРАКТИКА.mp4" controls controlsList="nodownload" onContextMenu={handleContextMenu}></video>
                 <FormControlLabel
-                    label="Practice"
+                    label="Практика"
                     control={<Checkbox checked={lesson?.isPracticeCompleted} onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                         dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { isPracticeCompleted: Number(event.target.checked), courseId } }
                         ))

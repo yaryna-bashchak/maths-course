@@ -1,6 +1,6 @@
 import { Button, TextField, debounce } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
+// import StarPurple500RoundedIcon from '@mui/icons-material/StarPurple500Rounded';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { grey, yellow } from '@mui/material/colors';
 import { setLessonParams } from "../courses/coursesSlice";
@@ -63,20 +63,23 @@ export default function Filters() {
                             debouncedSearch(event);
                         }}
                     />
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'start', gap: '10px' }}>
+
                     <Button sx={getBoolButtonStyle(lessonParams.maxImportance === 0)} variant="outlined" size="small"
-                        endIcon={<StarPurple500RoundedIcon />}
+                        // endIcon={<StarPurple500RoundedIcon />}
                         onClick={() => {
                             dispatch(setLessonParams({ maxImportance: Math.abs(lessonParams.maxImportance - 2), courseId: parseInt(courseId!) }));
                         }}>
-                        лише без зірочок
+                        лише найважливіші
                     </Button>
                     <Button sx={getBoolButtonStyle(lessonParams.onlyUncompleted)} variant="outlined" size="small"
                         endIcon={<AccessTimeIcon />}
                         onClick={() => {
                             dispatch(setLessonParams({ onlyUncompleted: !lessonParams.onlyUncompleted, courseId: parseInt(courseId!) }))
                         }}>
-                        лише не завершені
+                        не завершені
                     </Button>
+                    </div>
                 </> : <></>}
         </>
     )

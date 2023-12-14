@@ -3,7 +3,6 @@ import LoadingComponent from "../../app/layout/LoadingComponent";
 import CourseCard from "./CourseCard";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { courseSelectors, fetchCoursesAsync } from "./coursesSlice";
-import { Grid } from "@mui/material";
 
 export default function CourseCatalog() {
     const courses = useAppSelector(courseSelectors.selectAll);
@@ -18,13 +17,11 @@ export default function CourseCatalog() {
 
     return (
         <>
-            <Grid container spacing={4}>
-                {courses.sort((a, b) => a.id - b.id).map((course, index) =>
-                    <Grid item xs={4} key={index}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', textAlign: 'center' }}>
+                    {courses.sort((a, b) => a.id - b.id).map((course, index) =>
                         <CourseCard courseId={index + 1} />
-                    </Grid>
-                )}
-            </Grid>
+                    )}
+                </div>
         </>
     )
 }
