@@ -29,7 +29,7 @@ export default function SignedInMenu() {
                 onClick={handleClick}
                 sx={{ typography: 'h6', textTransform: 'none' }}
             >
-                <AccountCircle sx={{ mr: 1, fontSize: '25px', [theme.breakpoints.down('md')]: { fontSize: '40px' } }} />
+                <AccountCircle sx={{ mr: 1, fontSize: '25px' }} />
                 {isMobileOrTablet ? null : user?.username.toUpperCase()}
             </Button>
             <Menu
@@ -37,8 +37,8 @@ export default function SignedInMenu() {
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleClose}>Профіль</MenuItem>
-                <MenuItem onClick={handleClose}>Мої курси</MenuItem>
+                {/* <MenuItem onClick={handleClose}>Профіль</MenuItem>
+                <MenuItem onClick={handleClose}>Мої курси</MenuItem> */}
                 <MenuItem onClick={() => {
                     dispatch(signOut());
                     dispatch(clearCourses());
