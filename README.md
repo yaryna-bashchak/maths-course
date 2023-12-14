@@ -23,17 +23,19 @@ To see what the courses look like inside, you should log in.
 
 Now, you have access to some sections in 1st course. Open it by selecting "Курси" tab on the top bar and choose "Дізнатись більше". 
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/0757c31e-ce2d-4621-8c7c-bc2962a95a7b)
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/26a60aaf-24a6-45e7-922f-849e762de756)
 
 Here you can see what stage each lesson is at (completed, in progress, not started) and how many completed lessons are in each section.
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/3b98855b-e1fb-4ba2-9256-d8a3acf6b06f)
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/ecdb5b69-16b3-49fc-8eb7-8cf1c24a994d)
 
 Then you can try how filters work and choose the lesson you want and start passing it.
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/3a9f6766-a572-47af-ac49-ca322640057a)
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/dd8e2229-fab5-43f6-acc8-8adf5950f5eb)
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/9d9d1c94-140b-4d21-815f-07226ece4be9)
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/0cdbc4e0-dac2-4c7a-9fc5-621d912593ad)
+
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/ace81f53-29c3-4930-808c-e2130744a686)
 
 Also you can take the tests.
 
@@ -54,11 +56,24 @@ If you want to test how the Web API works it would be enough to run only API fol
 
 - then open [http://localhost:5000/swagger](http://localhost:5000/swagger) in your browser and try to use some endpoints to get or change data in database.
 
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/2400f4a2-5c6c-4426-b99f-149a3a33687c' width='700'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/f9867e92-b506-4ea7-8096-152be02fe9ad' width='600'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/2400f4a2-5c6c-4426-b99f-149a3a33687c' width='600'>
 
 Example of getting _lesson by id_, where you can see information about the lesson, as well as a list of keywords and lessons that are recommended to be completed/repeated before.
 
 <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/24695d81-2e8a-43f6-8418-4db3fcb89956' width='700'>
+
+### Adaptive Design
+
+The app is also adapted to smaller devices such as a phone or tablet. For example, for smaller screens, a side menu appears in the header, which repeats the same buttons that are on the large screens.
+The content of the pages is also appropriate.
+
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/b558a488-40e6-4d7f-9826-db64ae77e608' width='300'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/c233840c-e493-4daa-bcab-b0e6e2328c31' width='300'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/e44944ff-3285-4a14-a4dc-71de98179781' width='300'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/03be35e4-8e5f-43ec-93e7-7d63286adf73' width='300'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/7fcbce25-5814-4883-902c-9e8ca4eef35a' width='300'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/ab723440-a562-4b8c-8257-1c86e9d6e3a8' width='300'>
 
 ### Tests
 If you want to **run tests** (you also can see that all tests are passed in [_Github Actions_](https://github.com/yaryna-bashchak/maths-course/actions))
