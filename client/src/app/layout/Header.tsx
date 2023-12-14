@@ -72,14 +72,20 @@ export default function Header() {
     return (
         <AppBar position="fixed" sx={{ top: 0, bottom: "auto" }}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: "100%", [theme.breakpoints.up('md')]: { width: '70%' } }}>
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: "100%", [theme.breakpoints.up('sm')]: { width: '80%', maxWidth: "980px" } }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Avatar alt="Logo" src="/images/header/logo.jpg" sx={{ mr: "10px" }} />
-                        <Typography variant="h6" component={NavLink} to='/'
-                            sx={navStyles}>
-                            План ZNO-шника
-                        </Typography>
-                        {/* <Search>
+                        <NavLink to='/' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
+                            <Avatar alt="Logo" src="/images/header/logo.jpg" sx={{ mr: "10px" }} />
+                            <Typography variant="h6"
+                                sx={{
+                                    ...navStyles,
+                                    [theme.breakpoints.down('md')]: {
+                                        display: 'none',
+                                    }
+                                }}>
+                                План ZNO-шника
+                            </Typography>
+                            {/* <Search>
                         <SearchIconWrapper>
                             <SearchIcon />
                         </SearchIconWrapper>
@@ -88,6 +94,7 @@ export default function Header() {
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </Search> */}
+                        </NavLink>
                     </Box>
 
                     <List sx={{ display: 'flex' }}>

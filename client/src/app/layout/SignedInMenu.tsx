@@ -1,4 +1,4 @@
-import { Button, Menu, MenuItem } from "@mui/material";
+import { Button, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../store/configureStore";
 import { signOut } from "../../features/account/accountSlice";
@@ -11,6 +11,8 @@ export default function SignedInMenu() {
     const { user } = useAppSelector(state => state.account);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const theme = useTheme();
+    const isMobileOrTablet = useMediaQuery(theme.breakpoints.down('md'));
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -27,8 +29,8 @@ export default function SignedInMenu() {
                 onClick={handleClick}
                 sx={{ typography: 'h6', textTransform: 'none' }}
             >
-                <AccountCircle sx={{ mr: 1 }} />
-                {user?.email}
+                <AccountCircle sx={{ mr: 1, fontSize: '25px', [theme.breakpoints.down('md')]: { fontSize: '40px' } }} />
+                {isMobileOrTablet ? null : user?.username.toUpperCase()}
             </Button>
             <Menu
                 anchorEl={anchorEl}
