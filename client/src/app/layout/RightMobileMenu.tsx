@@ -4,13 +4,17 @@ import { AccountCircle } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { signOut } from "../../features/account/accountSlice";
+import { clearCourses } from "../../features/courses/coursesSlice";
+import { clearTests } from "../../features/tests/testsSlice";
 
 const nonAuthorizedLinks = [
     { title: 'Увійти', path: '/login' },
     { title: 'Зареєструватися', path: '/register' },
 ]
 const authorizedLinks = [
-    { title: 'Вийти', path: '/login', color: 'red' },
+    { title: 'Вийти', path: '/'},
 ]
 
 const baseLinks = [
@@ -22,6 +26,17 @@ const baseLinks = [
 export default function RightMobileMenu() {
     const { user } = useAppSelector(state => state.account);
     const [menuOpen, setMenuOpen] = useState(false);
+    const dispatch = useDispatch();
+
+    const handleMenuClick = (title: string, path: string) => {
+        if (title === 'Вийти') {
+            dispatch(signOut());
+            dispatch(clearCourses());
+            dispatch(clearTests());
+        }
+
+        setMenuOpen(false);
+    };
 
     const sideList = () => (
         <List>
@@ -32,7 +47,7 @@ export default function RightMobileMenu() {
                 </ListItem>
             )}
             {(user ? authorizedLinks : nonAuthorizedLinks).concat(baseLinks).map(({ title, path }) => (
-                <ListItem button component={NavLink} to={path} key={path} onClick={() => setMenuOpen(false)}>
+                <ListItem button component={NavLink} to={path} key={path} onClick={() => handleMenuClick(title, path)}>
                     {title}
                 </ListItem>
             ))}

@@ -1,21 +1,10 @@
-import { AppBar, Avatar, Box, List, ListItem, Toolbar, Typography, useTheme } from "@mui/material";
+import { AppBar, Avatar, Box, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
 // import SearchIcon from '@mui/icons-material/Search';
 import { NavLink } from "react-router-dom";
-import SignedInMenu from "./SignedInMenu";
-import { useAppSelector } from "../store/configureStore";
+import RightMobileMenu from "./RightMobileMenu";
+import LaptopNavLinks from "./LaptopNavLinks";
 
-const midLinks = [
-    { title: 'Про⠀нас', path: '' },
-    { title: 'Курси', path: 'course' },
-    { title: 'Ціни', path: '/#price' },
-]
-
-const rightLinks = [
-    { title: 'Увійти', path: '/login' },
-    { title: 'Зареєструватися', path: '/register' },
-]
-
-const navStyles = {
+export const navStyles = {
     color: 'inherit',
     textDecoration: 'none',
     fontSize: '14px',
@@ -67,21 +56,18 @@ const navStyles = {
 
 export default function Header() {
     const theme = useTheme();
-    const { user } = useAppSelector(state => state.account);
+    const isMobileOrTablet = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
         <AppBar position="fixed" sx={{ top: 0, bottom: "auto" }}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: "100%", [theme.breakpoints.up('sm')]: { width: '80%', maxWidth: "980px" } }}>
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: "100%", [theme.breakpoints.up('md')]: { width: '80%', maxWidth: "980px" } }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <NavLink to='/' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
                             <Avatar alt="Logo" src="/images/header/logo.jpg" sx={{ mr: "10px" }} />
                             <Typography variant="h6"
                                 sx={{
                                     ...navStyles,
-                                    [theme.breakpoints.down('md')]: {
-                                        display: 'none',
-                                    }
                                 }}>
                                 План ZNO-шника
                             </Typography>
@@ -97,34 +83,9 @@ export default function Header() {
                         </NavLink>
                     </Box>
 
-                    <List sx={{ display: 'flex' }}>
-                        {midLinks.map(({ title, path }) => (
-                            <ListItem
-                                component={NavLink}
-                                to={path}
-                                key={path}
-                                sx={navStyles}
-                            >
-                                {title.toUpperCase()}
-                            </ListItem>
-                        ))}
-                    </List>
-
-                    {
-                        user ?
-                            <SignedInMenu /> :
-                            <List sx={{ display: 'flex' }}>
-                                {rightLinks.map(({ title, path }) => (
-                                    <ListItem
-                                        component={NavLink}
-                                        to={path}
-                                        key={path}
-                                        sx={navStyles}
-                                    >
-                                        {title}
-                                    </ListItem>
-                                ))}
-                            </List>
+                    {isMobileOrTablet
+                        ? <RightMobileMenu />
+                        : <LaptopNavLinks />
                     }
                 </Toolbar>
             </Box>
