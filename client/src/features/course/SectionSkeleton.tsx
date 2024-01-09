@@ -17,7 +17,7 @@ export default function SectionSkeleton({ section, isOpen }: Props) {
                 </Box>
             </ListItemButton>
             <Collapse className="item-border" in={isOpen} timeout="auto" unmountOnExit sx={{ pl: "16px" }}>
-                {section.lessons.map((lesson, index) =>
+                {section.lessons.map(() =>
                     <ListItemButton sx={{p: '0px 16px'}}>
                         <Skeleton animation="wave" variant="circular" height={15} width={15} style={{ margin: '10px 12px 10px 0px' }} />
                         <Skeleton animation="wave" height={20} width='30%' />

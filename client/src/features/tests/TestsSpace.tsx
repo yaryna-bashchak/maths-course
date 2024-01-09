@@ -15,7 +15,7 @@ import { LessonParams } from "../../app/models/course";
 
 export function totalSteps(tests: Test[]): number {
     return tests ? tests.length : 0;
-};
+}
 
 function isLoading(lessonParams: LessonParams, status: string, courseStatus: string) {
     return !lessonParams || status.includes('pending') || courseStatus.includes('pending');

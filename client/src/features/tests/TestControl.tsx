@@ -40,10 +40,10 @@ export default function TestControl({
 
     const handleNext = () => {
         if (tests) {
-            let newActiveStep = tests.findIndex((test, i) => !(i in completed) && i > activeStep);
+            let newActiveStep = tests.findIndex((_, i) => !(i in completed) && i > activeStep);
 
             if (newActiveStep === -1) {
-                newActiveStep = tests.findIndex((test, i) => !(i in completed));
+                newActiveStep = tests.findIndex((_, i) => !(i in completed));
             }
 
             setActiveStep((newActiveStep >= 0) ? newActiveStep : activeStep + 1);
@@ -116,7 +116,7 @@ export default function TestControl({
     };
 
     const getChecked = (option: Option) => {
-        const isStepCompleted = completed.hasOwnProperty(activeStep);
+        const isStepCompleted = Object.prototype.hasOwnProperty.call(completed, activeStep);
         const isAnswer = option.id === answerId;
         const isChecked = option.id === Number(checked);
 
@@ -168,7 +168,7 @@ export default function TestControl({
                             <Button variant="contained" onClick={handleFinish}>
                                 Завершити тест
                             </Button>
-                        ) : !completed.hasOwnProperty(activeStep) ? (
+                        ) : !Object.prototype.hasOwnProperty.call(completed, activeStep) ? (
                             <Button onClick={submitAnswer}>
                                 Відповісти
                             </Button>

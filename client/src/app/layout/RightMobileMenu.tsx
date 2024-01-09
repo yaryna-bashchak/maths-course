@@ -28,7 +28,7 @@ export default function RightMobileMenu() {
     const [menuOpen, setMenuOpen] = useState(false);
     const dispatch = useDispatch();
 
-    const handleMenuClick = (title: string, path: string) => {
+    const handleMenuClick = (title: string) => {
         if (title === 'Вийти') {
             dispatch(signOut());
             dispatch(clearCourses());
@@ -47,7 +47,7 @@ export default function RightMobileMenu() {
                 </ListItem>
             )}
             {(user ? authorizedLinks : nonAuthorizedLinks).concat(baseLinks).map(({ title, path }) => (
-                <ListItem button component={NavLink} to={path} key={path} onClick={() => handleMenuClick(title, path)}>
+                <ListItem button component={NavLink} to={path} key={path} onClick={() => handleMenuClick(title)}>
                     {title}
                 </ListItem>
             ))}

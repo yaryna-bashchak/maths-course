@@ -60,7 +60,7 @@ export const fetchCourseAsync = createAsyncThunk<
 
 export const updateLessonAsync = createAsyncThunk<
   Lesson,
-  { id: number; body: {} }
+  { id: number; body: object }
 >('courses/updateLessonAsync', async ({ id, body }, thunkAPI) => {
   try {
     return await agent.Lesson.update(id, body)
