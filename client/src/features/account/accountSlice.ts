@@ -71,7 +71,7 @@ export const accountSlice = createSlice({
         state.user = action.payload
       }
     )
-    builder.addMatcher(isAnyOf(singInUser.rejected), (state, action) => {
+    builder.addMatcher(isAnyOf(singInUser.rejected), (_state, action) => {
       console.log(action.payload)
     })
   }

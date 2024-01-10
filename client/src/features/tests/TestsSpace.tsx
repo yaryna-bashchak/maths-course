@@ -74,7 +74,7 @@ export default function TestsSpace() {
             <Typography variant="h3" sx={{ m: '10px 0px' }}>Тести</Typography>
             <Box sx={{ width: '100%', m: '10px 0px' }}>
                 <Stepper nonLinear activeStep={activeStep}>
-                    {tests.map((label, index) => (
+                    {tests.map((_label, index) => (
                         <Step key={index} completed={completed[index] >= 0}>
                             <StepButton color="inherit" onClick={handleStep(index)} />
                         </Step>
