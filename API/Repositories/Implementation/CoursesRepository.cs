@@ -82,13 +82,18 @@ namespace API.Repositories.Implementation
             }
         }
 
-        public async Task<Result<List<GetCoursePreviewDto>>> GetCourses()
+        public async Task<Result<List<GetCoursePreviewDto>>> GetCourses(string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
+
             try
             {
-                var dbCourses = _context.Courses;
+                var dbCourses = await _context.Courses
+                    .Include(c => c.Sections).ThenInclude(s => s.UserSections)
+                    .Include(c => c.Sections).ThenInclude(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                    .ToListAsync();
 
-                var courses = await dbCourses.Select(c => _mapper.Map<GetCoursePreviewDto>(c)).ToListAsync();
+                var courses = dbCourses.Select(c => _mapper.Map<GetCoursePreviewDto>(c, opts => opts.Items["UserId"] = user?.Id)).ToList();
                 return new Result<List<GetCoursePreviewDto>> { IsSuccess = true, Data = courses };
             }
             catch (System.Exception)

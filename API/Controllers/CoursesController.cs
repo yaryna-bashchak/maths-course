@@ -16,7 +16,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<GetCoursePreviewDto>>> GetCourses()
         {
-            var result = await _coursesRepository.GetCourses();
+            var username = User.Identity.Name ?? "";
+            var result = await _coursesRepository.GetCourses(username);
 
             if (!result.IsSuccess)
             {
