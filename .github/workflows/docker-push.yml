@@ -23,6 +23,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}:API}"
+          context: "{{defaultContext}}:API"
           push: true
           tags: yarynabashchak/mathscourse:latest
