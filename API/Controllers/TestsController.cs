@@ -1,5 +1,6 @@
 using API.Dtos.Test;
 using API.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -26,6 +27,7 @@ namespace API.Controllers
             return result.Data;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<List<GetTestDto>>> AddTest(AddTestDto newTest)
         {
@@ -40,6 +42,7 @@ namespace API.Controllers
             return result.Data;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<ActionResult<List<GetTestDto>>> DeleteTest(int id)
         {

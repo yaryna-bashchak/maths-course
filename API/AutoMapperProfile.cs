@@ -34,6 +34,7 @@ namespace API
                 });
             CreateMap<Lesson, GetLessonPreviewDto>();
             CreateMap<AddLessonDto, Lesson>();
+            CreateMap<UpdateLesssonDto, Lesson>();
             CreateMap<Lesson, GetPreviousLessonDto>();
             CreateMap<GetLessonDto, GetLessonPreviewDto>();
             CreateMap<GetLessonPreviewDto, GetLessonDto>();

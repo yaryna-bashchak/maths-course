@@ -1,5 +1,7 @@
+using System.Net;
 using API.Dtos.Lesson;
 using API.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -12,10 +14,12 @@ namespace API.Controllers
             _lessonsRepository = lessonsRepository;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<List<GetLessonDto>>> AddLesson(AddLessonDto newLesson)
+        public async Task<ActionResult<GetLessonDto>> AddLesson(AddLessonDto newLesson)
         {
-            var result = await _lessonsRepository.AddLesson(newLesson);
+            var username = User.Identity.Name ?? "";
+            var result = await _lessonsRepository.AddLesson(newLesson, username);
 
             if (!result.IsSuccess)
             {
@@ -106,8 +110,9 @@ namespace API.Controllers
             return result.Data;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<GetLessonDto>>> DeleteLesson(int id)
+        public async Task<ActionResult> DeleteLesson(int id)
         {
             var result = await _lessonsRepository.DeleteLesson(id);
 
@@ -116,7 +121,7 @@ namespace API.Controllers
                 return NotFound(result.ErrorMessage);
             }
 
-            return result.Data;
+            return Ok();
         }
     }
 }

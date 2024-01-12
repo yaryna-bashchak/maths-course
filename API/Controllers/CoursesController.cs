@@ -1,6 +1,7 @@
 using API.Dtos.Course;
 using API.Repositories;
 using API.RequestHelper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -40,6 +41,7 @@ namespace API.Controllers
             return result.Data;
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<GetCourseDto>> GetCourse(int id, [FromQuery] LessonParams lessonParams)
         {

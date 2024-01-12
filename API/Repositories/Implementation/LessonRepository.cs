@@ -3,6 +3,7 @@ using API.Data;
 using API.Dtos.Lesson;
 using API.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,8 +40,9 @@ namespace API.Repositories.Implementation
         public async Task<Result<GetLessonDto>> GetLesson(int id, string username)
         {
             var user = await _userManager.FindByNameAsync(username);
-            
-            try {
+
+            try
+            {
                 var dbLesson = await _context.Lessons
                     .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
                     .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
@@ -56,15 +58,16 @@ namespace API.Repositories.Implementation
             }
         }
 
-        public async Task<Result<List<GetLessonDto>>> AddLesson(AddLessonDto newLesson)
+        public async Task<Result<GetLessonDto>> AddLesson(AddLessonDto newLesson, string username)
         {
             var lesson = _mapper.Map<Lesson>(newLesson);
             lesson.Id = _context.Lessons.Max(l => l.Id) + 1;
             await _context.Lessons.AddAsync(lesson);
-            await _context.SaveChangesAsync();
+            var isSuccess = await _context.SaveChangesAsync() > 0;
 
-            var result = await GetLessons();
-            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = result.Data };
+            if (isSuccess) return new Result<GetLessonDto> { IsSuccess = true, Data = GetLesson(lesson.Id, username).Result.Data };
+
+            return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "New lesson can not be saved." };
         }
 
         public async Task<Result<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson, string username)
@@ -81,53 +84,54 @@ namespace API.Repositories.Implementation
 
             var isLessonAvailable = section?.IsAvailable;
             if (!isLessonAvailable.HasValue || !isLessonAvailable.Value) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson is not available." };
-            
-            try
+
+            var dbLesson = await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);
+
+            if (dbLesson == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+
+            // _mapper.Map(updatedLesson, dbLesson);
+
+            dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
+            dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
+            // dbLesson.UrlTheory = updatedLesson.UrlTheory ?? dbLesson.UrlTheory;
+            // dbLesson.UrlPractice = updatedLesson.UrlPractice ?? dbLesson.UrlPractice;
+            dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
+            dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
+
+            if (user != null)
             {
-                var dbLesson = await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);
+                UserLesson userLesson = await _context.UserLessons
+                    .Where(sl => sl.LessonId == id).FirstOrDefaultAsync(sl => sl.UserId == user.Id);
 
-                dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
-                dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
-                dbLesson.UrlTheory = updatedLesson.UrlTheory ?? dbLesson.UrlTheory;
-                dbLesson.UrlPractice = updatedLesson.UrlPractice ?? dbLesson.UrlPractice;
-                dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
-                dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
-
-                if (user != null)
+                if (userLesson == null)
                 {
-                    UserLesson userLesson = await _context.UserLessons
-                        .Where(sl => sl.LessonId == id).FirstOrDefaultAsync(sl => sl.UserId == user.Id);
-
-                    if (userLesson == null)
-                    {
-                        _context.UserLessons.Add(
-                            new UserLesson
-                            {
-                                LessonId = id,
-                                UserId = user.Id,
-                                IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 && (updatedLesson.IsTheoryCompleted != 0),
-                                IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 && (updatedLesson.IsPracticeCompleted != 0),
-                                TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : null,
-                            });
-                    } else {
-                        userLesson.IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 ? (updatedLesson.IsTheoryCompleted != 0) : userLesson.IsTheoryCompleted;
-                        userLesson.IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 ? (updatedLesson.IsPracticeCompleted != 0) : userLesson.IsPracticeCompleted;
-                        userLesson.TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : userLesson.TestScore;
-                    }
+                    _context.UserLessons.Add(
+                        new UserLesson
+                        {
+                            LessonId = id,
+                            UserId = user.Id,
+                            IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 && (updatedLesson.IsTheoryCompleted != 0),
+                            IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 && (updatedLesson.IsPracticeCompleted != 0),
+                            TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : null,
+                        });
                 }
-
-                await _context.SaveChangesAsync();
-
-                var result = await GetLesson(id, username);
-                return new Result<GetLessonDto> { IsSuccess = true, Data = result.Data };
+                else
+                {
+                    userLesson.IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 ? (updatedLesson.IsTheoryCompleted != 0) : userLesson.IsTheoryCompleted;
+                    userLesson.IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 ? (updatedLesson.IsPracticeCompleted != 0) : userLesson.IsPracticeCompleted;
+                    userLesson.TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : userLesson.TestScore;
+                }
             }
-            catch (System.Exception)
-            {
-                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
-            }
+
+            var isSuccess = await _context.SaveChangesAsync() > 0;
+
+            if (isSuccess) return new Result<GetLessonDto> { IsSuccess = true, Data = GetLesson(id, username).Result.Data };
+
+            return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Updated lesson can not be saved." };
+
         }
 
-        public async Task<Result<List<GetLessonDto>>> DeleteLesson(int id)
+        public async Task<Result<bool>> DeleteLesson(int id)
         {
             try
             {
@@ -136,12 +140,11 @@ namespace API.Repositories.Implementation
                 _context.Lessons.Remove(dbLesson);
                 await _context.SaveChangesAsync();
 
-                var result = await GetLessons();
-                return new Result<List<GetLessonDto>> { IsSuccess = true, Data = result.Data };
+                return new Result<bool> { IsSuccess = true };
             }
             catch (System.Exception)
             {
-                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+                return new Result<bool> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
             }
         }
 
