@@ -1,4 +1,3 @@
-using System.Net;
 using API.Dtos.Lesson;
 using API.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -16,14 +15,14 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<GetLessonDto>> AddLesson(AddLessonDto newLesson)
+        public async Task<ActionResult<GetLessonDto>> AddLesson([FromForm] AddLessonDto newLesson)
         {
             var username = User.Identity.Name ?? "";
             var result = await _lessonsRepository.AddLesson(newLesson, username);
 
             if (!result.IsSuccess)
             {
-                return NotFound(result.ErrorMessage);
+                return BadRequest(result.ErrorMessage);
             }
 
             return result.Data;

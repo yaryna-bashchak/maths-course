@@ -2,9 +2,11 @@ using System.Text.RegularExpressions;
 using API.Data;
 using API.Dtos.Lesson;
 using API.Entities;
+using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories.Implementation
@@ -13,18 +15,21 @@ namespace API.Repositories.Implementation
     {
         private readonly CourseContext _context;
         private readonly IMapper _mapper;
+        private readonly VideoService _videoService;
         private readonly UserManager<User> _userManager;
         private readonly ICoursesRepository _coursesRepository;
         public LessonsRepository(
             CourseContext context,
             UserManager<User> userManager,
             ICoursesRepository coursesRepository,
-            IMapper mapper)
+            IMapper mapper,
+            VideoService videoService)
         {
             _userManager = userManager;
             _coursesRepository = coursesRepository;
             _context = context;
             _mapper = mapper;
+            _videoService = videoService;
         }
 
         public async Task<Result<List<GetLessonDto>>> GetLessons()
@@ -61,6 +66,29 @@ namespace API.Repositories.Implementation
         public async Task<Result<GetLessonDto>> AddLesson(AddLessonDto newLesson, string username)
         {
             var lesson = _mapper.Map<Lesson>(newLesson);
+
+            if (newLesson.TheoryFile != null)
+            {
+                var videoResult = await _videoService.AddVideoAsync(newLesson.TheoryFile);
+
+                if (videoResult.Error != null)
+                    return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = videoResult.Error.Message };
+
+                lesson.UrlTheory = videoResult.SecureUrl.ToString();
+                lesson.TheoryPublicId = videoResult.PublicId;
+            }
+
+            if (newLesson.PracticeFile != null)
+            {
+                var videoResult = await _videoService.AddVideoAsync(newLesson.PracticeFile);
+
+                if (videoResult.Error != null)
+                    return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = videoResult.Error.Message };
+
+                lesson.UrlPractice = videoResult.SecureUrl.ToString();
+                lesson.PracticePublicId = videoResult.PublicId;
+            }
+
             lesson.Id = _context.Lessons.Max(l => l.Id) + 1;
             await _context.Lessons.AddAsync(lesson);
             var isSuccess = await _context.SaveChangesAsync() > 0;

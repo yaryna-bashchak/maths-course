@@ -14,6 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    // Set the maximum request body size to 200 MB
+    serverOptions.Limits.MaxRequestBodySize = 200 * 1024 * 1024;
+});
+
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureDependency();
@@ -95,7 +101,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddAuthorization();
-// builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 
@@ -117,6 +122,7 @@ app.UseStaticFiles();
 //app.UseHttpsRedirection();
 app.UseCors(opt =>
 {
+    opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5000");
     opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
 });
 
