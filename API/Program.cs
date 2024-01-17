@@ -95,7 +95,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddAuthorization();
-builder.Services.AddScoped<TokenService>();
+// builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 
