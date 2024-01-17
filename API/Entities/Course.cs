@@ -13,6 +13,8 @@ namespace API.Entities
         public int Duration { get; set; } = 1;
         public int PriceFull { get; set; }
         public int PriceMonthly { get; set; }
+        public string ImgUrl { get; set; }
+        public string PublicId { get; set; }
         public List<Section> Sections { get; set; }
     }
 }
