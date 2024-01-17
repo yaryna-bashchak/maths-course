@@ -67,27 +67,11 @@ namespace API.Repositories.Implementation
         {
             var lesson = _mapper.Map<Lesson>(newLesson);
 
-            if (newLesson.TheoryFile != null)
-            {
-                var videoResult = await _videoService.AddVideoAsync(newLesson.TheoryFile);
+            var theoryResult = await ProcessVideoForLesson(newLesson.TheoryFile, null, (url, id) => { lesson.UrlTheory = url; lesson.TheoryPublicId = id; });
+            if (theoryResult != null) return theoryResult;
 
-                if (videoResult.Error != null)
-                    return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = videoResult.Error.Message };
-
-                lesson.UrlTheory = videoResult.SecureUrl.ToString();
-                lesson.TheoryPublicId = videoResult.PublicId;
-            }
-
-            if (newLesson.PracticeFile != null)
-            {
-                var videoResult = await _videoService.AddVideoAsync(newLesson.PracticeFile);
-
-                if (videoResult.Error != null)
-                    return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = videoResult.Error.Message };
-
-                lesson.UrlPractice = videoResult.SecureUrl.ToString();
-                lesson.PracticePublicId = videoResult.PublicId;
-            }
+            var practiceResult = await ProcessVideoForLesson(newLesson.PracticeFile, null, (url, id) => { lesson.UrlPractice = url; lesson.PracticePublicId = id; });
+            if (practiceResult != null) return practiceResult;
 
             lesson.Id = _context.Lessons.Max(l => l.Id) + 1;
             await _context.Lessons.AddAsync(lesson);
@@ -108,7 +92,7 @@ namespace API.Repositories.Implementation
             if (!courseResult.IsSuccess) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = courseResult.ErrorMessage };
 
             var section = courseResult.Data.Sections.FirstOrDefault(s => s.Lessons.Any(l => l.Id == id));
-            if (section == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+            if (section == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID was not found in any of sections." };
 
             var isLessonAvailable = section?.IsAvailable;
             if (!isLessonAvailable.HasValue || !isLessonAvailable.Value) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson is not available." };
@@ -117,14 +101,16 @@ namespace API.Repositories.Implementation
 
             if (dbLesson == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
 
-            // _mapper.Map(updatedLesson, dbLesson);
-
             dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
             dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
-            // dbLesson.UrlTheory = updatedLesson.UrlTheory ?? dbLesson.UrlTheory;
-            // dbLesson.UrlPractice = updatedLesson.UrlPractice ?? dbLesson.UrlPractice;
             dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
             dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
+
+            var theoryResult = await ProcessVideoForLesson(updatedLesson.TheoryFile, dbLesson.TheoryPublicId, (url, id) => { dbLesson.UrlTheory = url; dbLesson.TheoryPublicId = id; });
+            if (theoryResult != null) return theoryResult;
+
+            var practiceResult = await ProcessVideoForLesson(updatedLesson.PracticeFile, dbLesson.PracticePublicId, (url, id) => { dbLesson.UrlPractice = url; dbLesson.PracticePublicId = id; });
+            if (practiceResult != null) return practiceResult;
 
             if (user != null)
             {
@@ -164,6 +150,12 @@ namespace API.Repositories.Implementation
             try
             {
                 var dbLesson = await _context.Lessons.FirstAsync(l => l.Id == id);
+
+                if (!string.IsNullOrEmpty(dbLesson.TheoryPublicId))
+                    await _videoService.DeleteVideoAsync(dbLesson.TheoryPublicId);
+
+                if (!string.IsNullOrEmpty(dbLesson.PracticePublicId))
+                    await _videoService.DeleteVideoAsync(dbLesson.PracticePublicId);
 
                 _context.Lessons.Remove(dbLesson);
                 await _context.SaveChangesAsync();
@@ -236,6 +228,22 @@ namespace API.Repositories.Implementation
             }
 
             return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
+        }
+        private async Task<Result<GetLessonDto>> ProcessVideoForLesson(IFormFile file, string existingPublicId, Action<string, string> updateLesson)
+        {
+            if (file != null)
+            {
+                if (!string.IsNullOrEmpty(existingPublicId))
+                    await _videoService.DeleteVideoAsync(existingPublicId);
+
+                var videoResult = await _videoService.AddVideoAsync(file);
+
+                if (videoResult.Error != null)
+                    return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = videoResult.Error.Message };
+
+                updateLesson(videoResult.SecureUrl.ToString(), videoResult.PublicId);
+            }
+            return null;
         }
     }
 }
