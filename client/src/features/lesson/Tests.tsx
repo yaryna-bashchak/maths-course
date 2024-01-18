@@ -2,7 +2,7 @@ import { Button, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { useAppSelector } from "../../app/store/configureStore";
 import { courseSelectors } from "../courses/coursesSlice";
-import { findLessonById } from "./LessonDetails";
+import { findLessonById } from "./findLessonById";
 
 export default function Tests() {
     const { courseId, lessonId } = useParams<{ courseId: string, lessonId: string }>();

@@ -10,17 +10,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { courseSelectors, fetchCourseAsync, initializeCourseStatus } from "../courses/coursesSlice";
 import { Course, LessonParams } from "../../app/models/course";
-
-export function findLessonById(course: Course, lessonId: number): Lesson | null {
-    for (const section of course.sections) {
-        for (const lesson of section.lessons) {
-            if (lesson.id === lessonId) {
-                return lesson;
-            }
-        }
-    }
-    return null;
-}
+import { isAvailable } from "./isAvailable";
+import { findLessonById } from "./findLessonById";
 
 function isLoading(course: Course | undefined, courseLoaded: boolean, lessonParams: LessonParams, status: string) {
     return (!course || !course.sections?.length) && !courseLoaded && (!lessonParams || status.includes('pending'));
@@ -28,11 +19,6 @@ function isLoading(course: Course | undefined, courseLoaded: boolean, lessonPara
 
 function isNotFound(course: Course | undefined, lesson: Lesson | null, status: string) {
     return (!course || !course.sections?.length || !lesson) && !status.includes('pending');
-}
-
-export function isAvailable(course: Course | undefined, lessonId: string) {
-    const section = course ? course.sections.find(s => s.lessons.some(l => l.id === parseInt(lessonId))) : null;
-    return section?.isAvailable;
 }
 
 export default function LessonDetails() {
