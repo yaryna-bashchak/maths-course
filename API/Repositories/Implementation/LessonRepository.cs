@@ -87,15 +87,12 @@ namespace API.Repositories.Implementation
             var user = await _userManager.FindByNameAsync(username);
             if (user == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Unauthorized user." };
 
-            if (updatedLesson.courseId == -1) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "You should provide course ID." };
-            var courseResult = await _coursesRepository.GetCourse(updatedLesson.courseId, null, null, "", username);
-            if (!courseResult.IsSuccess) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = courseResult.ErrorMessage };
-
-            var section = courseResult.Data.Sections.FirstOrDefault(s => s.Lessons.Any(l => l.Id == id));
-            if (section == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID was not found in any of sections." };
-
-            var isLessonAvailable = section?.IsAvailable;
-            if (!isLessonAvailable.HasValue || !isLessonAvailable.Value) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson is not available." };
+            bool isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+            if (!isAdmin)
+            {
+                var isLessonAvailable = await IsLessonAvailaible(id, updatedLesson, username);
+                if (isLessonAvailable != null) return isLessonAvailable;
+            }
 
             var dbLesson = await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);
 
@@ -243,6 +240,26 @@ namespace API.Repositories.Implementation
 
                 updateLesson(videoResult.SecureUrl.ToString(), videoResult.PublicId);
             }
+            return null;
+        }
+
+        private async Task<Result<GetLessonDto>> IsLessonAvailaible(int id, UpdateLesssonDto updatedLesson, string username)
+        {
+            if (updatedLesson.courseId == -1)
+                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "You should provide course ID." };
+
+            var courseResult = await _coursesRepository.GetCourse(updatedLesson.courseId, null, null, "", username);
+            if (!courseResult.IsSuccess)
+                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = courseResult.ErrorMessage };
+
+            var section = courseResult.Data.Sections.FirstOrDefault(s => s.Lessons.Any(l => l.Id == id));
+            if (section == null)
+                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID was not found in any of sections." };
+
+            var isLessonAvailable = section?.IsAvailable;
+            if (!isLessonAvailable.HasValue || !isLessonAvailable.Value)
+                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson is not available." };
+
             return null;
         }
     }

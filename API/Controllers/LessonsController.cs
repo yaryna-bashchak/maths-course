@@ -28,6 +28,7 @@ namespace API.Controllers
             return result.Data;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<GetLessonDto>>> GetLessons()
         {
@@ -41,6 +42,7 @@ namespace API.Controllers
             return result.Data;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<GetLessonDto>> GetLesson(int id)
         {

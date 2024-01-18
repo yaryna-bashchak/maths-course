@@ -21,6 +21,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureDependency();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
