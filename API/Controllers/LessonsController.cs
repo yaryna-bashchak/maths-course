@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class LessonsController : BaseApiController
     {
         private ILessonsRepository _lessonsRepository;
@@ -13,7 +14,6 @@ namespace API.Controllers
             _lessonsRepository = lessonsRepository;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<GetLessonDto>> AddLesson([FromForm] AddLessonDto newLesson)
         {
@@ -28,7 +28,6 @@ namespace API.Controllers
             return result.Data;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<GetLessonDto>>> GetLessons()
         {
@@ -42,51 +41,11 @@ namespace API.Controllers
             return result.Data;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<GetLessonDto>> GetLesson(int id)
         {
             var username = User.Identity.Name ?? "";
             var result = await _lessonsRepository.GetLesson(id, username);
-
-            if (!result.IsSuccess)
-            {
-                return NotFound(result.ErrorMessage);
-            }
-
-            return result.Data;
-        }
-
-        [HttpGet("keyword/{keyword}")]
-        public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByKeyword(string keyword)
-        {
-            var result = await _lessonsRepository.GetLessonsByKeyword(keyword);
-
-            if (!result.IsSuccess)
-            {
-                return NotFound(result.ErrorMessage);
-            }
-
-            return result.Data;
-        }
-
-        [HttpGet("keyword/id/{id}")]
-        public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByKeywordId(int id)
-        {
-            var result = await _lessonsRepository.GetLessonsByKeywordID(id);
-
-            if (!result.IsSuccess)
-            {
-                return NotFound(result.ErrorMessage);
-            }
-
-            return result.Data;
-        }
-
-        [HttpGet("importance/{importance}")]
-        public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByImportance(int importance)
-        {
-            var result = await _lessonsRepository.GetLessonsByImportance(importance);
 
             if (!result.IsSuccess)
             {
@@ -111,7 +70,6 @@ namespace API.Controllers
             return result.Data;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteLesson(int id)
         {
@@ -124,5 +82,44 @@ namespace API.Controllers
 
             return Ok();
         }
+
+        // [HttpGet("keyword/{keyword}")]
+        // public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByKeyword(string keyword)
+        // {
+        //     var result = await _lessonsRepository.GetLessonsByKeyword(keyword);
+
+        //     if (!result.IsSuccess)
+        //     {
+        //         return NotFound(result.ErrorMessage);
+        //     }
+
+        //     return result.Data;
+        // }
+
+        // [HttpGet("keyword/id/{id}")]
+        // public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByKeywordId(int id)
+        // {
+        //     var result = await _lessonsRepository.GetLessonsByKeywordID(id);
+
+        //     if (!result.IsSuccess)
+        //     {
+        //         return NotFound(result.ErrorMessage);
+        //     }
+
+        //     return result.Data;
+        // }
+
+        // [HttpGet("importance/{importance}")]
+        // public async Task<ActionResult<List<GetLessonDto>>> GetLessonsByImportance(int importance)
+        // {
+        //     var result = await _lessonsRepository.GetLessonsByImportance(importance);
+
+        //     if (!result.IsSuccess)
+        //     {
+        //         return NotFound(result.ErrorMessage);
+        //     }
+
+        //     return result.Data;
+        // }
     }
 }
