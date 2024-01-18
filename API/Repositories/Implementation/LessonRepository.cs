@@ -46,21 +46,16 @@ namespace API.Repositories.Implementation
         {
             var user = await _userManager.FindByNameAsync(username);
 
-            try
-            {
-                var dbLesson = await _context.Lessons
-                    .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                    .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                    .Include(l => l.UserLessons)
-                    .FirstAsync(l => l.Id == id);
+            var dbLesson = await _context.Lessons
+                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+                .Include(l => l.UserLessons)
+                .FirstOrDefaultAsync(l => l.Id == id);
 
-                var lesson = _mapper.Map<GetLessonDto>(dbLesson, opts => opts.Items["UserId"] = user?.Id);
-                return new Result<GetLessonDto> { IsSuccess = true, Data = lesson };
-            }
-            catch (System.Exception)
-            {
-                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
-            }
+            if (dbLesson == null) return NotFoundResult("Lesson with the provided ID not found.");
+
+            var lesson = _mapper.Map<GetLessonDto>(dbLesson, opts => opts.Items["UserId"] = user?.Id);
+            return new Result<GetLessonDto> { IsSuccess = true, Data = lesson };
         }
 
         public async Task<Result<GetLessonDto>> AddLesson(AddLessonDto newLesson, string username)
@@ -75,33 +70,20 @@ namespace API.Repositories.Implementation
 
             lesson.Id = _context.Lessons.Max(l => l.Id) + 1;
             await _context.Lessons.AddAsync(lesson);
-            var isSuccess = await _context.SaveChangesAsync() > 0;
 
-            if (isSuccess) return new Result<GetLessonDto> { IsSuccess = true, Data = GetLesson(lesson.Id, username).Result.Data };
-
-            return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "New lesson can not be saved." };
+            return await SaveChangesAndReturnResult(lesson.Id, username, "New lesson can not be saved.");
         }
 
         public async Task<Result<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson, string username)
         {
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Unauthorized user." };
+            var user = await GetUser(username);
+            if (user == null) return UnauthorizedResult("Unauthorized user.");
 
-            bool isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-            if (!isAdmin)
-            {
-                var isLessonAvailable = await IsLessonAvailaible(id, updatedLesson, username);
-                if (isLessonAvailable != null) return isLessonAvailable;
-            }
+            var dbLesson = await GetLessonById(id);
 
-            var dbLesson = await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);
+            if (dbLesson == null) return NotFoundResult("Lesson with the provided ID not found.");
 
-            if (dbLesson == null) return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
-
-            dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
-            dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
-            dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
-            dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
+            UpdateLessonDetails(dbLesson, updatedLesson);
 
             var theoryResult = await ProcessVideoForLesson(updatedLesson.TheoryFile, dbLesson.TheoryPublicId, (url, id) => { dbLesson.UrlTheory = url; dbLesson.TheoryPublicId = id; });
             if (theoryResult != null) return theoryResult;
@@ -109,123 +91,59 @@ namespace API.Repositories.Implementation
             var practiceResult = await ProcessVideoForLesson(updatedLesson.PracticeFile, dbLesson.PracticePublicId, (url, id) => { dbLesson.UrlPractice = url; dbLesson.PracticePublicId = id; });
             if (practiceResult != null) return practiceResult;
 
-            if (user != null)
-            {
-                UserLesson userLesson = await _context.UserLessons
-                    .Where(sl => sl.LessonId == id).FirstOrDefaultAsync(sl => sl.UserId == user.Id);
+            return await SaveChangesAndReturnResult(id, username);
+        }
 
-                if (userLesson == null)
+        public async Task<Result<GetLessonDto>> UpdateLessonCompletion(int lessonId, UpdateUserLesssonDto updatedUserLesson, string username)
+        {
+            var user = await GetUser(username);
+            if (user == null) return UnauthorizedResult("Unauthorized user.");
+
+            if (!await UserIsAdmin(user))
+            {
+                var lessonAvailabilityResult = await CheckLessonAvailability(lessonId, updatedUserLesson, username);
+                if (lessonAvailabilityResult != null)
                 {
-                    _context.UserLessons.Add(
-                        new UserLesson
-                        {
-                            LessonId = id,
-                            UserId = user.Id,
-                            IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 && (updatedLesson.IsTheoryCompleted != 0),
-                            IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 && (updatedLesson.IsPracticeCompleted != 0),
-                            TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : null,
-                        });
-                }
-                else
-                {
-                    userLesson.IsTheoryCompleted = updatedLesson.IsTheoryCompleted != -1 ? (updatedLesson.IsTheoryCompleted != 0) : userLesson.IsTheoryCompleted;
-                    userLesson.IsPracticeCompleted = updatedLesson.IsPracticeCompleted != -1 ? (updatedLesson.IsPracticeCompleted != 0) : userLesson.IsPracticeCompleted;
-                    userLesson.TestScore = updatedLesson.TestScore != -1 ? updatedLesson.TestScore : userLesson.TestScore;
+                    return lessonAvailabilityResult;
                 }
             }
 
-            var isSuccess = await _context.SaveChangesAsync() > 0;
+            var dbLesson = await GetLessonById(lessonId);
 
-            if (isSuccess) return new Result<GetLessonDto> { IsSuccess = true, Data = GetLesson(id, username).Result.Data };
+            if (dbLesson == null) return NotFoundResult("Lesson with the provided ID not found.");
 
-            return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Updated lesson can not be saved." };
 
+            var userLesson = await GetUserLesson(lessonId, user.Id);
+            if (userLesson == null)
+            {
+                CreateUserLesson(lessonId, user.Id, updatedUserLesson);
+            }
+            else
+            {
+                UpdateExistingUserLesson(userLesson, updatedUserLesson);
+            }
+
+            return await SaveChangesAndReturnResult(lessonId, username);
         }
 
         public async Task<Result<bool>> DeleteLesson(int id)
         {
-            try
-            {
-                var dbLesson = await _context.Lessons.FirstAsync(l => l.Id == id);
-
-                if (!string.IsNullOrEmpty(dbLesson.TheoryPublicId))
-                    await _videoService.DeleteVideoAsync(dbLesson.TheoryPublicId);
-
-                if (!string.IsNullOrEmpty(dbLesson.PracticePublicId))
-                    await _videoService.DeleteVideoAsync(dbLesson.PracticePublicId);
-
-                _context.Lessons.Remove(dbLesson);
-                await _context.SaveChangesAsync();
-
-                return new Result<bool> { IsSuccess = true };
-            }
-            catch (System.Exception)
-            {
+            var dbLesson = await GetLessonById(id);
+            if (dbLesson == null)
                 return new Result<bool> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
-            }
+
+            if (!string.IsNullOrEmpty(dbLesson.TheoryPublicId))
+                await _videoService.DeleteVideoAsync(dbLesson.TheoryPublicId);
+
+            if (!string.IsNullOrEmpty(dbLesson.PracticePublicId))
+                await _videoService.DeleteVideoAsync(dbLesson.PracticePublicId);
+
+            _context.Lessons.Remove(dbLesson);
+            await _context.SaveChangesAsync();
+
+            return new Result<bool> { IsSuccess = true, Data = true };
         }
 
-        public async Task<Result<List<GetLessonDto>>> GetLessonsByKeyword(string keyword)
-        {
-            var regex = new Regex(keyword, RegexOptions.IgnoreCase);
-
-            var dbLessons = await _context.Lessons
-                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                .ToListAsync();
-
-            var lessons = dbLessons
-                .Select(l => _mapper.Map<GetLessonDto>(l))
-                .Where(l => l.Keywords.Any(lk => regex.IsMatch(lk.Word)))
-                .ToList();
-
-            if (lessons == null || !lessons.Any())
-            {
-                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lessons with this keyword pattern not found." };
-            }
-
-            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
-        }
-
-        public async Task<Result<List<GetLessonDto>>> GetLessonsByKeywordID(int id)
-        {
-            var dbLessons = _context.Lessons
-                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                .Where(l => l.LessonKeywords.Any(lk => lk.Keyword.Id == id));
-
-            var lessons = await dbLessons
-                .Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
-
-            if (lessons == null || !lessons.Any())
-            {
-                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lessons with this keyword ID not found." };
-            }
-
-            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
-        }
-
-        public async Task<Result<List<GetLessonDto>>> GetLessonsByImportance(int importance)
-        {
-            if (importance < 0)
-            {
-                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Importance cannot be less than 0 (it can only be 0, 1 or 2)." };
-            }
-
-            var dbLessons = _context.Lessons
-                .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
-                .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
-                .Where(l => l.Importance <= importance);
-
-            var lessons = await dbLessons.Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
-
-            if (lessons == null || !lessons.Any())
-            {
-                return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "It seems there are no lessons whose importance is equal to or less than given one (it can only be 0, 1 or 2)." };
-            }
-
-            return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
-        }
         private async Task<Result<GetLessonDto>> ProcessVideoForLesson(IFormFile file, string existingPublicId, Action<string, string> updateLesson)
         {
             if (file != null)
@@ -243,12 +161,12 @@ namespace API.Repositories.Implementation
             return null;
         }
 
-        private async Task<Result<GetLessonDto>> IsLessonAvailaible(int id, UpdateLesssonDto updatedLesson, string username)
+        private async Task<Result<GetLessonDto>> CheckLessonAvailability(int id, UpdateUserLesssonDto updatedUserLesson, string username)
         {
-            if (updatedLesson.courseId == -1)
+            if (updatedUserLesson.courseId == -1)
                 return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "You should provide course ID." };
 
-            var courseResult = await _coursesRepository.GetCourse(updatedLesson.courseId, null, null, "", username);
+            var courseResult = await _coursesRepository.GetCourse(updatedUserLesson.courseId, null, null, "", username);
             if (!courseResult.IsSuccess)
                 return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = courseResult.ErrorMessage };
 
@@ -262,5 +180,137 @@ namespace API.Repositories.Implementation
 
             return null;
         }
+
+        private async Task<UserLesson> GetUserLesson(int lessonId, string userId)
+        {
+            return await _context.UserLessons
+                .Where(sl => sl.LessonId == lessonId)
+                .FirstOrDefaultAsync(sl => sl.UserId == userId);
+        }
+
+        private void CreateUserLesson(int lessonId, string userId, UpdateUserLesssonDto updatedUserLesson)
+        {
+            _context.UserLessons.Add(new UserLesson
+            {
+                LessonId = lessonId,
+                UserId = userId,
+                IsTheoryCompleted = updatedUserLesson.IsTheoryCompleted != -1 && (updatedUserLesson.IsTheoryCompleted != 0),
+                IsPracticeCompleted = updatedUserLesson.IsPracticeCompleted != -1 && (updatedUserLesson.IsPracticeCompleted != 0),
+                TestScore = updatedUserLesson.TestScore != -1 ? updatedUserLesson.TestScore : null,
+            });
+        }
+
+        private void UpdateExistingUserLesson(UserLesson userLesson, UpdateUserLesssonDto updatedUserLesson)
+        {
+            userLesson.IsTheoryCompleted = updatedUserLesson.IsTheoryCompleted != -1 ? (updatedUserLesson.IsTheoryCompleted != 0) : userLesson.IsTheoryCompleted;
+            userLesson.IsPracticeCompleted = updatedUserLesson.IsPracticeCompleted != -1 ? (updatedUserLesson.IsPracticeCompleted != 0) : userLesson.IsPracticeCompleted;
+            userLesson.TestScore = updatedUserLesson.TestScore != -1 ? updatedUserLesson.TestScore : userLesson.TestScore;
+        }
+
+        private Result<GetLessonDto> UnauthorizedResult(string errorMessage)
+        {
+            return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = errorMessage };
+        }
+
+        private Result<GetLessonDto> NotFoundResult(string errorMessage)
+        {
+            return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = errorMessage };
+        }
+
+        private async Task<bool> UserIsAdmin(User user)
+        {
+            return await _userManager.IsInRoleAsync(user, "Admin");
+        }
+
+        private async Task<Result<GetLessonDto>> SaveChangesAndReturnResult(int lessonId, string username, string errorMessage = "Error occurs during saving changes.")
+        {
+            var isSuccess = await _context.SaveChangesAsync() > 0;
+            if (isSuccess)
+            {
+                return new Result<GetLessonDto> { IsSuccess = true, Data = GetLesson(lessonId, username).Result.Data };
+            }
+
+            return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = errorMessage };
+        }
+
+        private async Task<User> GetUser(string username)
+        {
+            return await _userManager.FindByNameAsync(username);
+        }
+
+        private async Task<Lesson> GetLessonById(int id)
+        {
+            return await _context.Lessons.FirstOrDefaultAsync(l => l.Id == id);
+        }
+
+        private void UpdateLessonDetails(Lesson dbLesson, UpdateLesssonDto updatedLesson)
+        {
+            dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
+            dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
+            dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
+            dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
+        }
+
+        // public async Task<Result<List<GetLessonDto>>> GetLessonsByKeyword(string keyword)
+        // {
+        //     var regex = new Regex(keyword, RegexOptions.IgnoreCase);
+
+        //     var dbLessons = await _context.Lessons
+        //         .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+        //         .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+        //         .ToListAsync();
+
+        //     var lessons = dbLessons
+        //         .Select(l => _mapper.Map<GetLessonDto>(l))
+        //         .Where(l => l.Keywords.Any(lk => regex.IsMatch(lk.Word)))
+        //         .ToList();
+
+        //     if (lessons == null || !lessons.Any())
+        //     {
+        //         return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lessons with this keyword pattern not found." };
+        //     }
+
+        //     return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
+        // }
+
+        // public async Task<Result<List<GetLessonDto>>> GetLessonsByKeywordID(int id)
+        // {
+        //     var dbLessons = _context.Lessons
+        //         .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+        //         .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+        //         .Where(l => l.LessonKeywords.Any(lk => lk.Keyword.Id == id));
+
+        //     var lessons = await dbLessons
+        //         .Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
+
+        //     if (lessons == null || !lessons.Any())
+        //     {
+        //         return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Lessons with this keyword ID not found." };
+        //     }
+
+        //     return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
+        // }
+
+        // public async Task<Result<List<GetLessonDto>>> GetLessonsByImportance(int importance)
+        // {
+        //     if (importance < 0)
+        //     {
+        //         return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "Importance cannot be less than 0 (it can only be 0, 1 or 2)." };
+        //     }
+
+        //     var dbLessons = _context.Lessons
+        //         .Include(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+        //         .Include(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+        //         .Where(l => l.Importance <= importance);
+
+        //     var lessons = await dbLessons.Select(l => _mapper.Map<GetLessonDto>(l)).ToListAsync();
+
+        //     if (lessons == null || !lessons.Any())
+        //     {
+        //         return new Result<List<GetLessonDto>> { IsSuccess = false, ErrorMessage = "It seems there are no lessons whose importance is equal to or less than given one (it can only be 0, 1 or 2)." };
+        //     }
+
+        //     return new Result<List<GetLessonDto>> { IsSuccess = true, Data = lessons };
+        // }
     }
 }
