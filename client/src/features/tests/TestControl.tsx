@@ -143,6 +143,7 @@ export default function TestControl({
                                         label={option.text}
                                         disabled={activeStep in completed}
                                         checked={getChecked(option)}
+                                        key={option.id}
                                     />
                                 ))
                             }

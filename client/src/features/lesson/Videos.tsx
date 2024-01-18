@@ -3,7 +3,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/store/configureStore';
 import { courseSelectors, updateLessonAsync } from '../courses/coursesSlice';
-import { findLessonById } from './LessonDetails';
+import { findLessonById } from './findLessonById';
 
 
 export default function Videos() {

@@ -19,7 +19,7 @@ export default function CourseCatalog() {
         <>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', textAlign: 'center' }}>
                     {courses.sort((a, b) => a.id - b.id).map((_course, index) =>
-                        <CourseCard courseId={index + 1} />
+                        <CourseCard courseId={index + 1} key={index + 1}/>
                     )}
                 </div>
         </>

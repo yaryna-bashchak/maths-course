@@ -21,7 +21,7 @@ export default function CourseDetails() {
     useEffect(() => {
         if (!lessonParams)
             dispatch(initializeCourseStatus({ courseId: parseInt(courseId!) }));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseStatus]);
 
     useEffect(() => {
