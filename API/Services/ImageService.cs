@@ -21,7 +21,6 @@ public class ImageService
 
     public async Task<Result<bool>> ProcessImageAsync(IFormFile file, string existingPublicId, Action<string, string> update)
     {
-
         if (!string.IsNullOrEmpty(existingPublicId))
             await DeleteImageAsync(existingPublicId);
 
@@ -32,7 +31,7 @@ public class ImageService
 
         update(imageResult.SecureUrl.ToString(), imageResult.PublicId);
 
-        return null;
+        return new Result<bool> { IsSuccess = true, Data = true };
     }
 
     public async Task<ImageUploadResult> AddImageAsync(IFormFile file)

@@ -8,6 +8,6 @@ namespace API.Dtos.Test
         public string Question { get; set; }
         public string Type { get; set; } = "radio";
         public IFormFile File { get; set; }
-        // public List<AddOptionDto> Options { get; set; }
+        // public List<int> OptionIds { get; set; }
     }
 }

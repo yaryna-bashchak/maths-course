@@ -71,7 +71,7 @@ namespace API.Repositories.Implementation
             lesson.Id = _context.Lessons.Max(l => l.Id) + 1;
             await _context.Lessons.AddAsync(lesson);
 
-            return await SaveChangesAndReturnResult(lesson.Id, username, "New lesson can not be saved.");
+            return await SaveChangesAndReturnResult(lesson.Id, username);
         }
 
         public async Task<Result<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson, string username)
@@ -219,15 +219,17 @@ namespace API.Repositories.Implementation
             return await _userManager.IsInRoleAsync(user, "Admin");
         }
 
-        private async Task<Result<GetLessonDto>> SaveChangesAndReturnResult(int lessonId, string username, string errorMessage = "Error occurs during saving changes.")
+        private async Task<Result<GetLessonDto>> SaveChangesAndReturnResult(int lessonId, string username)
         {
-            var isSuccess = await _context.SaveChangesAsync() > 0;
-            if (isSuccess)
+            try
             {
+                await _context.SaveChangesAsync();
                 return new Result<GetLessonDto> { IsSuccess = true, Data = GetLesson(lessonId, username).Result.Data };
             }
-
-            return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = errorMessage };
+            catch (System.Exception ex)
+            {
+                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = ex.Message };
+            }
         }
 
         private async Task<User> GetUser(string username)

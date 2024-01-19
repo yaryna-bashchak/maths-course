@@ -29,26 +29,19 @@ namespace API.Repositories.Implementation
 
         public async Task<Result<GetOptionDto>> AddOption(AddOptionDto newOption)
         {
-            try
+            var option = _mapper.Map<Option>(newOption);
+
+            if (newOption.File != null)
             {
-                var option = _mapper.Map<Option>(newOption);
-
-                if (newOption.File != null)
-                {
-                    var result = await _imageService.ProcessImageAsync(newOption.File, null, (url, id) => { option.ImgUrl = url; option.PublicId = id; });
-                    if (!result.IsSuccess) return new Result<GetOptionDto> { IsSuccess = false, ErrorMessage = result.ErrorMessage }; ;
-                }
-
-                option.Id = _context.Options.Max(o => o.Id) + 1;
-
-                await _context.Options.AddAsync(option);
-
-                return await SaveChangesAndReturnResult(option.Id, "New option can not be saved.");
+                var result = await _imageService.ProcessImageAsync(newOption.File, null, (url, id) => { option.ImgUrl = url; option.PublicId = id; });
+                if (!result.IsSuccess) return new Result<GetOptionDto> { IsSuccess = false, ErrorMessage = result.ErrorMessage }; ;
             }
-            catch (System.Exception ex)
-            {
-                return new Result<GetOptionDto> { IsSuccess = false, ErrorMessage = ex.Message };
-            }
+
+            option.Id = _context.Options.Max(o => o.Id) + 1;
+
+            await _context.Options.AddAsync(option);
+
+            return await SaveChangesAndReturnResult(option.Id);
         }
 
         public async Task<Result<GetOptionDto>> UpdateOption(int id, UpdateOptionDto updatedOption)
@@ -111,17 +104,21 @@ namespace API.Repositories.Implementation
             dbOption.isAnswer = updatedOption.isAnswer != -1 ? (updatedOption.isAnswer != 0) : dbOption.isAnswer;
         }
 
-        private async Task<Result<GetOptionDto>> SaveChangesAndReturnResult(int optionId, string errorMessage = "Error occurs during saving changes.")
+        private async Task<Result<GetOptionDto>> SaveChangesAndReturnResult(int optionId)
         {
-            if (await _context.SaveChangesAsync() > 0)
+            try
             {
+                await _context.SaveChangesAsync();
+
                 var dbOption = await _context.Options
-                    .FirstOrDefaultAsync(t => t.Id == optionId);
+                                    .FirstOrDefaultAsync(t => t.Id == optionId);
 
                 return new Result<GetOptionDto> { IsSuccess = true, Data = _mapper.Map<GetOptionDto>(dbOption) };
             }
-
-            return new Result<GetOptionDto> { IsSuccess = false, ErrorMessage = errorMessage };
+            catch (System.Exception ex)
+            {
+                return new Result<GetOptionDto> { IsSuccess = false, ErrorMessage = ex.Message };
+            }
         }
     }
 }

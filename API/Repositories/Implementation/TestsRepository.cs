@@ -10,8 +10,8 @@ namespace API.Repositories.Implementation;
 
 public class TestsRepository : ITestsRepository
 {
-    private CourseContext _context;
-    private IMapper _mapper;
+    private readonly CourseContext _context;
+    private readonly IMapper _mapper;
     private readonly ImageService _imageService;
     private readonly UserManager<User> _userManager;
     private readonly IOptionsRepository _optionsRepository;
@@ -50,26 +50,28 @@ public class TestsRepository : ITestsRepository
 
     public async Task<Result<GetTestDto>> AddTest(AddTestDto newTest)
     {
-        try
+        var test = _mapper.Map<Test>(newTest);
+
+        if (newTest.File != null)
         {
-            var test = _mapper.Map<Test>(newTest);
-
-            if (newTest.File != null)
-            {
-                var result = await _imageService.ProcessImageAsync(newTest.File, null, (url, id) => { test.ImgUrl = url; test.PublicId = id; });
-                if (!result.IsSuccess) return new Result<GetTestDto> { IsSuccess = false, ErrorMessage = result.ErrorMessage }; ;
-            }
-
-            test.Id = _context.Tests.Max(t => t.Id) + 1;
-
-            await _context.Tests.AddAsync(test);
-
-            return await SaveChangesAndReturnResult(test.Id);
+            var result = await _imageService.ProcessImageAsync(newTest.File, null, (url, id) => { test.ImgUrl = url; test.PublicId = id; });
+            if (!result.IsSuccess) return new Result<GetTestDto> { IsSuccess = false, ErrorMessage = result.ErrorMessage }; ;
         }
-        catch (System.Exception ex)
-        {
-            return new Result<GetTestDto> { IsSuccess = false, ErrorMessage = ex.Message };
-        }
+
+        test.Id = _context.Tests.Max(t => t.Id) + 1;
+        await _context.Tests.AddAsync(test);
+
+        // foreach (var optionId in newTest.OptionIds)
+        // {
+        //     var option = await _context.Options.FindAsync(optionId);
+        //     if (option != null)
+        //     {
+        //         option.TestId = test.Id;
+        //         _context.Options.Update(option);
+        //     }
+        // }
+
+        return await SaveChangesAndReturnResult(test.Id);
     }
 
     public async Task<Result<GetTestDto>> UpdateTest(int id, UpdateTestDto updatedTest)
@@ -84,6 +86,29 @@ public class TestsRepository : ITestsRepository
         {
             var result = await _imageService.ProcessImageAsync(updatedTest.File, dbTest.PublicId, (url, id) => { dbTest.ImgUrl = url; dbTest.PublicId = id; });
             if (!result.IsSuccess) return new Result<GetTestDto> { IsSuccess = false, ErrorMessage = result.ErrorMessage };
+        }
+
+        if (updatedTest.OptionIdsToAdd != null)
+        {
+            foreach (var optionIdToAdd in updatedTest.OptionIdsToAdd)
+            {
+                var option = await _context.Options.FindAsync(optionIdToAdd);
+                if (option != null)
+                {
+                    option.TestId = id;
+                    _context.Options.Update(option);
+                }
+            }
+        }
+
+        if (updatedTest.OptionIdsToDelete != null)
+        {
+            foreach (var optionIdToDelete in updatedTest.OptionIdsToDelete)
+            {
+                var option = await _context.Options.FirstOrDefaultAsync(o => o.Id == optionIdToDelete && o.TestId == id);
+                if (option != null)
+                    await _optionsRepository.DeleteOption(optionIdToDelete);
+            }
         }
 
         return await SaveChangesAndReturnResult(id);
@@ -121,17 +146,21 @@ public class TestsRepository : ITestsRepository
         dbTest.Type = updatedTest.Type ?? dbTest.Type;
     }
 
-    private async Task<Result<GetTestDto>> SaveChangesAndReturnResult(int testId, string errorMessage = "Error occurs during saving changes.")
+    private async Task<Result<GetTestDto>> SaveChangesAndReturnResult(int testId)
     {
-        if (await _context.SaveChangesAsync() > 0)
+        try
         {
+            await _context.SaveChangesAsync();
+
             var dbTest = await _context.Tests
                 .Include(t => t.Options)
                 .FirstOrDefaultAsync(t => t.Id == testId);
 
             return new Result<GetTestDto> { IsSuccess = true, Data = _mapper.Map<GetTestDto>(dbTest) };
         }
-
-        return new Result<GetTestDto> { IsSuccess = false, ErrorMessage = errorMessage };
+        catch (System.Exception ex)
+        {
+            return new Result<GetTestDto> { IsSuccess = false, ErrorMessage = ex.Message };
+        }
     }
 }
