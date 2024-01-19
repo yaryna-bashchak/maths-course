@@ -76,9 +76,6 @@ namespace API.Repositories.Implementation
 
         public async Task<Result<GetLessonDto>> UpdateLesson(int id, UpdateLesssonDto updatedLesson, string username)
         {
-            var user = await GetUser(username);
-            if (user == null) return UnauthorizedResult("Unauthorized user.");
-
             var dbLesson = await GetLessonById(id);
 
             if (dbLesson == null) return NotFoundResult("Lesson with the provided ID not found.");

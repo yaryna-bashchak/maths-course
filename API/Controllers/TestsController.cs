@@ -7,7 +7,7 @@ namespace API.Controllers
 {
     public class TestsController : BaseApiController
     {
-        private ITestsRepository _testsRepository;
+        private readonly ITestsRepository _testsRepository;
         public TestsController(ITestsRepository testsRepository)
         {
             _testsRepository = testsRepository;
@@ -32,7 +32,21 @@ namespace API.Controllers
         public async Task<ActionResult<GetTestDto>> AddTest([FromForm] AddTestDto newTest)
         {
             var username = User.Identity.Name ?? "";
-            var result = await _testsRepository.AddTest(newTest, username);
+            var result = await _testsRepository.AddTest(newTest);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GetTestDto>> UpdateTest(int id, [FromForm] UpdateTestDto updatedTest)
+        {
+            var result = await _testsRepository.UpdateTest(id, updatedTest);
 
             if (!result.IsSuccess)
             {
@@ -47,7 +61,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteTest(int id)
         {
             var username = User.Identity.Name ?? "";
-            var result = await _testsRepository.DeleteTest(id, username);
+            var result = await _testsRepository.DeleteTest(id);
 
             if (!result.IsSuccess)
             {

@@ -14,16 +14,19 @@ public class TestsRepository : ITestsRepository
     private IMapper _mapper;
     private readonly ImageService _imageService;
     private readonly UserManager<User> _userManager;
+    private readonly IOptionsRepository _optionsRepository;
     public TestsRepository(
         CourseContext context,
         UserManager<User> userManager,
         IMapper mapper,
-        ImageService imageService)
+        ImageService imageService,
+        IOptionsRepository optionsRepository)
     {
         _context = context;
         _mapper = mapper;
         _userManager = userManager;
         _imageService = imageService;
+        _optionsRepository = optionsRepository;
     }
 
     public async Task<Result<List<GetTestDto>>> GetTestsOfLesson(int lessonId, string username)
@@ -45,7 +48,7 @@ public class TestsRepository : ITestsRepository
         return new Result<List<GetTestDto>> { IsSuccess = true, Data = tests };
     }
 
-    public async Task<Result<GetTestDto>> AddTest(AddTestDto newTest, string username)
+    public async Task<Result<GetTestDto>> AddTest(AddTestDto newTest)
     {
         try
         {
@@ -69,7 +72,7 @@ public class TestsRepository : ITestsRepository
         }
     }
 
-    public async Task<Result<GetTestDto>> UpdateTest(int id, UpdateTestDto updatedTest, string username)
+    public async Task<Result<GetTestDto>> UpdateTest(int id, UpdateTestDto updatedTest)
     {
         var dbTest = await _context.Tests.FirstOrDefaultAsync(t => t.Id == id);
 
@@ -86,7 +89,7 @@ public class TestsRepository : ITestsRepository
         return await SaveChangesAndReturnResult(id);
     }
 
-    public async Task<Result<bool>> DeleteTest(int id, string username)
+    public async Task<Result<bool>> DeleteTest(int id)
     {
         try
         {
@@ -96,6 +99,10 @@ public class TestsRepository : ITestsRepository
 
             if (!string.IsNullOrEmpty(dbTest.PublicId))
                 await _imageService.DeleteImageAsync(dbTest.PublicId);
+
+            var resultOfDeletingOptions = await _optionsRepository.DeleteAllOptionsOfTest(id);
+
+            if (!resultOfDeletingOptions.IsSuccess) return resultOfDeletingOptions;
 
             _context.Tests.Remove(dbTest);
             await _context.SaveChangesAsync();
