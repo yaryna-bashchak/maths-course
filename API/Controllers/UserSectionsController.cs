@@ -5,26 +5,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class SectionsController : BaseApiController
+    public class UserSectionsController : BaseApiController
     {
         private ISectionsRepository _sectionsRepository;
-        public SectionsController(ISectionsRepository sectionsRepository)
+        public UserSectionsController(ISectionsRepository sectionsRepository)
         {
             _sectionsRepository = sectionsRepository;
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection)
+        public async Task<IActionResult> UpdateSectionAvailability(int id, UpdateUserSectionDto updatedUserSection)
         {
-            var result = await _sectionsRepository.UpdateSection(id, updatedSection);
+            var username = User.Identity.Name ?? "";
+            var result = await _sectionsRepository.UpdateSectionAvailability(id, updatedUserSection, username);
 
             if (!result.IsSuccess)
             {
                 return NotFound(result.ErrorMessage);
             }
 
-            return result.Data;
+            return Ok();
         }
     }
 }
