@@ -13,10 +13,12 @@ namespace API.DI
             services.AddScoped<ITestsRepository, TestsRepository>();
             services.AddScoped<ICoursesRepository, CoursesRepository>();
             services.AddScoped<ISectionsRepository, SectionsRepository>();
+            services.AddScoped<IOptionsRepository, OptionsRepository>();
 
             // Services
             services.AddScoped<TokenService>();
             services.AddScoped<VideoService>();
+            services.AddScoped<ImageService>();
 
             // Services should be here
 
