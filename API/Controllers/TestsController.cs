@@ -29,7 +29,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<List<GetTestDto>>> AddTest(AddTestDto newTest)
+        public async Task<ActionResult<GetTestDto>> AddTest([FromForm] AddTestDto newTest)
         {
             var username = User.Identity.Name ?? "";
             var result = await _testsRepository.AddTest(newTest, username);
@@ -44,7 +44,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete]
-        public async Task<ActionResult<List<GetTestDto>>> DeleteTest(int id)
+        public async Task<IActionResult> DeleteTest(int id)
         {
             var username = User.Identity.Name ?? "";
             var result = await _testsRepository.DeleteTest(id, username);
@@ -54,7 +54,7 @@ namespace API.Controllers
                 return NotFound(result.ErrorMessage);
             }
 
-            return result.Data;
+            return Ok();
         }
     }
 }
