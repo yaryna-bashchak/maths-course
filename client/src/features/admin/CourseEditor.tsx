@@ -1,15 +1,37 @@
 import { Typography, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Box } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import useCourses from "../../app/hooks/useCourses";
+import { useState } from "react";
+import { Course } from "../../app/models/course";
+// import { Lesson } from "../../app/models/lesson";
+import CourseForm from "./CourseForm";
+
+type EditMode = 'false' | 'course' | 'lesson';
 
 export default function CourseEditor() {
     const { courses } = useCourses();
+    const [editMode, setEditMode] = useState<EditMode>('false');
+    const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
+    // const [selectedLesson, setSelectedLesson] = useState<Lesson | undefined>(undefined);
+
+    const handleSelectCourse = (course: Course) => {
+        setSelectedCourse(course);
+        setEditMode('course');
+    }
+
+    const cancelEdit = () => {
+        if (selectedCourse) setSelectedCourse(undefined);
+        setEditMode('false');
+    }
+
+    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit}/>
+    // if (editMode === 'lesson') return <LessonForm />
 
     return (
         <>
             <Box display='flex' justifyContent='space-between'>
                 <Typography sx={{ p: 2 }} variant='h4'>Редактор Курсів</Typography>
-                <Button sx={{ m: 2 }} size='large' variant='contained' disabled>Створити</Button>
+                <Button onClick={() => setEditMode('course')} sx={{ m: 2 }} size='large' variant='contained' disabled>Створити</Button>
             </Box>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -45,7 +67,7 @@ export default function CourseEditor() {
                                 <TableCell align="right">{course.priceMonthly}</TableCell>
                                 <TableCell align="right">{course.sections.length}</TableCell>
                                 <TableCell align="right">
-                                    <Button startIcon={<Edit />} />
+                                    <Button onClick={() => handleSelectCourse(course)} startIcon={<Edit />} />
                                     <Button startIcon={<Delete />} color='error' disabled />
                                 </TableCell>
                             </TableRow>
