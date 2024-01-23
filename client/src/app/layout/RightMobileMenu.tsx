@@ -8,20 +8,7 @@ import { useDispatch } from "react-redux";
 import { signOut } from "../../features/account/accountSlice";
 import { clearCourses } from "../../features/courses/coursesSlice";
 import { clearTests } from "../../features/tests/testsSlice";
-
-const nonAuthorizedLinks = [
-    { title: 'Увійти', path: '/login' },
-    { title: 'Зареєструватися', path: '/register' },
-]
-const authorizedLinks = [
-    { title: 'Вийти', path: '/'},
-]
-
-const baseLinks = [
-    { title: 'Про⠀нас', path: '' },
-    { title: 'Курси', path: 'course' },
-    { title: 'Ціни', path: '/#price' },
-]
+import { authorizedLinks, baseLinks, nonAuthorizedLinks } from "./links";
 
 export default function RightMobileMenu() {
     const { user } = useAppSelector(state => state.account);
