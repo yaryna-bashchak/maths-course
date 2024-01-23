@@ -12,3 +12,7 @@ export const baseLinks = [
     { title: 'Курси', path: 'course' },
     { title: 'Ціни', path: '/#price' },
 ]
+
+export const adminLinks = [
+    { title: 'Редагувати Курси', path: '/editor' },
+]

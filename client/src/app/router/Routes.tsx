@@ -10,6 +10,7 @@ import CourseCatalog from "../../features/courses/CourseCatalog";
 import Login from "../../features/account/Login";
 import Register from "../../features/account/Register";
 import RequireAuth from "./RequireAuth";
+import CourseEditor from "../../features/admin/CourseEditor";
 
 export const router = createBrowserRouter([
     {
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
             { element: <RequireAuth />, children: [
                 { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
                 { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
+                { path: 'editor', element: <CourseEditor /> },
             ]},
             { path: '', element: <HomePage /> },
             { path: 'course', element: <CourseCatalog /> },
