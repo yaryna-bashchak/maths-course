@@ -4,7 +4,7 @@ import useCourses from "../../app/hooks/useCourses";
 import { useState } from "react";
 import { Course } from "../../app/models/course";
 // import { Lesson } from "../../app/models/lesson";
-import CourseForm from "./CourseForm";
+import CourseForm from "./courseForm/CourseForm";
 
 type EditMode = 'false' | 'course' | 'lesson';
 
@@ -24,7 +24,7 @@ export default function CourseEditor() {
         setEditMode('false');
     }
 
-    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit}/>
+    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} />
     // if (editMode === 'lesson') return <LessonForm />
 
     return (
@@ -34,7 +34,7 @@ export default function CourseEditor() {
                 <Button onClick={() => setEditMode('course')} sx={{ m: 2 }} size='large' variant='contained'>Створити</Button>
             </Box>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>№</TableCell>

@@ -1,11 +1,12 @@
-import { Typography, Grid, Paper, Box, Button } from "@mui/material";
+import { Typography, Grid, Paper, Box, Button, Table, TableBody, TableContainer } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
-import AppTextInput from "../../app/components/AppTextInput";
-import { Course } from "../../app/models/course";
+import AppTextInput from "../../../app/components/AppTextInput";
+import { Course } from "../../../app/models/course";
 import { useEffect } from "react";
-import AppDropzone from "../../app/components/AppDropzone";
-import { yupResolver } from '@hookform/resolvers/yup' ;
+import AppDropzone from "../../../app/components/AppDropzone";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { validationSchema } from "./courseValidation";
+import SectionForm from "./SectionForm";
 
 interface Props {
     course?: Course;
@@ -27,7 +28,7 @@ export default function CourseForm({ course, cancelEdit }: Props) {
     }
 
     return (
-        <Box component={Paper} sx={{ p: 4 }}>
+        <Box sx={{ p: 4 }}>
             <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
                 Редагування курсу
             </Typography>
@@ -65,6 +66,18 @@ export default function CourseForm({ course, cancelEdit }: Props) {
                     <Button type="submit" variant='contained' color='success'>Зберегти</Button>
                 </Box>
             </form>
+            <Box display='flex' justifyContent='space-between'>
+                <Typography sx={{ pt: 6 }} variant='h4'>Секції</Typography>
+                {/* <Button onClick={() => setEditMode('course')} sx={{ m: 2 }} size='large' variant='contained'>Створити</Button> */}
+            </Box>
+            <TableContainer component={Paper} sx={{ mt: 2 }}>
+                <Table>
+                    <TableBody>
+                        {course?.sections.map((section, index) =>
+                            <SectionForm section={section} key={index} />)}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Box>
     )
 }
