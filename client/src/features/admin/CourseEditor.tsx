@@ -31,7 +31,7 @@ export default function CourseEditor() {
         <>
             <Box display='flex' justifyContent='space-between'>
                 <Typography sx={{ p: 2 }} variant='h4'>Редактор Курсів</Typography>
-                <Button onClick={() => setEditMode('course')} sx={{ m: 2 }} size='large' variant='contained' disabled>Створити</Button>
+                <Button onClick={() => setEditMode('course')} sx={{ m: 2 }} size='large' variant='contained'>Створити</Button>
             </Box>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">

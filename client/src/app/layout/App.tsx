@@ -1,4 +1,5 @@
-import { Container, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { Container, CssBaseline } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "./Header";
 import { Outlet, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
