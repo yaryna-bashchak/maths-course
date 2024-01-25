@@ -5,7 +5,7 @@ import { Course } from "../../../app/models/course";
 import { useEffect } from "react";
 import AppDropzone from "../../../app/components/AppDropzone";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { validationSchema } from "./courseValidation";
+import { courseValidationSchema } from "./validationSchemas";
 import SectionForm from "./SectionForm";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 
 export default function CourseForm({ course, cancelEdit }: Props) {
     const { control, reset, handleSubmit, watch } = useForm({
-        resolver: yupResolver<any>(validationSchema)
+        resolver: yupResolver<any>(courseValidationSchema)
     });
     const watchFile = watch('file', null)
 
@@ -47,7 +47,7 @@ export default function CourseForm({ course, cancelEdit }: Props) {
                         <AppTextInput type="number" control={control} name='duration' label='Тривалість' />
                     </Grid>
                     <Grid item xs={12}>
-                        <AppTextInput multiline={true} rows={2} control={control} name='description' label='Description' />
+                        <AppTextInput multiline={true} rows={2} control={control} name='description' label='Опис' />
                     </Grid>
                     <Grid item xs={12}>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>

@@ -1,6 +1,6 @@
 import * as yup from 'yup'
 
-export const validationSchema = yup.object({
+export const courseValidationSchema = yup.object({
     title: yup.string().required(),
     priceFull: yup.number().required().moreThan(0),
     priceMonthly: yup.number().required().moreThan(0),
@@ -11,4 +11,9 @@ export const validationSchema = yup.object({
         then: schema => schema.required('Please provide a file'),
         otherwise: schema => schema.notRequired()
     })
+})
+
+export const sectionValidationSchema = yup.object({
+    title: yup.string().required(),
+    description: yup.string().required(),
 })
