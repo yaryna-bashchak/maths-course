@@ -30,7 +30,7 @@ export default function LessonLine({ lesson }: Props) {
                 <TableCell align="right">
                     <Button startIcon={<Edit />} />
                     {/* <Button onClick={() => handleSelectCourse(section)} startIcon={<Edit />} /> */}
-                    <Button startIcon={<Delete />} color='error' disabled />
+                    <Button startIcon={<Delete />} color='error' />
                 </TableCell>
             </TableRow>
         </>

@@ -3,7 +3,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { Section } from "../../../app/models/course";
 import SectionHeader from "./SectionHeader";
 import TableOfSectionLessons from "./TableOfSectionLessons";
-import { Box, Button, Grid, TableCell, TableRow } from "@mui/material";
+import { Grid, TableCell, TableRow } from "@mui/material";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { sectionValidationSchema } from "./validationSchemas";
@@ -14,36 +14,41 @@ interface Props {
 
 export default function SectionForm({ section }: Props) {
     const [isEditing, setIsEditing] = useState(false);
-    const { control, reset } = useForm({
+    const { control, reset, handleSubmit } = useForm({
         resolver: yupResolver<any>(sectionValidationSchema),
         defaultValues: {
-            title: "",
-            description: ""
+            title: section?.title || "",
+            description: section?.description || ""
         }
     });
 
     useEffect(() => {
-        if (section) {
-            const sectionCopy = { ...section };
-
-            if (sectionCopy.title === null) sectionCopy.title = "";
-            if (sectionCopy.description === null) sectionCopy.description = "";
-
-            reset(sectionCopy);
-        }
+        reset({
+            title: section?.title || "",
+            description: section?.description || ""
+        });
     }, [section, reset]);
 
-    const handleEditClick = () => {
+    const toggleEdit = (resetForm = true) => {
+        if (isEditing && resetForm) {
+            reset({
+                title: section?.title || "",
+                description: section?.description || ""
+            });
+        }
+
         setIsEditing(!isEditing);
     };
 
-    const handleSubmitData = () => {
-        setIsEditing(!isEditing);
-        console.log("submit");
+    const handleSubmitData = (data: FieldValues) => {
+        console.log("Title: ", data.title);
+        console.log("Description: ", data.description);
+
+        toggleEdit(false);
     }
 
     return (<>
-        <SectionHeader section={section} handleEditClick={handleEditClick} handleSubmitData={handleSubmitData} isEditing={isEditing} />
+        <SectionHeader section={section} handleEditClick={toggleEdit} handleSubmitData={handleSubmit(handleSubmitData)} isEditing={isEditing} />
 
         {isEditing && (
             <TableRow>

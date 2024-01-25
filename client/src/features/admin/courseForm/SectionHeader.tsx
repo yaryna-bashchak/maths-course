@@ -32,7 +32,7 @@ export default function SectionHeader({ section, handleEditClick, handleSubmitDa
                         <Button onClick={handleEditClick} startIcon={<Close />} color='error' />
                     </>}
                     <Button onClick={handleEditClick} startIcon={<Edit />} disabled={isEditing} />
-                    <Button startIcon={<Delete />} color='error' disabled />
+                    <Button startIcon={<Delete /> } color='error' disabled={isEditing} />
                 </TableCell>
             </TableRow>
         </>

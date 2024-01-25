@@ -68,7 +68,7 @@ export default function CourseEditor() {
                                 <TableCell align="right">{course.sections.length}</TableCell>
                                 <TableCell align="right">
                                     <Button onClick={() => handleSelectCourse(course)} startIcon={<Edit />} />
-                                    <Button startIcon={<Delete />} color='error' disabled />
+                                    <Button startIcon={<Delete />} color='error' />
                                 </TableCell>
                             </TableRow>
                         ))}
