@@ -1,12 +1,14 @@
 import { useMediaQuery, TableRow, TableCell, Table, TableHead, TableBody, useTheme } from "@mui/material";
 import LessonLine from "./LessonLine";
 import { Section } from "../../../app/models/course";
+import { Lesson } from "../../../app/models/lesson";
 
 interface Props {
     section?: Section;
+    handleSelectLesson?: (lesson: Lesson) => void;
 }
 
-export default function TableOfSectionLessons({ section }: Props) {
+export default function TableOfSectionLessons({ section, handleSelectLesson }: Props) {
     const theme = useTheme();
     const isMobileOrTablet = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -27,7 +29,7 @@ export default function TableOfSectionLessons({ section }: Props) {
 
                             <TableBody>
                                 {section?.lessons?.map((lesson) => (
-                                    <LessonLine key={lesson.id} lesson={lesson} />
+                                    <LessonLine key={lesson.id} lesson={lesson} handleSelectLesson={handleSelectLesson}/>
                                 ))}
                                 <LessonLine />
                             </TableBody>

@@ -7,13 +7,15 @@ import AppDropzone from "../../../app/components/AppDropzone";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { courseValidationSchema } from "./validationSchemas";
 import SectionForm from "./SectionForm";
+import { Lesson } from "../../../app/models/lesson";
 
 interface Props {
     course?: Course;
     cancelEdit: () => void;
+    handleSelectLesson: (lesson: Lesson) => void;
 }
 
-export default function CourseForm({ course, cancelEdit }: Props) {
+export default function CourseForm({ course, cancelEdit, handleSelectLesson }: Props) {
     const { control, reset, handleSubmit, watch } = useForm({
         resolver: yupResolver<any>(courseValidationSchema)
     });
@@ -30,7 +32,7 @@ export default function CourseForm({ course, cancelEdit }: Props) {
     return (
         <Box sx={{ p: 4 }}>
             <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-                Редагування курсу
+                Курс
             </Typography>
             <form onSubmit={handleSubmit(handleSubmitData)}>
                 <Grid container spacing={3}>
@@ -74,7 +76,7 @@ export default function CourseForm({ course, cancelEdit }: Props) {
                 <Table>
                     <TableBody>
                         {course?.sections.map((section, index) =>
-                            <SectionForm section={section} key={index} />)}
+                            <SectionForm section={section} key={index} handleSelectLesson={handleSelectLesson}/>)}
                         <SectionForm />
                     </TableBody>
                 </Table>

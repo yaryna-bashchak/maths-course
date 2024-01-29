@@ -3,8 +3,9 @@ import { Edit, Delete } from "@mui/icons-material";
 import useCourses from "../../app/hooks/useCourses";
 import { useState } from "react";
 import { Course } from "../../app/models/course";
-// import { Lesson } from "../../app/models/lesson";
+import { Lesson } from "../../app/models/lesson";
 import CourseForm from "./courseForm/CourseForm";
+import LessonForm from "./lessonForm/LessonForm";
 
 type EditMode = 'false' | 'course' | 'lesson';
 
@@ -12,20 +13,34 @@ export default function CourseEditor() {
     const { courses } = useCourses();
     const [editMode, setEditMode] = useState<EditMode>('false');
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
-    // const [selectedLesson, setSelectedLesson] = useState<Lesson | undefined>(undefined);
+    // const [selectedSection, setSelectedSection] = useState<Section | undefined>(undefined);
+    const [selectedLesson, setSelectedLesson] = useState<Lesson | undefined>(undefined);
 
     const handleSelectCourse = (course: Course) => {
         setSelectedCourse(course);
         setEditMode('course');
     }
 
-    const cancelEdit = () => {
-        if (selectedCourse) setSelectedCourse(undefined);
-        setEditMode('false');
+    const handleSelectLesson = (lesson: Lesson) => {
+        setSelectedLesson(lesson);
+        setEditMode('lesson');
     }
 
-    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} />
-    // if (editMode === 'lesson') return <LessonForm />
+    const cancelEdit = () => {
+        // можливо буде не правильно працювати при створенні, а не редагуванні об'єктів
+        if (selectedLesson) {
+            setSelectedLesson(undefined);
+            setEditMode('course');
+            return;
+        }
+        if (selectedCourse) {
+            setSelectedCourse(undefined);
+            setEditMode('false');
+        }
+    }
+
+    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} handleSelectLesson={handleSelectLesson} />
+    if (editMode === 'lesson') return <LessonForm lesson={selectedLesson} cancelEdit={cancelEdit} />
 
     return (
         <>

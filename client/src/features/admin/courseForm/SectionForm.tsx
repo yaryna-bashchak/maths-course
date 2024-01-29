@@ -7,12 +7,14 @@ import { Grid, TableCell, TableRow } from "@mui/material";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { sectionValidationSchema } from "./validationSchemas";
+import { Lesson } from "../../../app/models/lesson";
 
 interface Props {
     section?: Section;
+    handleSelectLesson?: (lesson: Lesson) => void;
 }
 
-export default function SectionForm({ section }: Props) {
+export default function SectionForm({ section, handleSelectLesson }: Props) {
     const [isEditing, setIsEditing] = useState(false);
     const { control, reset, handleSubmit } = useForm({
         resolver: yupResolver<any>(sectionValidationSchema),
@@ -77,7 +79,7 @@ export default function SectionForm({ section }: Props) {
             </TableRow>
         )}
 
-        <TableOfSectionLessons section={section} />
+        <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson}/>
     </>
     )
 }
