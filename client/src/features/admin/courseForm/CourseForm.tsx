@@ -75,6 +75,7 @@ export default function CourseForm({ course, cancelEdit }: Props) {
                     <TableBody>
                         {course?.sections.map((section, index) =>
                             <SectionForm section={section} key={index} />)}
+                        <SectionForm />
                     </TableBody>
                 </Table>
             </TableContainer>

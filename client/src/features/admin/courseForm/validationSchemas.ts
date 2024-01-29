@@ -15,5 +15,5 @@ export const courseValidationSchema = yup.object({
 
 export const sectionValidationSchema = yup.object({
     title: yup.string().required(),
-    description: yup.string().required(),
+    description: yup.string(),
 })

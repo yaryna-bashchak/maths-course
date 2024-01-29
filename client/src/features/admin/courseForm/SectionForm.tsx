@@ -77,7 +77,7 @@ export default function SectionForm({ section }: Props) {
             </TableRow>
         )}
 
-        <TableOfSectionLessons lessons={section?.lessons} />
+        <TableOfSectionLessons section={section} />
     </>
     )
 }

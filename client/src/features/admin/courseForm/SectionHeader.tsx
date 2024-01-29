@@ -1,4 +1,4 @@
-import { Edit, Close, Done, Delete } from "@mui/icons-material";
+import { Edit, Close, Done, Delete, Add } from "@mui/icons-material";
 import { TableRow, TableCell, Button } from "@mui/material";
 import { Section } from "../../../app/models/course";
 
@@ -20,20 +20,27 @@ export default function SectionHeader({ section, handleEditClick, handleSubmitDa
                 backgroundColor: '#d0e3f7',
                 '&:last-child td, &:last-child th': { border: 0 }
             }}>
-                <TableCell component="th" scope="row" sx={{ ...sectionCellStyle, width: '40px' }}>
-                    ID={section?.id}
-                </TableCell>
+                {section || isEditing ? <>
+                    <TableCell component="th" scope="row" sx={{ ...sectionCellStyle, width: '40px' }}>
+                        ID={section?.id}
+                    </TableCell>
 
-                <TableCell align="left" sx={{ ...sectionCellStyle, fontWeight: 'bold' }}>{section?.title}</TableCell>
+                    <TableCell align="left" sx={{ ...sectionCellStyle, fontWeight: 'bold' }}>{section?.title}</TableCell>
 
-                <TableCell align="right" colSpan={2}>
-                    {isEditing && <>
-                        <Button onClick={handleSubmitData} startIcon={<Done />} color='success' />
-                        <Button onClick={handleEditClick} startIcon={<Close />} color='error' />
-                    </>}
-                    <Button onClick={handleEditClick} startIcon={<Edit />} disabled={isEditing} />
-                    <Button startIcon={<Delete /> } color='error' disabled={isEditing} />
-                </TableCell>
+                    <TableCell align="right" colSpan={2}>
+                        {isEditing && <>
+                            <Button onClick={handleSubmitData} startIcon={<Done />} color='success' />
+                            <Button onClick={handleEditClick} startIcon={<Close />} color='error' />
+                        </>}
+                        <Button onClick={handleEditClick} startIcon={<Edit />} disabled={isEditing} />
+                        <Button startIcon={<Delete />} color='error' disabled={isEditing} />
+                    </TableCell>
+                </> : <>
+                    <TableCell align="center" colSpan={4}>
+                        <Button onClick={handleEditClick} size="large" startIcon={<Add />}>додати секцію</Button>
+                    </TableCell>
+                </>
+                }
             </TableRow>
         </>
     )
