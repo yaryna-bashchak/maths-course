@@ -15,7 +15,7 @@ export default function CourseEditor() {
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
     // const [selectedSection, setSelectedSection] = useState<Section | undefined>(undefined);
     const [selectedLesson, setSelectedLesson] = useState<Lesson | undefined>(undefined);
-
+    
     const handleSelectCourse = (course: Course) => {
         setSelectedCourse(course);
         setEditMode('course');
@@ -27,13 +27,12 @@ export default function CourseEditor() {
     }
 
     const cancelEdit = () => {
-        // можливо буде не правильно працювати при створенні, а не редагуванні об'єктів
-        if (selectedLesson) {
+        if (editMode === 'lesson') {
             setSelectedLesson(undefined);
             setEditMode('course');
             return;
         }
-        if (selectedCourse) {
+        if (editMode === 'course') {
             setSelectedCourse(undefined);
             setEditMode('false');
         }

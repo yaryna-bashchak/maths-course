@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { courseValidationSchema } from "./validationSchemas";
 import SectionForm from "./SectionForm";
 import { Lesson } from "../../../app/models/lesson";
+import useCourse from "../../../app/hooks/useCourse";
 
 interface Props {
     course?: Course;
@@ -15,7 +16,10 @@ interface Props {
     handleSelectLesson: (lesson: Lesson) => void;
 }
 
-export default function CourseForm({ course, cancelEdit, handleSelectLesson }: Props) {
+export default function CourseForm({ course: givenCourse, cancelEdit, handleSelectLesson }: Props) {
+    const { course: fullCourse } = useCourse(givenCourse?.id);
+    const course = fullCourse ?? givenCourse;
+
     const { control, reset, handleSubmit, watch } = useForm({
         resolver: yupResolver<any>(courseValidationSchema)
     });
@@ -76,7 +80,7 @@ export default function CourseForm({ course, cancelEdit, handleSelectLesson }: P
                 <Table>
                     <TableBody>
                         {course?.sections.map((section, index) =>
-                            <SectionForm section={section} key={index} handleSelectLesson={handleSelectLesson}/>)}
+                            <SectionForm section={section} key={index} handleSelectLesson={handleSelectLesson} />)}
                         <SectionForm />
                     </TableBody>
                 </Table>

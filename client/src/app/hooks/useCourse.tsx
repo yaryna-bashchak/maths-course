@@ -28,7 +28,7 @@ export default function useCourse(passedCourseId?: number) {
     }, [courseLoaded]);
 
     return {
-        course: course,
+        course,
         courseLoaded,
         lessonParams,
         status

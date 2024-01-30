@@ -12,7 +12,7 @@ interface Props {
     cancelEdit: () => void;
 }
 
-export default function LessonForm({ lesson, cancelEdit }: Props) { 
+export default function LessonForm({ lesson, cancelEdit }: Props) {
     const { control, reset, handleSubmit, watch } = useForm({
         resolver: yupResolver<any>(lessonValidationSchema)
     });
@@ -41,11 +41,20 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
                         <AppTextInput type="number" control={control} name='importance' label='Важливість' />
                     </Grid>
                     <Grid item xs={12}>
-                        <AppTextInput multiline={true} rows={2} control={control} name='description' label='Опис' />
+                        <AppTextInput multiline={true} rows={4} control={control} name='description' label='Опис' />
                     </Grid>
                     <Grid item xs={12}>
+                        <Typography variant="h5" gutterBottom>
+                            Теорія
+                        </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='theory' />
+                            {/* {(watchTheoryFile || lesson?.urlTheory) && (
+                                <video style={{ maxHeight: 200 }} controls>
+                                    <source src={URL.createObjectURL(watchTheoryFile)} type="video/*" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            )} */}
                             {watchTheoryFile &&
                                 <img src={watchTheoryFile.preview} alt="preview" style={{ maxHeight: 200 }} />
                                 // ) : (
@@ -55,6 +64,9 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
+                        <Typography variant="h5" gutterBottom>
+                            Практика
+                        </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='practice' />
                             {watchPracticeFile &&
