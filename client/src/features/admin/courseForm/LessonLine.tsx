@@ -4,7 +4,7 @@ import { Lesson } from "../../../app/models/lesson";
 
 interface Props {
     lesson?: Lesson;
-    handleSelectLesson?: (lesson: Lesson) => void;
+    handleSelectLesson?: (lesson: Lesson | undefined) => void;
 }
 
 export default function LessonLine({ lesson, handleSelectLesson }: Props) {
@@ -17,28 +17,21 @@ export default function LessonLine({ lesson, handleSelectLesson }: Props) {
                 key={lesson?.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-                {lesson && handleSelectLesson ? <>
+                {handleSelectLesson && (lesson ? <>
                     <TableCell component="th" scope="row">
                         {lesson?.id}
                     </TableCell>
-                    {/* <TableCell align="left">
-                                    <Box display='flex' alignItems='center'>
-                                        <img src={course.pictureUrl} alt={course.name} style={{ height: 50, marginRight: 20 }} />
-                                        <span>{course.name}</span>
-                                    </Box>
-                                </TableCell> */}
                     <TableCell align="left">{lesson?.title}</TableCell>
                     {!isMobileOrTablet && <TableCell align="center">{lesson?.importance}</TableCell>}
                     <TableCell align="right">
                         <Button onClick={() => handleSelectLesson(lesson)} startIcon={<Edit />} />
-                        {/* <Button onClick={() => handleSelectCourse(section)} startIcon={<Edit />} /> */}
                         <Button startIcon={<Delete />} color='error' />
                     </TableCell>
                 </> : <>
                     <TableCell align="center" colSpan={4}>
-                        <Button startIcon={<Add />}>додати урок</Button>
+                        <Button onClick={() => handleSelectLesson(undefined)} startIcon={<Add />}>додати урок</Button>
                     </TableCell>
-                </>
+                </>)
                 }
             </TableRow>
         </>

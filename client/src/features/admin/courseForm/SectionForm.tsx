@@ -11,7 +11,7 @@ import { Lesson } from "../../../app/models/lesson";
 
 interface Props {
     section?: Section;
-    handleSelectLesson?: (lesson: Lesson) => void;
+    handleSelectLesson?: (lesson: Lesson | undefined) => void;
 }
 
 export default function SectionForm({ section, handleSelectLesson }: Props) {

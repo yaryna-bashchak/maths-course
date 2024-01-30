@@ -5,7 +5,7 @@ import { Lesson } from "../../../app/models/lesson";
 
 interface Props {
     section?: Section;
-    handleSelectLesson?: (lesson: Lesson) => void;
+    handleSelectLesson?: (lesson: Lesson | undefined) => void;
 }
 
 export default function TableOfSectionLessons({ section, handleSelectLesson }: Props) {
@@ -29,9 +29,9 @@ export default function TableOfSectionLessons({ section, handleSelectLesson }: P
 
                             <TableBody>
                                 {section?.lessons?.map((lesson) => (
-                                    <LessonLine key={lesson.id} lesson={lesson} handleSelectLesson={handleSelectLesson}/>
+                                    <LessonLine key={lesson.id} lesson={lesson} handleSelectLesson={handleSelectLesson} />
                                 ))}
-                                <LessonLine />
+                                <LessonLine handleSelectLesson={handleSelectLesson} />
                             </TableBody>
                         </Table>
                     </TableCell>

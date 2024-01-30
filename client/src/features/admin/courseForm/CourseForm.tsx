@@ -3,7 +3,6 @@ import { FieldValues, useForm } from "react-hook-form";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { Course } from "../../../app/models/course";
 import { useEffect } from "react";
-import AppDropzone from "../../../app/components/AppDropzone";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { courseValidationSchema } from "./validationSchemas";
 import SectionForm from "./SectionForm";
@@ -13,17 +12,16 @@ import useCourse from "../../../app/hooks/useCourse";
 interface Props {
     course?: Course;
     cancelEdit: () => void;
-    handleSelectLesson: (lesson: Lesson) => void;
+    handleSelectLesson: (lesson: Lesson | undefined) => void;
 }
 
 export default function CourseForm({ course: givenCourse, cancelEdit, handleSelectLesson }: Props) {
     const { course: fullCourse } = useCourse(givenCourse?.id);
     const course = fullCourse ?? givenCourse;
 
-    const { control, reset, handleSubmit, watch } = useForm({
+    const { control, reset, handleSubmit } = useForm({
         resolver: yupResolver<any>(courseValidationSchema)
     });
-    const watchFile = watch('file', null)
 
     useEffect(() => {
         if (course) reset(course);
@@ -55,17 +53,6 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
                     <Grid item xs={12}>
                         <AppTextInput multiline={true} rows={2} control={control} name='description' label='Опис' />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Box display='flex' justifyContent='space-between' alignItems='center'>
-                            <AppDropzone control={control} name='file' />
-                            {watchFile &&
-                                <img src={watchFile.preview} alt="preview" style={{ maxHeight: 200 }} />
-                                // ) : (
-                                //     <img src={} alt="preview" style={{ maxHeight: 200 }} />
-                                // )
-                            }
-                        </Box>
-                    </Grid>
                 </Grid>
                 <Box display='flex' justifyContent='space-between' sx={{ mt: 3 }}>
                     <Button onClick={cancelEdit} variant='contained' color='inherit'>Відмінити</Button>
@@ -81,7 +68,7 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
                     <TableBody>
                         {course?.sections.map((section, index) =>
                             <SectionForm section={section} key={index} handleSelectLesson={handleSelectLesson} />)}
-                        <SectionForm />
+                        <SectionForm handleSelectLesson={handleSelectLesson} />
                     </TableBody>
                 </Table>
             </TableContainer>

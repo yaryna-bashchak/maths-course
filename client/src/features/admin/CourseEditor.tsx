@@ -15,13 +15,13 @@ export default function CourseEditor() {
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
     // const [selectedSection, setSelectedSection] = useState<Section | undefined>(undefined);
     const [selectedLesson, setSelectedLesson] = useState<Lesson | undefined>(undefined);
-    
+
     const handleSelectCourse = (course: Course) => {
         setSelectedCourse(course);
         setEditMode('course');
     }
 
-    const handleSelectLesson = (lesson: Lesson) => {
+    const handleSelectLesson = (lesson: Lesson | undefined) => {
         setSelectedLesson(lesson);
         setEditMode('lesson');
     }
@@ -66,15 +66,7 @@ export default function CourseEditor() {
                                 key={course.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
-                                    {course.id}
-                                </TableCell>
-                                {/* <TableCell align="left">
-                                    <Box display='flex' alignItems='center'>
-                                        <img src={course.pictureUrl} alt={course.name} style={{ height: 50, marginRight: 20 }} />
-                                        <span>{course.name}</span>
-                                    </Box>
-                                </TableCell> */}
+                                <TableCell component="th" scope="row">{course.id} </TableCell>
                                 <TableCell align="left">{course.title}</TableCell>
                                 <TableCell align="right">{course.duration}</TableCell>
                                 <TableCell align="right">{course.priceFull}</TableCell>
