@@ -1,33 +1,16 @@
 import { Box, Button, List, Typography } from "@mui/material";
 import SectionItem from "./SectionItem";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { courseSelectors, fetchCourseAsync, initializeCourseStatus } from "../courses/coursesSlice";
 import Filters from "./Filters";
 import SectionSkeleton from "./SectionSkeleton";
+import useCourse from "../../app/hooks/useCourse";
 
 export default function CourseDetails() {
-    const dispatch = useAppDispatch();
-    const { courseId } = useParams<{ courseId: string }>();
-    const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
-    const { status } = useAppSelector(state => state.courses);
-    const courseStatus = useAppSelector(state => state.courses.individualCourseStatus[parseInt(courseId!)]);
-    const { courseLoaded, lessonParams } = courseStatus || {};
-
-    useEffect(() => {
-        if (!lessonParams)
-            dispatch(initializeCourseStatus({ courseId: parseInt(courseId!) }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [courseStatus]);
-
-    useEffect(() => {
-        if (courseLoaded === false) dispatch(fetchCourseAsync(parseInt(courseId!)));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [courseLoaded])
+    const { course, status, courseLoaded, lessonParams } = useCourse();
 
     useEffect(() => {
         if (course) {

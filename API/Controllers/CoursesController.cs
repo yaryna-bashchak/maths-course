@@ -41,7 +41,6 @@ namespace API.Controllers
             return result.Data;
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<GetCourseDto>> GetCourse(int id, [FromQuery] LessonParams lessonParams)
         {
