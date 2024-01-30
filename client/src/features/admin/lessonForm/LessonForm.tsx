@@ -2,7 +2,7 @@ import { Typography, Grid, Box, Button } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { Lesson } from "../../../app/models/lesson";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import AppDropzone from "../../../app/components/AppDropzone";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { lessonValidationSchema } from "../courseForm/validationSchemas";
@@ -18,10 +18,24 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
     });
     const watchTheoryFile = watch('theory', null)
     const watchPracticeFile = watch('practice', null)
+    const theoryRef = useRef<HTMLVideoElement>(null);
+    const practiceRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         if (lesson) reset(lesson);
     }, [lesson, reset]);
+
+    useEffect(() => {
+        if (watchTheoryFile && watchTheoryFile.preview) {
+            theoryRef.current?.load();
+        }
+    }, [watchTheoryFile]);
+
+    useEffect(() => {
+        if (watchPracticeFile && watchPracticeFile.preview) {
+            practiceRef.current?.load();
+        }
+    }, [watchPracticeFile]);
 
     const handleSubmitData = (data: FieldValues) => {
         console.log(data);
@@ -49,18 +63,12 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
                         </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='theory' />
-                            {/* {(watchTheoryFile || lesson?.urlTheory) && (
-                                <video style={{ maxHeight: 200 }} controls>
-                                    <source src={URL.createObjectURL(watchTheoryFile)} type="video/*" />
+                            {watchTheoryFile && (
+                                <video ref={theoryRef} style={{ maxHeight: 200 }} controls >
+                                    <source src={watchTheoryFile.preview} type={watchTheoryFile.type} />
                                     Your browser does not support the video tag.
                                 </video>
-                            )} */}
-                            {watchTheoryFile &&
-                                <img src={watchTheoryFile.preview} alt="preview" style={{ maxHeight: 200 }} />
-                                // ) : (
-                                //     <img src={} alt="preview" style={{ maxHeight: 200 }} />
-                                // )
-                            }
+                            )}
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -70,10 +78,10 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='practice' />
                             {watchPracticeFile &&
-                                <img src={watchPracticeFile.preview} alt="preview" style={{ maxHeight: 200 }} />
-                                // ) : (
-                                //     <img src={} alt="preview" style={{ maxHeight: 200 }} />
-                                // )
+                                <video ref={practiceRef} style={{ maxHeight: 200 }} controls >
+                                    <source src={watchPracticeFile.preview} type={watchPracticeFile.type} />
+                                    Your browser does not support the video tag.
+                                </video>
                             }
                         </Box>
                     </Grid>

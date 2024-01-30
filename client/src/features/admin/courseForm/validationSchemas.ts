@@ -28,18 +28,14 @@ const SUPPORTED_FORMATS = [
 
 const videoSchema = yup
   .mixed()
-  .test('fileSize', 'File too large', (value: any) => {
-    const file = value as File
+  .test('fileSize', 'File too large', (file: any) => {
     return !file || (file && file.size <= FILE_SIZE_LIMIT)
   })
-  .test('fileFormat', 'Unsupported Format', (value: any) => {
-    const file = value as File
+  .test('fileFormat', 'Unsupported Format', (file: any) => {
     if (!file) return true
-
-    const fileType = file.type
-    const extension = file.name.split('.').pop()?.toLowerCase()
-
-    return fileType ? SUPPORTED_FORMATS.includes(fileType) : extension === 'asf'
+    // const extension = file.path.split('.').pop()?.toLowerCase()
+    // return file.type ? SUPPORTED_FORMATS.includes(file.type) : extension === 'asf'
+    return SUPPORTED_FORMATS.includes(file.type)
   })
   .notRequired()
 

@@ -1,6 +1,6 @@
 import { UploadFile } from '@mui/icons-material'
 import { FormControl, Typography, FormHelperText } from '@mui/material'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useController, UseControllerProps } from 'react-hook-form'
 
@@ -8,6 +8,7 @@ interface Props extends UseControllerProps { }
 
 export default function AppDropzone(props: Props) {
     const { fieldState, field } = useController({ ...props, defaultValue: null })
+    const [prevUrl, setPrevUrl] = useState(null)
 
     const dzStyles = {
         display: 'flex',
@@ -25,9 +26,22 @@ export default function AppDropzone(props: Props) {
     }
 
     const onDrop = useCallback((acceptedFiles: any) => {
-        acceptedFiles[0] = Object.assign(acceptedFiles[0], { preview: URL.createObjectURL(acceptedFiles[0]) });
-        field.onChange(acceptedFiles[0]);
+        if (prevUrl) {
+            URL.revokeObjectURL(prevUrl);
+        }
+
+        console.log(acceptedFiles[0])
+        const fileWithPreview = Object.assign({}, acceptedFiles[0], {
+            preview: URL.createObjectURL(acceptedFiles[0]),
+            type: acceptedFiles[0].type,
+            size: acceptedFiles[0].size,
+        });
+
+        setPrevUrl(fileWithPreview.preview)
+        field.onChange(fileWithPreview);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [field])
+
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
     return (
