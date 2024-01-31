@@ -17,7 +17,8 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection)
         {
-            var result = await _sectionsRepository.UpdateSection(id, updatedSection);
+            var username = User.Identity.Name ?? "";
+            var result = await _sectionsRepository.UpdateSection(id, updatedSection, username);
 
             if (!result.IsSuccess)
             {
@@ -30,7 +31,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<GetSectionDto>> AddSection(AddSectionDto newSection)
         {
-            var result = await _sectionsRepository.AddSection(newSection);
+            var username = User.Identity.Name ?? "";
+            var result = await _sectionsRepository.AddSection(newSection, username);
 
             if (!result.IsSuccess)
             {

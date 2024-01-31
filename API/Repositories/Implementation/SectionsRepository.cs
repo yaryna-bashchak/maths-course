@@ -23,21 +23,23 @@ namespace API.Repositories.Implementation
             _mapper = mapper;
         }
 
-        public async Task<Result<GetSectionDto>> GetSection(int id)
+        private async Task<Result<GetSectionDto>> GetSection(int id, string username)
         {
-            try
-            {
-                var dbSection = await _context.Sections
-                    .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
-                    .FirstAsync(l => l.Id == id);
+            var user = await _userManager.FindByNameAsync(username);
 
-                var section = _mapper.Map<GetSectionDto>(dbSection);
-                return new Result<GetSectionDto> { IsSuccess = true, Data = section };
-            }
-            catch (System.Exception)
-            {
-                return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = "Section with the provided ID not found." };
-            }
+            var dbSection = await _context.Sections
+                .Include(s => s.UserSections)
+                .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                    .ThenInclude(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                    .ThenInclude(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+                .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                    .ThenInclude(l => l.UserLessons)
+                .FirstOrDefaultAsync(l => l.Id == id);
+
+            var section = _mapper.Map<GetSectionDto>(dbSection, opts => opts.Items["UserId"] = user?.Id);
+            return new Result<GetSectionDto> { IsSuccess = true, Data = section };
         }
 
         public async Task<Result<GetSectionDto>> UpdateSectionAvailability(int sectionId, UpdateUserSectionDto updatedUserSection, string username)
@@ -75,17 +77,21 @@ namespace API.Repositories.Implementation
             return new Result<GetSectionDto> { IsSuccess = true };
         }
 
-        public async Task<Result<GetSectionDto>> AddSection(AddSectionDto newSection)
+        public async Task<Result<GetSectionDto>> AddSection(AddSectionDto newSection, string username)
         {
             var section = _mapper.Map<Section>(newSection);
 
             section.Id = _context.Sections.Max(c => c.Id) + 1;
             await _context.Sections.AddAsync(section);
+            await _context.SaveChangesAsync();
 
-            return await SaveChangesAndReturnResult(section.Id);
+            await UpdateSectionAvailability(section.Id, new UpdateUserSectionDto() { IsAvailable = 1 }, username);
+
+            var result = await GetSection(section.Id, username);
+            return new Result<GetSectionDto> { IsSuccess = true, Data = result.Data };
         }
 
-        public async Task<Result<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection)
+        public async Task<Result<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection, string username)
         {
             try
             {
@@ -151,10 +157,7 @@ namespace API.Repositories.Implementation
                     }
                 }
 
-                await _context.SaveChangesAsync();
-
-                var result = await GetSection(id);
-                return new Result<GetSectionDto> { IsSuccess = true, Data = result.Data };
+                return await SaveChangesAndReturnResult(id, username);
             }
             catch (System.Exception ex)
             {
@@ -181,12 +184,13 @@ namespace API.Repositories.Implementation
             }
         }
 
-        private async Task<Result<GetSectionDto>> SaveChangesAndReturnResult(int sectionId)
+        private async Task<Result<GetSectionDto>> SaveChangesAndReturnResult(int sectionId, string username)
         {
             try
             {
                 await _context.SaveChangesAsync();
-                return new Result<GetSectionDto> { IsSuccess = true, Data = GetSection(sectionId).Result.Data };
+                var section = await GetSection(sectionId, username);
+                return new Result<GetSectionDto> { IsSuccess = true, Data = section.Data };
             }
             catch (System.Exception ex)
             {
