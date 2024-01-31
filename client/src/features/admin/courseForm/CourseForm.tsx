@@ -8,6 +8,10 @@ import { courseValidationSchema } from "./validationSchemas";
 import SectionForm from "./SectionForm";
 import { Lesson } from "../../../app/models/lesson";
 import useCourse from "../../../app/hooks/useCourse";
+import agent from "../../../app/api/agent";
+import { useAppDispatch } from "../../../app/store/configureStore";
+import { setCourse } from "../../courses/coursesSlice";
+import { LoadingButton } from "@mui/lab";
 
 interface Props {
     course?: Course;
@@ -18,8 +22,9 @@ interface Props {
 export default function CourseForm({ course: givenCourse, cancelEdit, handleSelectLesson }: Props) {
     const { course: fullCourse } = useCourse(givenCourse?.id);
     const course = fullCourse ?? givenCourse;
+    const dispatch = useAppDispatch();
 
-    const { control, reset, handleSubmit } = useForm({
+    const { control, reset, handleSubmit, formState: { isSubmitting } } = useForm({
         resolver: yupResolver<any>(courseValidationSchema)
     });
 
@@ -27,8 +32,21 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
         if (course) reset(course);
     }, [course, reset]);
 
-    const handleSubmitData = (data: FieldValues) => {
+    const handleSubmitData = async (data: FieldValues) => {
         console.log(data);
+        try {
+            let response: Course;
+            if (course) {
+                response = await agent.Course.update(course.id, data);
+            } else {
+                response = await agent.Course.create(data);
+            }
+
+            dispatch(setCourse(response));
+            cancelEdit();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -56,7 +74,7 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
                 </Grid>
                 <Box display='flex' justifyContent='space-between' sx={{ mt: 3 }}>
                     <Button onClick={cancelEdit} variant='contained' color='inherit'>Відмінити</Button>
-                    <Button type="submit" variant='contained' color='success'>Зберегти</Button>
+                    <LoadingButton loading={isSubmitting} type="submit" variant='contained' color='success'>Зберегти</LoadingButton>
                 </Box>
             </form>
             <Box display='flex' justifyContent='space-between'>

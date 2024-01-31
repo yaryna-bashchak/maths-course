@@ -76,6 +76,15 @@ export function initLessonParams (): LessonParams {
   }
 }
 
+const initializeCourseStatusLogic = (state: any, courseId: number) => {
+  if (!state.individualCourseStatus[courseId]) {
+    state.individualCourseStatus[courseId] = {
+      courseLoaded: false,
+      lessonParams: initLessonParams()
+    }
+  }
+}
+
 export const coursesSlice = createSlice({
   name: 'courses',
   initialState: coursesAdapter.getInitialState<CoursesState>({
@@ -98,19 +107,22 @@ export const coursesSlice = createSlice({
     },
     initializeCourseStatus: (state, action) => {
       const { courseId } = action.payload
-      if (!state.individualCourseStatus[courseId]) {
-        state.individualCourseStatus[courseId] = {
-          courseLoaded: false,
-          lessonParams: initLessonParams()
-        }
-      }
+      initializeCourseStatusLogic(state, courseId)
       //state.status = 'pendingFetchCourse'
     },
-    clearCourses: (state) => {
-      state.entities = {};
-      state.ids = [];
-      state.coursesLoaded = false;
-      state.individualCourseStatus = {};
+    clearCourses: state => {
+      state.entities = {}
+      state.ids = []
+      state.coursesLoaded = false
+      state.individualCourseStatus = {}
+    },
+    setCourse: (state, action) => {
+      const course = action.payload
+
+      initializeCourseStatusLogic(state, course.id)
+
+      coursesAdapter.upsertOne(state, course)
+      state.individualCourseStatus[course.id].courseLoaded = true
     }
   },
   extraReducers: builder => {
@@ -183,4 +195,9 @@ export const courseSelectors = coursesAdapter.getSelectors(
   (state: RootState) => state.courses
 )
 
-export const { setLessonParams, initializeCourseStatus, clearCourses } = coursesSlice.actions
+export const {
+  setLessonParams,
+  initializeCourseStatus,
+  clearCourses,
+  setCourse
+} = coursesSlice.actions

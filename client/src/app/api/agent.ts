@@ -54,18 +54,45 @@ const requests = {
     axios.get(url, { params }).then(responseBody),
   post: (url: string, body: object) => axios.post(url, body).then(responseBody),
   put: (url: string, body: object) => axios.put(url, body).then(responseBody),
-  delete: (url: string) => axios.delete(url).then(responseBody)
+  delete: (url: string) => axios.delete(url).then(responseBody),
+  postForm: (url: string, data: FormData) =>
+    axios
+      .post(url, data, {
+        headers: { 'Content-type': 'multipart/form-data' }
+      })
+      .then(responseBody),
+  putForm: (url: string, data: FormData) =>
+    axios
+      .put(url, data, {
+        headers: { 'Content-type': 'multipart/form-data' }
+      })
+      .then(responseBody)
 }
+
+// const createFormData = (item: any) => {
+//   const formData = new FormData()
+//   for (const key in item) {
+//     formData.append(key, item[key])
+//   }
+//   return formData
+// }
 
 const Course = {
   list: () => requests.get(`courses`),
   preview: (id: number) => requests.get(`courses/preview/${id}`),
   details: (id: number, params: URLSearchParams) =>
-    requests.get(`courses/${id}`, params)
+    requests.get(`courses/${id}`, params),
+  create: (body: any) => requests.post('courses', body),
+  update: (id: number, body: any) => requests.put(`courses/${id}`, body),
+  delete: (id: number) => requests.delete(`courses/${id}`)
 }
 
 const Lesson = {
   update: (id: number, body: object) => requests.put(`userlessons/${id}`, body)
+  // create: (course: any) => requests.postForm('courses', createFormData(course)),
+  // update: (id: number, course: any) =>
+  //   requests.putForm(`courses/${id}`, createFormData(course)),
+  // delete: (id: number) => requests.delete(`courses/${id}`)
 }
 
 const Test = {
