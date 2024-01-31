@@ -1,20 +1,28 @@
 import { Typography, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Box } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import useCourses from "../../app/hooks/useCourses";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Course } from "../../app/models/course";
 import { Lesson } from "../../app/models/lesson";
 import CourseForm from "./courseForm/CourseForm";
 import LessonForm from "./lessonForm/LessonForm";
+import LoadingComponent from "../../app/layout/LoadingComponent";
 
 type EditMode = 'false' | 'course' | 'lesson';
 
 export default function CourseEditor() {
-    const { courses } = useCourses();
+    const { courses, status, coursesLoaded } = useCourses();
+    const [isCoursesRequestMade, setIsCoursesRequestMade] = useState(coursesLoaded);
     const [editMode, setEditMode] = useState<EditMode>('false');
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
     // const [selectedSection, setSelectedSection] = useState<Section | undefined>(undefined);
     const [selectedLesson, setSelectedLesson] = useState<Lesson | undefined>(undefined);
+
+    useEffect(() => {
+        if (status === 'pendingFetchCourses') {
+            setIsCoursesRequestMade(true);
+        }
+    }, [status]);
 
     const handleSelectCourse = (course: Course) => {
         setSelectedCourse(course);
@@ -37,7 +45,8 @@ export default function CourseEditor() {
             setEditMode('false');
         }
     }
-
+    
+    if (isCoursesRequestMade === false || status.includes('pending')) return <LoadingComponent />
     if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} handleSelectLesson={handleSelectLesson} />
     if (editMode === 'lesson') return <LessonForm lesson={selectedLesson} cancelEdit={cancelEdit} />
 
