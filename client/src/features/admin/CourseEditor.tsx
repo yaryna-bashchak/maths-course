@@ -7,6 +7,10 @@ import { Lesson } from "../../app/models/lesson";
 import CourseForm from "./courseForm/CourseForm";
 import LessonForm from "./lessonForm/LessonForm";
 import LoadingComponent from "../../app/layout/LoadingComponent";
+import agent from "../../app/api/agent";
+import { removeCourse } from "../courses/coursesSlice";
+import { LoadingButton } from "@mui/lab";
+import { useAppDispatch } from "../../app/store/configureStore";
 
 type EditMode = 'false' | 'course' | 'lesson';
 
@@ -17,6 +21,9 @@ export default function CourseEditor() {
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
     // const [selectedSection, setSelectedSection] = useState<Section | undefined>(undefined);
     const [selectedLesson, setSelectedLesson] = useState<Lesson | undefined>(undefined);
+    const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState(false);
+    const [target, setTarget] = useState(0);
 
     useEffect(() => {
         if (status === 'pendingFetchCourses') {
@@ -27,6 +34,15 @@ export default function CourseEditor() {
     const handleSelectCourse = (course: Course) => {
         setSelectedCourse(course);
         setEditMode('course');
+    }
+
+    const handleDeleteCourse = (id: number) => {
+        setLoading(true);
+        setTarget(id);
+        agent.Course.delete(id)
+            .then(() => dispatch(removeCourse(id)))
+            .catch(error => console.log(error))
+            .finally(() => setLoading(false));
     }
 
     const handleSelectLesson = (lesson: Lesson | undefined) => {
@@ -45,7 +61,7 @@ export default function CourseEditor() {
             setEditMode('false');
         }
     }
-    
+
     if (isCoursesRequestMade === false || status.includes('pending')) return <LoadingComponent />
     if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} handleSelectLesson={handleSelectLesson} />
     if (editMode === 'lesson') return <LessonForm lesson={selectedLesson} cancelEdit={cancelEdit} />
@@ -83,7 +99,7 @@ export default function CourseEditor() {
                                 <TableCell align="right">{course.sections.length}</TableCell>
                                 <TableCell align="right">
                                     <Button onClick={() => handleSelectCourse(course)} startIcon={<Edit />} />
-                                    <Button startIcon={<Delete />} color='error' />
+                                    <LoadingButton loading={loading && target === course.id} onClick={() => handleDeleteCourse(course.id)} startIcon={<Delete />} color='error' />
                                 </TableCell>
                             </TableRow>
                         ))}

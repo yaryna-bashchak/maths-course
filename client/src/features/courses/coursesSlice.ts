@@ -123,6 +123,9 @@ export const coursesSlice = createSlice({
 
       coursesAdapter.upsertOne(state, course)
       state.individualCourseStatus[course.id].courseLoaded = true
+    },
+    removeCourse: (state, action) => {
+      coursesAdapter.removeOne(state, action.payload);
     }
   },
   extraReducers: builder => {
@@ -199,5 +202,6 @@ export const {
   setLessonParams,
   initializeCourseStatus,
   clearCourses,
-  setCourse
+  setCourse,
+  removeCourse
 } = coursesSlice.actions

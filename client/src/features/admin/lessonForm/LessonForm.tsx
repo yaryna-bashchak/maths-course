@@ -14,18 +14,22 @@ interface Props {
 }
 
 export default function LessonForm({ lesson, cancelEdit }: Props) {
-    const { control, reset, handleSubmit, watch } = useForm({
+    const { control, reset, handleSubmit, watch, formState: { isDirty } } = useForm({
         resolver: yupResolver<any>(lessonValidationSchema)
     });
-    
+
     const watchTheoryFile = watch('theory', null)
     const watchPracticeFile = watch('practice', null)
     const theoryRef = useRef<HTMLVideoElement>(null);
     const practiceRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        if (lesson) reset(lesson);
-    }, [lesson, reset]);
+        if (lesson && !watchTheoryFile && !watchPracticeFile && !isDirty) reset(lesson);
+        return () => {
+            if (watchTheoryFile) URL.revokeObjectURL(watchTheoryFile.preview);
+            if (watchPracticeFile) URL.revokeObjectURL(watchPracticeFile.preview);
+        }
+    }, [isDirty, lesson, reset, watchPracticeFile, watchTheoryFile]);
 
     const handleSubmitData = (data: FieldValues) => {
         console.log(data);
