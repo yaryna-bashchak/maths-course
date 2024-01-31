@@ -75,6 +75,16 @@ namespace API.Repositories.Implementation
             return new Result<GetSectionDto> { IsSuccess = true };
         }
 
+        public async Task<Result<GetSectionDto>> AddSection(AddSectionDto newSection)
+        {
+            var section = _mapper.Map<Section>(newSection);
+
+            section.Id = _context.Sections.Max(c => c.Id) + 1;
+            await _context.Sections.AddAsync(section);
+
+            return await SaveChangesAndReturnResult(section.Id);
+        }
+
         public async Task<Result<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection)
         {
             try
@@ -145,6 +155,38 @@ namespace API.Repositories.Implementation
 
                 var result = await GetSection(id);
                 return new Result<GetSectionDto> { IsSuccess = true, Data = result.Data };
+            }
+            catch (System.Exception ex)
+            {
+                return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = ex.Message };
+            }
+        }
+
+        public async Task<Result<bool>> DeleteSection(int id)
+        {
+            try
+            {
+                var dbSection = await _context.Sections.FirstOrDefaultAsync(s => s.Id == id);
+
+                if (dbSection == null) return new Result<bool> { IsSuccess = false, ErrorMessage = "Section with the provided ID not found." };
+
+                _context.Sections.Remove(dbSection);
+                await _context.SaveChangesAsync();
+
+                return new Result<bool> { IsSuccess = true, Data = true };
+            }
+            catch (System.Exception ex)
+            {
+                return new Result<bool> { IsSuccess = false, ErrorMessage = ex.Message };
+            }
+        }
+
+        private async Task<Result<GetSectionDto>> SaveChangesAndReturnResult(int sectionId)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                return new Result<GetSectionDto> { IsSuccess = true, Data = GetSection(sectionId).Result.Data };
             }
             catch (System.Exception ex)
             {

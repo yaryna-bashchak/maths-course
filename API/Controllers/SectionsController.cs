@@ -26,5 +26,31 @@ namespace API.Controllers
 
             return result.Data;
         }
+
+        [HttpPost]
+        public async Task<ActionResult<GetSectionDto>> AddSection(AddSectionDto newSection)
+        {
+            var result = await _sectionsRepository.AddSection(newSection);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteSection(int id)
+        {
+            var result = await _sectionsRepository.DeleteSection(id);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return Ok();
+        }
     }
 }
