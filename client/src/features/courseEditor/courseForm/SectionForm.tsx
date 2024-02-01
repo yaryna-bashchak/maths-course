@@ -3,7 +3,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { Section } from "../../../app/models/course";
 import SectionHeader from "./SectionHeader";
 import TableOfSectionLessons from "./TableOfSectionLessons";
-import { Grid, TableCell, TableRow } from "@mui/material";
+import { Grid, TableCell, TableRow, Typography } from "@mui/material";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { sectionValidationSchema } from "./validationSchemas";
@@ -15,7 +15,7 @@ import { removeSection, setSection } from "../../courses/coursesSlice";
 interface Props {
     section?: Section;
     handleSelectLesson?: (lesson: Lesson | undefined) => void;
-    courseId: number;
+    courseId?: number;
     numberOfNewSection?: number;
 }
 
@@ -76,7 +76,7 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
 
         try {
             await deleteFunction(id);
-            dispatch(removeDispatch({ id, courseId }));
+            if (courseId) dispatch(removeDispatch({ id, courseId }));
         } catch (error) {
             console.log(error);
         } finally {
@@ -115,44 +115,49 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
     //     handleDelete(id, 'lessons', agent.Lesson.delete, removeLesson);
     // };
 
-    return (<>
-        <SectionHeader
-            section={section}
-            handleEditClick={toggleEdit}
-            handleSubmitData={handleSubmit(handleSubmitSection)}
-            handleDeleteData={handleDeleteSection}
-            isEditing={isEditing}
-            loadingState={loadingState}
-        />
+    return courseId ?
+        <>
+            <SectionHeader
+                section={section}
+                handleEditClick={toggleEdit}
+                handleSubmitData={handleSubmit(handleSubmitSection)}
+                handleDeleteData={handleDeleteSection}
+                isEditing={isEditing}
+                loadingState={loadingState}
+            />
 
-        {isEditing && (
-            <TableRow>
-                <TableCell style={{}} colSpan={3}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={4}>
-                            <AppTextInput
-                                control={control}
-                                name='title'
-                                label="Назва секції"
-                                type="text"
-                            />
+            {isEditing && (
+                <TableRow>
+                    <TableCell style={{}} colSpan={3}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={4}>
+                                <AppTextInput
+                                    control={control}
+                                    name='title'
+                                    label="Назва секції"
+                                    type="text"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={8}>
+                                <AppTextInput
+                                    control={control}
+                                    name='description'
+                                    label="Опис"
+                                    multiline={true}
+                                    rows={2}
+                                    type="text"
+                                />
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={8}>
-                            <AppTextInput
-                                control={control}
-                                name='description'
-                                label="Опис"
-                                multiline={true}
-                                rows={2}
-                                type="text"
-                            />
-                        </Grid>
-                    </Grid>
-                </TableCell >
-            </TableRow>
-        )}
+                    </TableCell >
+                </TableRow>
+            )}
 
-        <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson} />
-    </>
-    )
+            <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson} />
+        </>
+        : <TableRow sx={{ backgroundColor: '#e8e9eb' }}>
+            <TableCell align="center" colSpan={4}>
+                <Typography>Щоб створити секції та уроки, спочатку збережіть курс</Typography>
+            </TableCell>
+        </TableRow>
 }
