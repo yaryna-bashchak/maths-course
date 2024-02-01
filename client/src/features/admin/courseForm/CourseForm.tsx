@@ -38,12 +38,12 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
             let response: Course;
             if (course) {
                 response = await agent.Course.update(course.id, data);
+                cancelEdit();
             } else {
                 response = await agent.Course.create(data);
             }
 
             dispatch(setCourse(response));
-            cancelEdit();
         } catch (error) {
             console.log(error);
         }
@@ -85,8 +85,14 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
                 <Table>
                     <TableBody>
                         {course?.sections.map((section, index) =>
-                            <SectionForm section={section} key={index} handleSelectLesson={handleSelectLesson} />)}
-                        <SectionForm handleSelectLesson={handleSelectLesson} />
+                            <SectionForm section={section} courseId={course?.id} key={index} handleSelectLesson={handleSelectLesson} />)}
+                        {course && <SectionForm
+                            handleSelectLesson={handleSelectLesson}
+                            courseId={course?.id}
+                            numberOfNewSection={
+                                course?.sections ?
+                                    course.sections.reduce((max, section) => section.number > max ? section.number : max, 0) + 1
+                                    : 1} />}
                     </TableBody>
                 </Table>
             </TableContainer>

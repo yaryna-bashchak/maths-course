@@ -1,15 +1,20 @@
 import { Edit, Close, Done, Delete, Add } from "@mui/icons-material";
 import { TableRow, TableCell, Button } from "@mui/material";
 import { Section } from "../../../app/models/course";
+import { LoadingButton } from "@mui/lab";
+import { LoadingState } from "./SectionForm";
 
 interface Props {
     section?: Section;
     handleEditClick: () => void;
     handleSubmitData: () => void;
     isEditing: boolean;
+    handleDeleteData: (id: number) => void;
+    loadingState: LoadingState;
 }
 
-export default function SectionHeader({ section, handleEditClick, handleSubmitData, isEditing }: Props) {
+export default function SectionHeader({ section, handleEditClick, handleSubmitData, isEditing, handleDeleteData, loadingState }: Props) {
+    const sectionId = section ? section.id : -1;
     const sectionCellStyle = {
         fontSize: '1.1rem',
     };
@@ -29,11 +34,11 @@ export default function SectionHeader({ section, handleEditClick, handleSubmitDa
 
                     <TableCell align="right" colSpan={2}>
                         {isEditing && <>
-                            <Button onClick={handleSubmitData} startIcon={<Done />} color='success' />
+                            <LoadingButton loading={loadingState.sections[sectionId]?.submit} onClick={handleSubmitData} startIcon={<Done />} color='success' />
                             <Button onClick={handleEditClick} startIcon={<Close />} color='error' />
                         </>}
                         <Button onClick={handleEditClick} startIcon={<Edit />} disabled={isEditing} />
-                        <Button startIcon={<Delete />} color='error' disabled={isEditing} />
+                        <LoadingButton loading={loadingState.sections[sectionId]?.delete} onClick={() => handleDeleteData(sectionId)} startIcon={<Delete />} color='error' disabled={isEditing} />
                     </TableCell>
                 </> : <>
                     <TableCell align="center" colSpan={4}>

@@ -126,7 +126,29 @@ export const coursesSlice = createSlice({
     },
     removeCourse: (state, action) => {
       coursesAdapter.removeOne(state, action.payload);
-    }
+    },
+    setSection: (state, action) => {
+      const section = action.payload;
+      const course = state.entities[section.courseId];
+
+      if (course) {
+        const existingSectionIndex = course.sections.findIndex(s => s.id === section.id);
+
+        if (existingSectionIndex !== -1) {
+          course.sections[existingSectionIndex] = section;
+        } else {
+          course.sections.push(section);
+        }
+      }
+    },
+    removeSection: (state, action) => {
+      const { id, courseId } = action.payload;
+      const course = state.entities[courseId];
+
+      if (course) {
+        course.sections = course.sections.filter(section => section.id !== id);
+      }
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchCoursesAsync.pending, state => {
@@ -203,5 +225,7 @@ export const {
   initializeCourseStatus,
   clearCourses,
   setCourse,
-  removeCourse
+  removeCourse,
+  setSection,
+  removeSection,
 } = coursesSlice.actions

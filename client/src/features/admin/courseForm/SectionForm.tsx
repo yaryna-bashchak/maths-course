@@ -8,14 +8,33 @@ import AppTextInput from "../../../app/components/AppTextInput";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { sectionValidationSchema } from "./validationSchemas";
 import { Lesson } from "../../../app/models/lesson";
+import { useAppDispatch } from "../../../app/store/configureStore";
+import agent from "../../../app/api/agent";
+import { removeSection, setSection } from "../../courses/coursesSlice";
 
 interface Props {
     section?: Section;
     handleSelectLesson?: (lesson: Lesson | undefined) => void;
+    courseId: number;
+    numberOfNewSection?: number;
 }
 
-export default function SectionForm({ section, handleSelectLesson }: Props) {
+interface ActionLoadingState {
+    submit?: boolean;
+    delete?: boolean;
+}
+
+export interface LoadingState {
+    sections: { [key: number]: ActionLoadingState };
+    lessons: { [key: number]: ActionLoadingState };
+}
+
+type RemoveDispatch = (args: { id: number, courseId: number }) => { type: string; payload: number; }
+
+export default function SectionForm({ section, handleSelectLesson, courseId, numberOfNewSection: number }: Props) {
     const [isEditing, setIsEditing] = useState(false);
+    const dispatch = useAppDispatch();
+    const [loadingState, setLoadingState] = useState<LoadingState>({ sections: {}, lessons: {} });
     const { control, reset, handleSubmit } = useForm({
         resolver: yupResolver<any>(sectionValidationSchema),
         defaultValues: {
@@ -31,8 +50,8 @@ export default function SectionForm({ section, handleSelectLesson }: Props) {
         });
     }, [section, reset]);
 
-    const toggleEdit = (resetForm = true) => {
-        if (isEditing && resetForm) {
+    const toggleEdit = () => {
+        if (isEditing) {
             reset({
                 title: section?.title || "",
                 description: section?.description || ""
@@ -42,15 +61,69 @@ export default function SectionForm({ section, handleSelectLesson }: Props) {
         setIsEditing(!isEditing);
     };
 
-    const handleSubmitData = (data: FieldValues) => {
-        console.log("Title: ", data.title);
-        console.log("Description: ", data.description);
+    const setLoading = (id: number, type: 'sections' | 'lessons', action: 'submit' | 'delete', isLoading: boolean) => {
+        setLoadingState(prevState => ({
+            ...prevState,
+            [type]: {
+                ...prevState[type],
+                [id]: { ...prevState[type][id], [action]: isLoading }
+            }
+        }));
+    };
 
-        toggleEdit(false);
+    const handleDelete = async (id: number, type: 'sections' | 'lessons', deleteFunction: (id: number) => Promise<any>, removeDispatch: RemoveDispatch) => {
+        setLoading(id, type, 'delete', true);
+
+        try {
+            await deleteFunction(id);
+            dispatch(removeDispatch({ id, courseId }));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(id, type, 'delete', false);
+        }
+    };
+
+    const handleSubmitSection = async (data: FieldValues) => {
+        const sectionId = section ? section.id : -1;
+        setLoading(sectionId, 'sections', 'submit', true);
+
+        try {
+            let response: Section;
+            if (section) {
+                const updatedSection = { ...section, ...data };
+                response = await agent.Section.update(section.id, updatedSection);
+            } else {
+                const newSection = { ...data, courseId, number };
+                response = await agent.Section.create(newSection);
+            }
+
+            dispatch(setSection(response));
+            toggleEdit();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(sectionId, 'sections', 'submit', false);
+        }
     }
 
+    const handleDeleteSection = (id: number) => {
+        handleDelete(id, 'sections', agent.Section.delete, removeSection);
+    };
+
+    // const handleDeleteLesson = (id: number) => {
+    //     handleDelete(id, 'lessons', agent.Lesson.delete, removeLesson);
+    // };
+
     return (<>
-        <SectionHeader section={section} handleEditClick={toggleEdit} handleSubmitData={handleSubmit(handleSubmitData)} isEditing={isEditing} />
+        <SectionHeader
+            section={section}
+            handleEditClick={toggleEdit}
+            handleSubmitData={handleSubmit(handleSubmitSection)}
+            handleDeleteData={handleDeleteSection}
+            isEditing={isEditing}
+            loadingState={loadingState}
+        />
 
         {isEditing && (
             <TableRow>
@@ -79,7 +152,7 @@ export default function SectionForm({ section, handleSelectLesson }: Props) {
             </TableRow>
         )}
 
-        <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson}/>
+        <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson} />
     </>
     )
 }

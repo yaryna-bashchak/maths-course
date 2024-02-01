@@ -87,6 +87,12 @@ const Course = {
   delete: (id: number) => requests.delete(`courses/${id}`)
 }
 
+const Section = {
+  create: (body: any) => requests.post('sections', body),
+  update: (id: number, body: any) => requests.put(`sections/${id}`, body),
+  delete: (id: number) => requests.delete(`sections/${id}`)
+}
+
 const Lesson = {
   update: (id: number, body: object) => requests.put(`userlessons/${id}`, body)
   // create: (course: any) => requests.postForm('courses', createFormData(course)),
@@ -118,7 +124,8 @@ const agent = {
   Lesson,
   Test,
   Account,
-  TestErrors
+  TestErrors,
+  Section
 }
 
 export default agent
