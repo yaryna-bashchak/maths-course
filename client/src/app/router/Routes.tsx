@@ -10,7 +10,7 @@ import CourseCatalog from "../../features/courses/CourseCatalog";
 import Login from "../../features/account/Login";
 import Register from "../../features/account/Register";
 import RequireAuth from "./RequireAuth";
-import CourseEditor from "../../features/admin/CourseEditor";
+import CourseEditor from "../../features/courseEditor/CourseEditor";
 
 export const router = createBrowserRouter([
     {
