@@ -7,8 +7,10 @@ namespace API.Controllers;
 public class UserLessonsController : BaseApiController
 {
     private ILessonsRepository _lessonsRepository;
-    public UserLessonsController(ILessonsRepository lessonsRepository)
+    private readonly ICoursesRepository _coursesRepository;
+    public UserLessonsController(ILessonsRepository lessonsRepository, ICoursesRepository coursesRepository)
     {
+        _coursesRepository = coursesRepository;
         _lessonsRepository = lessonsRepository;
     }
 
@@ -16,7 +18,12 @@ public class UserLessonsController : BaseApiController
     public async Task<IActionResult> UpdateLessonCompletion(int lessonId, UpdateUserLesssonDto updatedUserLesson)
     {
         var username = User.Identity.Name ?? "";
-        var result = await _lessonsRepository.UpdateLessonCompletion(lessonId, updatedUserLesson, username);
+
+        var courseResult = await _coursesRepository.GetCourse(updatedUserLesson.courseId, null, null, "", username);
+        if (!courseResult.IsSuccess)
+            return Unauthorized(courseResult.ErrorMessage);
+
+        var result = await _lessonsRepository.UpdateLessonCompletion(lessonId, updatedUserLesson, courseResult.Data, username);
 
         if (!result.IsSuccess)
         {

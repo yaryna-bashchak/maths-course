@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using API.Data;
+using API.Dtos.Course;
 using API.Dtos.Lesson;
 using API.Entities;
 using API.Services;
@@ -17,16 +18,13 @@ namespace API.Repositories.Implementation
         private readonly IMapper _mapper;
         private readonly VideoService _videoService;
         private readonly UserManager<User> _userManager;
-        private readonly ICoursesRepository _coursesRepository;
         public LessonsRepository(
             CourseContext context,
             UserManager<User> userManager,
-            ICoursesRepository coursesRepository,
             IMapper mapper,
             VideoService videoService)
         {
             _userManager = userManager;
-            _coursesRepository = coursesRepository;
             _context = context;
             _mapper = mapper;
             _videoService = videoService;
@@ -91,14 +89,14 @@ namespace API.Repositories.Implementation
             return await SaveChangesAndReturnResult(id, username);
         }
 
-        public async Task<Result<GetLessonDto>> UpdateLessonCompletion(int lessonId, UpdateUserLesssonDto updatedUserLesson, string username)
+        public async Task<Result<GetLessonDto>> UpdateLessonCompletion(int lessonId, UpdateUserLesssonDto updatedUserLesson, GetCourseDto course, string username)
         {
             var user = await GetUser(username);
             if (user == null) return UnauthorizedResult("Unauthorized user.");
 
             if (!await UserIsAdmin(user))
             {
-                var lessonAvailabilityResult = await CheckLessonAvailability(lessonId, updatedUserLesson, username);
+                var lessonAvailabilityResult = CheckLessonAvailability(lessonId, updatedUserLesson, course, username);
                 if (lessonAvailabilityResult != null)
                 {
                     return lessonAvailabilityResult;
@@ -158,16 +156,12 @@ namespace API.Repositories.Implementation
             return null;
         }
 
-        private async Task<Result<GetLessonDto>> CheckLessonAvailability(int id, UpdateUserLesssonDto updatedUserLesson, string username)
+        private Result<GetLessonDto> CheckLessonAvailability(int id, UpdateUserLesssonDto updatedUserLesson, GetCourseDto course, string username)
         {
             if (updatedUserLesson.courseId == -1)
                 return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "You should provide course ID." };
 
-            var courseResult = await _coursesRepository.GetCourse(updatedUserLesson.courseId, null, null, "", username);
-            if (!courseResult.IsSuccess)
-                return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = courseResult.ErrorMessage };
-
-            var section = courseResult.Data.Sections.FirstOrDefault(s => s.Lessons.Any(l => l.Id == id));
+            var section = course.Sections.FirstOrDefault(s => s.Lessons.Any(l => l.Id == id));
             if (section == null)
                 return new Result<GetLessonDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID was not found in any of sections." };
 

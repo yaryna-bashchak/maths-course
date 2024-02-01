@@ -14,14 +14,17 @@ namespace API.Repositories.Implementation
         private readonly CourseContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly ISectionsRepository _sectionsRepository;
         public CoursesRepository(
             CourseContext context,
             UserManager<User> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            ISectionsRepository sectionsRepository)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
+            _sectionsRepository = sectionsRepository;
         }
 
         public async Task<Result<GetCourseDto>> AddCourse(AddCourseDto newCourse, string username)
@@ -130,9 +133,14 @@ namespace API.Repositories.Implementation
         {
             try
             {
-                var dbCourse = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
+                var dbCourse = await _context.Courses.Include(c => c.Sections).FirstOrDefaultAsync(c => c.Id == id);
 
                 if (dbCourse == null) return new Result<bool> { IsSuccess = false, ErrorMessage = "Course with the provided ID not found." };
+
+                foreach (var section in dbCourse.Sections.ToList())
+                {
+                    await _sectionsRepository.DeleteSection(section.Id);
+                }
 
                 _context.Courses.Remove(dbCourse);
                 await _context.SaveChangesAsync();

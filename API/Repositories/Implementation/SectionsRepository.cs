@@ -13,14 +13,17 @@ namespace API.Repositories.Implementation
         private readonly CourseContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly ILessonsRepository _lessonsRepository;
         public SectionsRepository(
             CourseContext context,
             UserManager<User> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            ILessonsRepository lessonsRepository)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
+            _lessonsRepository = lessonsRepository;
         }
 
         private async Task<Result<GetSectionDto>> GetSection(int id, string username)
@@ -154,6 +157,13 @@ namespace API.Repositories.Implementation
                         }
 
                         _context.SectionLessons.Remove(sectionLesson);
+                        await _context.SaveChangesAsync();
+
+                        var isLessonLinkedToOtherSections = await _context.SectionLessons.AnyAsync(sl => sl.LessonId == lessonId);
+                        if (!isLessonLinkedToOtherSections)
+                        {
+                            await _lessonsRepository.DeleteLesson(lessonId);
+                        }
                     }
                 }
 
@@ -169,11 +179,21 @@ namespace API.Repositories.Implementation
         {
             try
             {
-                var dbSection = await _context.Sections.FirstOrDefaultAsync(s => s.Id == id);
-
+                var dbSection = await _context.Sections.Include(s => s.SectionLessons).FirstOrDefaultAsync(s => s.Id == id);
                 if (dbSection == null) return new Result<bool> { IsSuccess = false, ErrorMessage = "Section with the provided ID not found." };
 
+                var lessonIds = dbSection.SectionLessons.Select(sl => sl.LessonId).ToList();
                 _context.Sections.Remove(dbSection);
+
+                foreach (var lessonId in lessonIds)
+                {
+                    var isLessonLinkedToOtherSections = await _context.SectionLessons.AnyAsync(sl => sl.LessonId == lessonId && sl.SectionId != id);
+                    if (!isLessonLinkedToOtherSections)
+                    {
+                        await _lessonsRepository.DeleteLesson(lessonId);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
 
                 return new Result<bool> { IsSuccess = true, Data = true };
