@@ -10,7 +10,7 @@ import { sectionValidationSchema } from "./validationSchemas";
 import { Lesson } from "../../../app/models/lesson";
 import { useAppDispatch } from "../../../app/store/configureStore";
 import agent from "../../../app/api/agent";
-import { removeSection, setSection } from "../../courses/coursesSlice";
+import { removeLesson, removeSection, setSection } from "../../courses/coursesSlice";
 
 interface Props {
     section?: Section;
@@ -28,8 +28,6 @@ export interface LoadingState {
     sections: { [key: number]: ActionLoadingState };
     lessons: { [key: number]: ActionLoadingState };
 }
-
-type RemoveDispatch = (args: { id: number, courseId: number }) => { type: string; payload: number; }
 
 export default function SectionForm({ section, handleSelectLesson, courseId, numberOfNewSection: number }: Props) {
     const [isEditing, setIsEditing] = useState(false);
@@ -71,19 +69,6 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
         }));
     };
 
-    const handleDelete = async (id: number, type: 'sections' | 'lessons', deleteFunction: (id: number) => Promise<any>, removeDispatch: RemoveDispatch) => {
-        setLoading(id, type, 'delete', true);
-
-        try {
-            await deleteFunction(id);
-            if (courseId) dispatch(removeDispatch({ id, courseId }));
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(id, type, 'delete', false);
-        }
-    };
-
     const handleSubmitSection = async (data: FieldValues) => {
         const sectionId = section ? section.id : -1;
         setLoading(sectionId, 'sections', 'submit', true);
@@ -107,13 +92,29 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
         }
     }
 
-    const handleDeleteSection = (id: number) => {
-        handleDelete(id, 'sections', agent.Section.delete, removeSection);
+    const handleDeleteSection = async (id: number) => {
+        setLoading(id, 'sections', 'delete', true);
+
+        try {
+            await agent.Section.delete(id);
+            if (courseId) dispatch(removeSection({ id, courseId }));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(id, 'sections', 'delete', false);
+        }
     };
 
-    // const handleDeleteLesson = (id: number) => {
-    //     handleDelete(id, 'lessons', agent.Lesson.delete, removeLesson);
-    // };
+    const handleDeleteLesson = async (id: number) => {
+        try {
+            await agent.Section.update(id, { lessonIdsToDelete: [id] });
+            if (courseId) dispatch(removeLesson({ id, courseId }));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(id, 'lessons', 'delete', false);
+        }
+    };
 
     return courseId ?
         <>
@@ -153,7 +154,7 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
                 </TableRow>
             )}
 
-            <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson} />
+            <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson} handleDeleteLesson={handleDeleteLesson}/>
         </>
         : <TableRow sx={{ backgroundColor: '#e8e9eb' }}>
             <TableCell align="center" colSpan={4}>

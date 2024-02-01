@@ -5,9 +5,10 @@ import { Lesson } from "../../../app/models/lesson";
 interface Props {
     lesson?: Lesson;
     handleSelectLesson?: (lesson: Lesson | undefined) => void;
+    handleDeleteLesson?: (id: number) => void;
 }
 
-export default function LessonLine({ lesson, handleSelectLesson }: Props) {
+export default function LessonLine({ lesson, handleSelectLesson, handleDeleteLesson }: Props) {
     const theme = useTheme();
     const isMobileOrTablet = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -17,7 +18,7 @@ export default function LessonLine({ lesson, handleSelectLesson }: Props) {
                 key={lesson?.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-                {handleSelectLesson && (lesson ? <>
+                {handleSelectLesson && handleDeleteLesson && (lesson ? <>
                     <TableCell component="th" scope="row">
                         {lesson?.id}
                     </TableCell>
@@ -25,7 +26,7 @@ export default function LessonLine({ lesson, handleSelectLesson }: Props) {
                     {!isMobileOrTablet && <TableCell align="center">{lesson?.importance}</TableCell>}
                     <TableCell align="right">
                         <Button onClick={() => handleSelectLesson(lesson)} startIcon={<Edit />} />
-                        <Button startIcon={<Delete />} color='error' />
+                        <Button onClick={() => handleDeleteLesson(lesson.id)} startIcon={<Delete />} color='error' />
                     </TableCell>
                 </> : <>
                     <TableCell align="center" colSpan={4}>

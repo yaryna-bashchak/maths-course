@@ -63,7 +63,7 @@ export const updateLessonAsync = createAsyncThunk<
   { id: number; body: object }
 >('courses/updateLessonAsync', async ({ id, body }, thunkAPI) => {
   try {
-    return await agent.Lesson.update(id, body)
+    return await agent.Lesson.updateCompletion(id, body)
   } catch (error: any) {
     return thunkAPI.rejectWithValue({ error: error.data })
   }
@@ -125,30 +125,67 @@ export const coursesSlice = createSlice({
       state.individualCourseStatus[course.id].courseLoaded = true
     },
     removeCourse: (state, action) => {
-      coursesAdapter.removeOne(state, action.payload);
+      coursesAdapter.removeOne(state, action.payload)
     },
     setSection: (state, action) => {
-      const section = action.payload;
-      const course = state.entities[section.courseId];
+      const section = action.payload
+      const course = state.entities[section.courseId]
 
       if (course) {
-        const existingSectionIndex = course.sections.findIndex(s => s.id === section.id);
+        const existingSectionIndex = course.sections.findIndex(
+          s => s.id === section.id
+        )
 
         if (existingSectionIndex !== -1) {
-          course.sections[existingSectionIndex] = section;
+          course.sections[existingSectionIndex] = section
         } else {
-          course.sections.push(section);
+          course.sections.push(section)
         }
       }
     },
     removeSection: (state, action) => {
-      const { id, courseId } = action.payload;
-      const course = state.entities[courseId];
+      const { id, courseId } = action.payload
+      const course = state.entities[courseId]
 
       if (course) {
-        course.sections = course.sections.filter(section => section.id !== id);
+        course.sections = course.sections.filter(section => section.id !== id)
       }
     },
+    setLesson: (state, action) => {
+      const lesson = action.payload
+
+      for (const course of Object.values(state.entities)) {
+        if (course?.sections) {
+          const section = course.sections.find(section =>
+            section.lessons.some(l => l.id === lesson.Id)
+          )
+
+          if (section) {
+            const lessonIndex = section.lessons.findIndex(
+              l => l.id === lesson.Id
+            )
+
+            if (lessonIndex !== -1) {
+              section.lessons[lessonIndex] = action.payload
+            } else {
+              section.lessons[lesson.Id] = action.payload
+            }
+          }
+        }
+      }
+    },
+    removeLesson: (state, action) => {
+      const { id, courseId } = action.payload
+      const course = state.entities[courseId]
+
+      if (course) {
+        Object.values(course.sections).forEach(section => {
+          if (section && section.lessons.some(lesson => lesson.id === id)) {
+            section.lessons = section.lessons.filter(lesson => lesson.id !== id)
+          }
+        })
+      }
+    }
   },
   extraReducers: builder => {
     builder.addCase(fetchCoursesAsync.pending, state => {
@@ -228,4 +265,6 @@ export const {
   removeCourse,
   setSection,
   removeSection,
+  setLesson,
+  removeLesson
 } = coursesSlice.actions

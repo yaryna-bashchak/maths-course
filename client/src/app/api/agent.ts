@@ -69,13 +69,13 @@ const requests = {
       .then(responseBody)
 }
 
-// const createFormData = (item: any) => {
-//   const formData = new FormData()
-//   for (const key in item) {
-//     formData.append(key, item[key])
-//   }
-//   return formData
-// }
+const createFormData = (item: any) => {
+  const formData = new FormData()
+  for (const key in item) {
+    formData.append(key, item[key])
+  }
+  return formData
+}
 
 const Course = {
   list: () => requests.get(`courses`),
@@ -94,10 +94,11 @@ const Section = {
 }
 
 const Lesson = {
-  update: (id: number, body: object) => requests.put(`userlessons/${id}`, body)
-  // create: (course: any) => requests.postForm('courses', createFormData(course)),
-  // update: (id: number, course: any) =>
-  //   requests.putForm(`courses/${id}`, createFormData(course)),
+  updateCompletion: (id: number, body: object) =>
+    requests.put(`userlessons/${id}`, body),
+  create: (lesson: any) => requests.postForm('lessons', createFormData(lesson)),
+  update: (id: number, lesson: any) =>
+    requests.putForm(`lessons/${id}`, createFormData(lesson))
   // delete: (id: number) => requests.delete(`courses/${id}`)
 }
 

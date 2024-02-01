@@ -18,8 +18,8 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
         resolver: yupResolver<any>(lessonValidationSchema)
     });
 
-    const watchTheoryFile = watch('theory', null)
-    const watchPracticeFile = watch('practice', null)
+    const watchTheoryFile = watch('theoryFile', null)
+    const watchPracticeFile = watch('practiceFile', null)
     const theoryRef = useRef<HTMLVideoElement>(null);
     const practiceRef = useRef<HTMLVideoElement>(null);
 
@@ -56,7 +56,7 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
                             Теорія
                         </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
-                            <AppDropzone control={control} name='theory' />
+                            <AppDropzone control={control} name='theoryFile' />
                             <VideoPreview watchFile={watchTheoryFile} ref={theoryRef} />
                         </Box>
                     </Grid>
@@ -65,7 +65,7 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
                             Практика
                         </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
-                            <AppDropzone control={control} name='practice' />
+                            <AppDropzone control={control} name='practiceFile' />
                             <VideoPreview watchFile={watchPracticeFile} ref={practiceRef} />
                         </Box>
                     </Grid>
