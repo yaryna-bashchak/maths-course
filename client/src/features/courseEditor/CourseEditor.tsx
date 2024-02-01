@@ -63,7 +63,7 @@ export default function CourseEditor() {
     }
 
     if (isCoursesRequestMade === false || status.includes('pending')) return <LoadingComponent />
-    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} handleSelectLesson={handleSelectLesson} />
+    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} handleSelectLesson={handleSelectLesson} setSelectedCourse={setSelectedCourse}/>
     if (editMode === 'lesson') return <LessonForm lesson={selectedLesson} cancelEdit={cancelEdit} />
 
     return (

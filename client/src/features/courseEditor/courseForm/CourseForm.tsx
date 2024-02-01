@@ -17,14 +17,15 @@ interface Props {
     course?: Course;
     cancelEdit: () => void;
     handleSelectLesson: (lesson: Lesson | undefined) => void;
+    setSelectedCourse: (course: Course | undefined) => void;
 }
 
-export default function CourseForm({ course: givenCourse, cancelEdit, handleSelectLesson }: Props) {
+export default function CourseForm({ course: givenCourse, cancelEdit, handleSelectLesson, setSelectedCourse }: Props) {
     const { course: fullCourse } = useCourse(givenCourse?.id);
     const course = fullCourse ?? givenCourse;
     const dispatch = useAppDispatch();
 
-    const { control, reset, handleSubmit, formState: { isSubmitting } } = useForm({
+    const { control, reset, handleSubmit, formState: { isSubmitting, isDirty } } = useForm({
         resolver: yupResolver<any>(courseValidationSchema)
     });
 
@@ -41,6 +42,7 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
                 cancelEdit();
             } else {
                 response = await agent.Course.create(data);
+                setSelectedCourse(response);
             }
 
             dispatch(setCourse(response));
@@ -74,7 +76,7 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
                 </Grid>
                 <Box display='flex' justifyContent='space-between' sx={{ mt: 3 }}>
                     <Button onClick={cancelEdit} variant='contained' color='inherit'>Відмінити</Button>
-                    <LoadingButton loading={isSubmitting} type="submit" variant='contained' color='success'>Зберегти</LoadingButton>
+                    <LoadingButton loading={isSubmitting} type="submit" variant='contained' color='success' disabled={!isDirty}>Зберегти</LoadingButton>
                 </Box>
             </form>
             <Box display='flex' justifyContent='space-between'>
