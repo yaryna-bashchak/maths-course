@@ -2,7 +2,7 @@ import { Typography, Button, TableContainer, Paper, Table, TableHead, TableRow, 
 import { Edit, Delete } from "@mui/icons-material";
 import useCourses from "../../app/hooks/useCourses";
 import { useEffect, useState } from "react";
-import { Course } from "../../app/models/course";
+import { Course, Section } from "../../app/models/course";
 import { Lesson } from "../../app/models/lesson";
 import CourseForm from "./courseForm/CourseForm";
 import LessonForm from "./lessonForm/LessonForm";
@@ -19,7 +19,7 @@ export default function CourseEditor() {
     const [isCoursesRequestMade, setIsCoursesRequestMade] = useState(coursesLoaded);
     const [editMode, setEditMode] = useState<EditMode>('false');
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
-    // const [selectedSection, setSelectedSection] = useState<Section | undefined>(undefined);
+    const [selectedSection, setSelectedSection] = useState<Section | undefined>(undefined);
     const [selectedLesson, setSelectedLesson] = useState<Lesson | undefined>(undefined);
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(false);
@@ -45,26 +45,28 @@ export default function CourseEditor() {
             .finally(() => setLoading(false));
     }
 
-    const handleSelectLesson = (lesson: Lesson | undefined) => {
+    const handleSelectLesson = (section: Section | undefined) => (lesson: Lesson | undefined, ) => {
+        setSelectedSection(section);
         setSelectedLesson(lesson);
         setEditMode('lesson');
     }
 
     const cancelEdit = () => {
         if (editMode === 'lesson') {
-            setSelectedLesson(undefined);
+            if (selectedLesson) setSelectedLesson(undefined);
+            if (selectedSection) setSelectedSection(undefined);
             setEditMode('course');
             return;
         }
         if (editMode === 'course') {
-            setSelectedCourse(undefined);
+            if (selectedCourse) setSelectedCourse(undefined);
             setEditMode('false');
         }
     }
 
     if (isCoursesRequestMade === false || status.includes('pending')) return <LoadingComponent />
     if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} handleSelectLesson={handleSelectLesson} setSelectedCourse={setSelectedCourse}/>
-    if (editMode === 'lesson') return <LessonForm lesson={selectedLesson} cancelEdit={cancelEdit} />
+    if (editMode === 'lesson' && selectedSection) return <LessonForm lesson={selectedLesson} sectionId={selectedSection.id} cancelEdit={cancelEdit} />
 
     return (
         <>

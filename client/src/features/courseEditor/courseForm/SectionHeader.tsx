@@ -34,11 +34,11 @@ export default function SectionHeader({ section, handleEditClick, handleSubmitDa
 
                     <TableCell align="right" colSpan={2}>
                         {isEditing && <>
-                            <LoadingButton loading={loadingState.sections[sectionId]?.submit} onClick={handleSubmitData} startIcon={<Done />} color='success' />
+                            <LoadingButton loading={loadingState[sectionId]?.submit} onClick={handleSubmitData} startIcon={<Done />} color='success' />
                             <Button onClick={handleEditClick} startIcon={<Close />} color='error' />
                         </>}
                         <Button onClick={handleEditClick} startIcon={<Edit />} disabled={isEditing} />
-                        <LoadingButton loading={loadingState.sections[sectionId]?.delete} onClick={() => handleDeleteData(sectionId)} startIcon={<Delete />} color='error' disabled={isEditing} />
+                        <LoadingButton loading={loadingState[sectionId]?.delete} onClick={() => handleDeleteData(sectionId)} startIcon={<Delete />} color='error' disabled={isEditing} />
                     </TableCell>
                 </> : <>
                     <TableCell align="center" colSpan={4}>

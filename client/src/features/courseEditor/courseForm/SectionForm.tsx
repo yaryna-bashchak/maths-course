@@ -10,7 +10,7 @@ import { sectionValidationSchema } from "./validationSchemas";
 import { Lesson } from "../../../app/models/lesson";
 import { useAppDispatch } from "../../../app/store/configureStore";
 import agent from "../../../app/api/agent";
-import { removeLesson, removeSection, setSection } from "../../courses/coursesSlice";
+import { removeSection, setSection } from "../../courses/coursesSlice";
 
 interface Props {
     section?: Section;
@@ -25,27 +25,19 @@ interface ActionLoadingState {
 }
 
 export interface LoadingState {
-    sections: { [key: number]: ActionLoadingState };
-    lessons: { [key: number]: ActionLoadingState };
+    [key: number]: ActionLoadingState;
 }
 
 export default function SectionForm({ section, handleSelectLesson, courseId, numberOfNewSection: number }: Props) {
     const [isEditing, setIsEditing] = useState(false);
     const dispatch = useAppDispatch();
-    const [loadingState, setLoadingState] = useState<LoadingState>({ sections: {}, lessons: {} });
+    const [loadingState, setLoadingState] = useState<LoadingState>({});
     const { control, reset, handleSubmit } = useForm({
         resolver: yupResolver<any>(sectionValidationSchema),
-        defaultValues: {
-            title: section?.title || "",
-            description: section?.description || ""
-        }
     });
 
     useEffect(() => {
-        reset({
-            title: section?.title || "",
-            description: section?.description || ""
-        });
+        if (section) reset(section);
     }, [section, reset]);
 
     const toggleEdit = () => {
@@ -59,19 +51,16 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
         setIsEditing(!isEditing);
     };
 
-    const setLoading = (id: number, type: 'sections' | 'lessons', action: 'submit' | 'delete', isLoading: boolean) => {
+    const setLoading = (id: number, action: 'submit' | 'delete', isLoading: boolean) => {
         setLoadingState(prevState => ({
             ...prevState,
-            [type]: {
-                ...prevState[type],
-                [id]: { ...prevState[type][id], [action]: isLoading }
-            }
+            [id]: { ...prevState[id], [action]: isLoading }
         }));
     };
 
     const handleSubmitSection = async (data: FieldValues) => {
         const sectionId = section ? section.id : -1;
-        setLoading(sectionId, 'sections', 'submit', true);
+        setLoading(sectionId, 'submit', true);
 
         try {
             let response: Section;
@@ -88,12 +77,12 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(sectionId, 'sections', 'submit', false);
+            setLoading(sectionId, 'submit', false);
         }
     }
 
     const handleDeleteSection = async (id: number) => {
-        setLoading(id, 'sections', 'delete', true);
+        setLoading(id, 'delete', true);
 
         try {
             await agent.Section.delete(id);
@@ -101,18 +90,7 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(id, 'sections', 'delete', false);
-        }
-    };
-
-    const handleDeleteLesson = async (id: number) => {
-        try {
-            await agent.Section.update(id, { lessonIdsToDelete: [id] });
-            if (courseId) dispatch(removeLesson({ id, courseId }));
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(id, 'lessons', 'delete', false);
+            setLoading(id, 'delete', false);
         }
     };
 
@@ -154,7 +132,7 @@ export default function SectionForm({ section, handleSelectLesson, courseId, num
                 </TableRow>
             )}
 
-            <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson} handleDeleteLesson={handleDeleteLesson}/>
+            {handleSelectLesson && <TableOfSectionLessons section={section} handleSelectLesson={handleSelectLesson} />}
         </>
         : <TableRow sx={{ backgroundColor: '#e8e9eb' }}>
             <TableCell align="center" colSpan={4}>

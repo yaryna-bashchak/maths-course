@@ -7,14 +7,20 @@ import AppDropzone from "../../../app/components/AppDropzone";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { lessonValidationSchema } from "../courseForm/validationSchemas";
 import VideoPreview from "./VideoPreview";
+import agent from "../../../app/api/agent";
+import { setLesson } from "../../courses/coursesSlice";
+import { useAppDispatch } from "../../../app/store/configureStore";
+import { LoadingButton } from "@mui/lab";
 
 interface Props {
     lesson?: Lesson;
     cancelEdit: () => void;
+    sectionId: number
 }
 
-export default function LessonForm({ lesson, cancelEdit }: Props) {
-    const { control, reset, handleSubmit, watch, formState: { isDirty } } = useForm({
+export default function LessonForm({ lesson, cancelEdit, sectionId }: Props) {
+    const dispatch = useAppDispatch();
+    const { control, reset, handleSubmit, watch, formState: { isDirty, isSubmitting } } = useForm({
         resolver: yupResolver<any>(lessonValidationSchema)
     });
 
@@ -31,8 +37,23 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
         }
     }, [isDirty, lesson, reset, watchPracticeFile, watchTheoryFile]);
 
-    const handleSubmitData = (data: FieldValues) => {
+    const handleSubmitData = async (data: FieldValues) => {
         console.log(data);
+        try {
+            let response: Lesson;
+            if (lesson) {
+                response = await agent.Lesson.update(lesson.id, data);
+            } else {
+                response = await agent.Lesson.create(data);
+                await agent.Section.update(sectionId, { lessonIdsToAdd: [response.id] })
+            }
+
+            console.log(response)
+            cancelEdit();
+            dispatch(setLesson({ lesson: response, sectionId }));
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -57,7 +78,7 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
                         </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='theoryFile' />
-                            <VideoPreview watchFile={watchTheoryFile} ref={theoryRef} />
+                            <VideoPreview watchFile={watchTheoryFile} ref={theoryRef} videoUrl={lesson?.urlTheory} />
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -66,13 +87,13 @@ export default function LessonForm({ lesson, cancelEdit }: Props) {
                         </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='practiceFile' />
-                            <VideoPreview watchFile={watchPracticeFile} ref={practiceRef} />
+                            <VideoPreview watchFile={watchPracticeFile} ref={practiceRef} videoUrl={lesson?.urlPractice} />
                         </Box>
                     </Grid>
                 </Grid>
                 <Box display='flex' justifyContent='space-between' sx={{ mt: 3 }}>
                     <Button onClick={cancelEdit} variant='contained' color='inherit'>Відмінити</Button>
-                    <Button type="submit" variant='contained' color='success'>Зберегти</Button>
+                    <LoadingButton loading={isSubmitting} type="submit" variant='contained' color='success'>Зберегти</LoadingButton>
                 </Box>
             </form>
         </Box>

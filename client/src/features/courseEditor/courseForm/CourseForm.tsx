@@ -1,7 +1,7 @@
 import { Typography, Grid, Paper, Box, Button, Table, TableBody, TableContainer } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
 import AppTextInput from "../../../app/components/AppTextInput";
-import { Course } from "../../../app/models/course";
+import { Course, Section } from "../../../app/models/course";
 import { useEffect } from "react";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { courseValidationSchema } from "./validationSchemas";
@@ -16,7 +16,7 @@ import { LoadingButton } from "@mui/lab";
 interface Props {
     course?: Course;
     cancelEdit: () => void;
-    handleSelectLesson: (lesson: Lesson | undefined) => void;
+    handleSelectLesson: (section: Section | undefined) => (lesson: Lesson | undefined) => void;
     setSelectedCourse: (course: Course | undefined) => void;
 }
 
@@ -87,9 +87,8 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
                 <Table>
                     <TableBody>
                         {course?.sections.map((section, index) =>
-                            <SectionForm section={section} courseId={course?.id} key={index} handleSelectLesson={handleSelectLesson} />)}
+                            <SectionForm section={section} courseId={course?.id} key={index} handleSelectLesson={handleSelectLesson(section)} />)}
                         <SectionForm
-                            handleSelectLesson={handleSelectLesson}
                             courseId={course?.id}
                             numberOfNewSection={
                                 course?.sections ?

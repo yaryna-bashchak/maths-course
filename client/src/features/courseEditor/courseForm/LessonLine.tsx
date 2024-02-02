@@ -1,14 +1,17 @@
 import { Edit, Delete, Add } from "@mui/icons-material";
 import { TableRow, TableCell, Button, useMediaQuery, useTheme } from "@mui/material";
 import { Lesson } from "../../../app/models/lesson";
+import { LoadingState } from "./SectionForm";
+import { LoadingButton } from "@mui/lab";
 
 interface Props {
     lesson?: Lesson;
     handleSelectLesson?: (lesson: Lesson | undefined) => void;
     handleDeleteLesson?: (id: number) => void;
+    loadingState?: LoadingState;
 }
 
-export default function LessonLine({ lesson, handleSelectLesson, handleDeleteLesson }: Props) {
+export default function LessonLine({ lesson, handleSelectLesson, handleDeleteLesson, loadingState }: Props) {
     const theme = useTheme();
     const isMobileOrTablet = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -18,7 +21,7 @@ export default function LessonLine({ lesson, handleSelectLesson, handleDeleteLes
                 key={lesson?.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-                {handleSelectLesson && handleDeleteLesson && (lesson ? <>
+                {handleSelectLesson && (lesson && handleDeleteLesson ? <>
                     <TableCell component="th" scope="row">
                         {lesson?.id}
                     </TableCell>
@@ -26,7 +29,7 @@ export default function LessonLine({ lesson, handleSelectLesson, handleDeleteLes
                     {!isMobileOrTablet && <TableCell align="center">{lesson?.importance}</TableCell>}
                     <TableCell align="right">
                         <Button onClick={() => handleSelectLesson(lesson)} startIcon={<Edit />} />
-                        <Button onClick={() => handleDeleteLesson(lesson.id)} startIcon={<Delete />} color='error' />
+                        <LoadingButton loading={loadingState?.[lesson.id]?.delete} onClick={() => handleDeleteLesson(lesson.id)} startIcon={<Delete />} color='error' />
                     </TableCell>
                 </> : <>
                     <TableCell align="center" colSpan={4}>
