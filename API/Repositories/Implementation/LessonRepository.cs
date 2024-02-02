@@ -239,7 +239,7 @@ namespace API.Repositories.Implementation
         private void UpdateLessonDetails(Lesson dbLesson, UpdateLesssonDto updatedLesson)
         {
             dbLesson.Title = updatedLesson.Title ?? dbLesson.Title;
-            dbLesson.Description = updatedLesson.Description ?? dbLesson.Description;
+            dbLesson.Description = updatedLesson.Description ?? "";
             dbLesson.Number = updatedLesson.Number != -1 ? updatedLesson.Number : dbLesson.Number;
             dbLesson.Importance = updatedLesson.Importance != -1 ? updatedLesson.Importance : dbLesson.Importance;
         }

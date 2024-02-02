@@ -43,8 +43,8 @@ namespace API.Repositories.Implementation
 
             if (dbCourse == null) return new Result<GetCourseDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
 
-            dbCourse.Title = updatedCourse.Title ?? dbCourse.Title;
-            dbCourse.Description = updatedCourse.Description ?? dbCourse.Description;
+            dbCourse.Title = updatedCourse.Title ?? "";
+            dbCourse.Description = updatedCourse.Description ?? "";
             dbCourse.PriceFull = updatedCourse.PriceFull != -1 ? updatedCourse.PriceFull : dbCourse.PriceFull;
             dbCourse.PriceMonthly = updatedCourse.PriceMonthly != -1 ? updatedCourse.PriceMonthly : dbCourse.PriceMonthly;
 

@@ -100,7 +100,7 @@ namespace API.Repositories.Implementation
 
         private void UpdateOptionDetails(Option dbOption, UpdateOptionDto updatedOption)
         {
-            dbOption.Text = updatedOption.Text ?? dbOption.Text;
+            dbOption.Text = updatedOption.Text ?? "";
             dbOption.isAnswer = updatedOption.isAnswer != -1 ? (updatedOption.isAnswer != 0) : dbOption.isAnswer;
         }
 

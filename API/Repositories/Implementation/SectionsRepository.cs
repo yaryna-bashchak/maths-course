@@ -102,8 +102,8 @@ namespace API.Repositories.Implementation
 
                 if (dbSection == null) return NotFoundResult("Section with the provided ID not found.");
 
-                dbSection.Title = updatedSection.Title ?? dbSection.Title;
-                dbSection.Description = updatedSection.Description ?? dbSection.Description;
+                dbSection.Title = updatedSection.Title ?? "";
+                dbSection.Description = updatedSection.Description ?? "";
                 dbSection.Number = updatedSection.Number != -1 ? updatedSection.Number : dbSection.Number;
 
                 if (updatedSection.LessonIdsToAdd != null)

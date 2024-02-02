@@ -4,8 +4,8 @@ namespace API.Dtos.Lesson
 {
     public class AddLessonDto
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
         public IFormFile TheoryFile { get; set; }
         public IFormFile PracticeFile { get; set; }
         public int Number { get; set; }

@@ -142,7 +142,7 @@ public class TestsRepository : ITestsRepository
 
     private void UpdateTestDetails(Test dbTest, UpdateTestDto updatedTest)
     {
-        dbTest.Question = updatedTest.Question ?? dbTest.Question;
+        dbTest.Question = updatedTest.Question ?? "";
         dbTest.Type = updatedTest.Type ?? dbTest.Type;
     }
 
