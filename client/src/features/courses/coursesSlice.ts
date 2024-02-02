@@ -152,38 +152,39 @@ export const coursesSlice = createSlice({
       }
     },
     setLesson: (state, action) => {
-      const lesson = action.payload
+      const { lesson, sectionId } = action.payload
 
       for (const course of Object.values(state.entities)) {
         if (course?.sections) {
-          const section = course.sections.find(section =>
-            section.lessons.some(l => l.id === lesson.Id)
-          )
-
-          if (section) {
+          for (const section of course.sections) {
             const lessonIndex = section.lessons.findIndex(
-              l => l.id === lesson.Id
+              l => l.id === lesson.id
             )
 
             if (lessonIndex !== -1) {
-              section.lessons[lessonIndex] = action.payload
-            } else {
-              section.lessons[lesson.Id] = action.payload
+              section.lessons[lessonIndex] = lesson
+            } else if (section.id === sectionId) {
+              section.lessons.push(lesson)
             }
           }
         }
       }
     },
     removeLesson: (state, action) => {
-      const { id, courseId } = action.payload
-      const course = state.entities[courseId]
+      const { id, sectionId } = action.payload
+
+      const course = Object.values(state.entities).find(course =>
+        course?.sections.some(section => section.id === sectionId)
+      )
 
       if (course) {
-        Object.values(course.sections).forEach(section => {
-          if (section && section.lessons.some(lesson => lesson.id === id)) {
-            section.lessons = section.lessons.filter(lesson => lesson.id !== id)
-          }
-        })
+        const section = course.sections.find(
+          section => section.id === sectionId
+        )
+
+        if (section) {
+          section.lessons = section.lessons.filter(lesson => lesson.id !== id)
+        }
       }
     }
   },
