@@ -2,7 +2,7 @@ import { Typography, Grid, Box, Button } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { Lesson } from "../../../app/models/lesson";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import AppDropzone from "../../../app/components/AppDropzone";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { lessonValidationSchema } from "../courseForm/validationSchemas";
@@ -11,46 +11,47 @@ import agent from "../../../app/api/agent";
 import { setLesson } from "../../courses/coursesSlice";
 import { useAppDispatch } from "../../../app/store/configureStore";
 import { LoadingButton } from "@mui/lab";
+import { Section } from "../../../app/models/course";
 
 interface Props {
     lesson?: Lesson;
     cancelEdit: () => void;
-    sectionId: number
+    section: Section;
+    numberOfNewLesson: number
 }
 
-export default function LessonForm({ lesson, cancelEdit, sectionId }: Props) {
+export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLesson: number }: Props) {
     const dispatch = useAppDispatch();
-    const { control, reset, handleSubmit, watch, formState: { isDirty, isSubmitting } } = useForm({
+    const [theoryPreviewUrl, setTheoryPreviewUrl] = useState<string | null>(null);
+    const [practicePreviewUrl, setPracticePreviewUrl] = useState<string | null>(null);
+    const { control, reset, handleSubmit, formState: { isDirty, isSubmitting } } = useForm({
         resolver: yupResolver<any>(lessonValidationSchema)
     });
 
-    const watchTheoryFile = watch('theoryFile', null)
-    const watchPracticeFile = watch('practiceFile', null)
     const theoryRef = useRef<HTMLVideoElement>(null);
     const practiceRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        if (lesson && !watchTheoryFile && !watchPracticeFile && !isDirty) reset(lesson);
+        if (lesson && !isDirty) reset(lesson);
         return () => {
-            if (watchTheoryFile) URL.revokeObjectURL(watchTheoryFile.preview);
-            if (watchPracticeFile) URL.revokeObjectURL(watchPracticeFile.preview);
+            if (theoryPreviewUrl) URL.revokeObjectURL(theoryPreviewUrl);
+            if (practicePreviewUrl) URL.revokeObjectURL(practicePreviewUrl);
         }
-    }, [isDirty, lesson, reset, watchPracticeFile, watchTheoryFile]);
+    }, [isDirty, lesson, practicePreviewUrl, reset, theoryPreviewUrl]);
 
     const handleSubmitData = async (data: FieldValues) => {
-        console.log(data);
         try {
             let response: Lesson;
             if (lesson) {
                 response = await agent.Lesson.update(lesson.id, data);
             } else {
-                response = await agent.Lesson.create(data);
-                await agent.Section.update(sectionId, { lessonIdsToAdd: [response.id] })
+                const newLesson = { ...data, number }
+                response = await agent.Lesson.create(newLesson);
+                await agent.Section.update(section.id, { ...section, lessonIdsToAdd: [response.id] })
             }
 
-            console.log(response)
             cancelEdit();
-            dispatch(setLesson({ lesson: response, sectionId }));
+            dispatch(setLesson({ lesson: response, sectionId: section.id }));
         } catch (error) {
             console.log(error);
         }
@@ -77,8 +78,8 @@ export default function LessonForm({ lesson, cancelEdit, sectionId }: Props) {
                             Теорія
                         </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
-                            <AppDropzone control={control} name='theoryFile' />
-                            <VideoPreview watchFile={watchTheoryFile} ref={theoryRef} videoUrl={lesson?.urlTheory} />
+                            <AppDropzone control={control} name='theoryFile' setPreviewUrl={setTheoryPreviewUrl} currentPreviewUrl={theoryPreviewUrl} />
+                            <VideoPreview ref={theoryRef} videoUrl={theoryPreviewUrl || lesson?.urlTheory} />
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -86,8 +87,8 @@ export default function LessonForm({ lesson, cancelEdit, sectionId }: Props) {
                             Практика
                         </Typography>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>
-                            <AppDropzone control={control} name='practiceFile' />
-                            <VideoPreview watchFile={watchPracticeFile} ref={practiceRef} videoUrl={lesson?.urlPractice} />
+                            <AppDropzone control={control} name='practiceFile' setPreviewUrl={setPracticePreviewUrl} currentPreviewUrl={practicePreviewUrl} />
+                            <VideoPreview ref={practiceRef} videoUrl={practicePreviewUrl || lesson?.urlPractice} />
                         </Box>
                     </Grid>
                 </Grid>

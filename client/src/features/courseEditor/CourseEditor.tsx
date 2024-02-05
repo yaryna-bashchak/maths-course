@@ -45,7 +45,7 @@ export default function CourseEditor() {
             .finally(() => setLoading(false));
     }
 
-    const handleSelectLesson = (section: Section | undefined) => (lesson: Lesson | undefined, ) => {
+    const handleSelectLesson = (section: Section | undefined) => (lesson: Lesson | undefined,) => {
         setSelectedSection(section);
         setSelectedLesson(lesson);
         setEditMode('lesson');
@@ -65,8 +65,17 @@ export default function CourseEditor() {
     }
 
     if (isCoursesRequestMade === false || status.includes('pending')) return <LoadingComponent />
-    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} handleSelectLesson={handleSelectLesson} setSelectedCourse={setSelectedCourse}/>
-    if (editMode === 'lesson' && selectedSection) return <LessonForm lesson={selectedLesson} sectionId={selectedSection.id} cancelEdit={cancelEdit} />
+    if (editMode === 'course') return <CourseForm course={selectedCourse} cancelEdit={cancelEdit} handleSelectLesson={handleSelectLesson} setSelectedCourse={setSelectedCourse} />
+    if (editMode === 'lesson' && selectedSection)
+        return <LessonForm
+            lesson={selectedLesson}
+            section={selectedSection}
+            cancelEdit={cancelEdit}
+            numberOfNewLesson={
+                selectedSection.lessons ?
+                    selectedSection.lessons.reduce((max, lesson) => lesson.number > max ? lesson.number : max, 0) + 1
+                    : 1}
+        />
 
     return (
         <>

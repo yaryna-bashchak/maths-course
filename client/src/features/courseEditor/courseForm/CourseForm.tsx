@@ -34,7 +34,6 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
     }, [course, reset]);
 
     const handleSubmitData = async (data: FieldValues) => {
-        console.log(data);
         try {
             let response: Course;
             if (course) {

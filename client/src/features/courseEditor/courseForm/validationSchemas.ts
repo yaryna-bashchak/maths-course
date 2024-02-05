@@ -15,10 +15,7 @@ export const sectionValidationSchema = yup.object({
 
 const FILE_SIZE_LIMIT = 100000000 // 100MB
 const SUPPORTED_FORMATS = [
-  'video/mp4',
-  'video/webm',
-  'video/ogg',
-  'video/x-ms-asf'
+  'video/mp4'
 ]
 
 const videoSchema = yup

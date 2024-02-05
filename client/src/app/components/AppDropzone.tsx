@@ -1,14 +1,16 @@
 import { UploadFile } from '@mui/icons-material'
 import { FormControl, Typography, FormHelperText } from '@mui/material'
-import { useCallback, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useController, UseControllerProps } from 'react-hook-form'
 
-interface Props extends UseControllerProps { }
+interface Props extends UseControllerProps {
+    setPreviewUrl?: Dispatch<SetStateAction<string | null>>;
+    currentPreviewUrl?: string | null;
+}
 
-export default function AppDropzone(props: Props) {
-    const { fieldState, field } = useController({ ...props, defaultValue: null })
-    const [prevUrl, setPrevUrl] = useState(null)
+export default function AppDropzone({ setPreviewUrl, currentPreviewUrl, ...otherProps }: Props) {
+    const { fieldState, field } = useController({ ...otherProps, defaultValue: null })
 
     const dzStyles = {
         display: 'flex',
@@ -26,21 +28,15 @@ export default function AppDropzone(props: Props) {
     }
 
     const onDrop = useCallback((acceptedFiles: any) => {
-        if (prevUrl) {
-            URL.revokeObjectURL(prevUrl);
+        if (currentPreviewUrl) {
+            URL.revokeObjectURL(currentPreviewUrl);
         }
 
-        console.log(acceptedFiles[0])
-        const fileWithPreview = Object.assign({}, acceptedFiles[0], {
-            preview: URL.createObjectURL(acceptedFiles[0]),
-            type: acceptedFiles[0].type,
-            size: acceptedFiles[0].size,
-        });
+        const previewUrl = URL.createObjectURL(acceptedFiles[0]);
+        if (setPreviewUrl) setPreviewUrl(previewUrl);
 
-        setPrevUrl(fileWithPreview.preview)
-        field.onChange(fileWithPreview);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [field])
+        field.onChange(acceptedFiles[0]);
+    }, [currentPreviewUrl, field, setPreviewUrl])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 

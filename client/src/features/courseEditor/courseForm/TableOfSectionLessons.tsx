@@ -31,7 +31,7 @@ export default function TableOfSectionLessons({ section, handleSelectLesson }: P
 
         try {
             if (section) {
-                await agent.Section.update(section.id, { lessonIdsToDelete: [id] });
+                await agent.Section.update(section.id, { ...section, lessonIdsToDelete: [id] });
                 dispatch(removeLesson({ id, sectionId: section.id }));
             }
         } catch (error) {
