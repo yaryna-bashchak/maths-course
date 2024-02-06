@@ -22,8 +22,8 @@ interface Props {
 
 export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLesson: number }: Props) {
     const dispatch = useAppDispatch();
-    const [theoryPreviewUrl, setTheoryPreviewUrl] = useState<string | null>(null);
-    const [practicePreviewUrl, setPracticePreviewUrl] = useState<string | null>(null);
+    const [theoryPreviewUrl, setTheoryPreviewUrl] = useState<string | undefined>(undefined);
+    const [practicePreviewUrl, setPracticePreviewUrl] = useState<string | undefined>(undefined);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     
@@ -80,18 +80,18 @@ export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLes
                         <Typography variant="h5" gutterBottom>
                             Теорія
                         </Typography>
-                        <Box display='flex' flexWrap='wrap' sx={{columnGap: '10px'}} justifyContent='space-between' alignItems='center'>
+                        <Box display='flex' flexWrap='wrap' sx={{gap: '10px'}} justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='theoryFile' setPreviewUrl={setTheoryPreviewUrl} currentPreviewUrl={theoryPreviewUrl} />
-                            <VideoPreview ref={theoryRef} videoUrl={theoryPreviewUrl || lesson?.urlTheory} />
+                            <VideoPreview ref={theoryRef} newVideoUrl={theoryPreviewUrl} initialVideoUrl={lesson?.urlTheory} />
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="h5" gutterBottom>
                             Практика
                         </Typography>
-                        <Box display='flex' flexWrap='wrap' sx={{columnGap: '10px'}} justifyContent='space-between' alignItems='center'>
+                        <Box display='flex' flexWrap='wrap' sx={{gap: '10px'}} justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='practiceFile' setPreviewUrl={setPracticePreviewUrl} currentPreviewUrl={practicePreviewUrl} />
-                            <VideoPreview ref={practiceRef} videoUrl={practicePreviewUrl || lesson?.urlPractice} />
+                            <VideoPreview ref={practiceRef} newVideoUrl={practicePreviewUrl} initialVideoUrl={lesson?.urlPractice} />
                         </Box>
                     </Grid>
                 </Grid>

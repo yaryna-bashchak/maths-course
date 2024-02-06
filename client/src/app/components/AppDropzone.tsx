@@ -5,8 +5,8 @@ import { useDropzone } from 'react-dropzone'
 import { useController, UseControllerProps } from 'react-hook-form'
 
 interface Props extends UseControllerProps {
-    setPreviewUrl?: Dispatch<SetStateAction<string | null>>;
-    currentPreviewUrl?: string | null;
+    setPreviewUrl?: Dispatch<SetStateAction<string | undefined>>;
+    currentPreviewUrl?: string | undefined;
 }
 
 export default function AppDropzone({ setPreviewUrl, currentPreviewUrl, ...otherProps }: Props) {
