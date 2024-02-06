@@ -1,4 +1,4 @@
-import { Typography, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Box } from "@mui/material";
+import { Typography, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Box, useTheme, useMediaQuery } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import useCourses from "../../app/hooks/useCourses";
 import { useEffect, useState } from "react";
@@ -24,6 +24,8 @@ export default function CourseEditor() {
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(false);
     const [target, setTarget] = useState(0);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         if (status === 'pendingFetchCourses') {
@@ -89,10 +91,12 @@ export default function CourseEditor() {
                         <TableRow>
                             <TableCell>№</TableCell>
                             <TableCell align="left">Назва курсу</TableCell>
-                            <TableCell align="right">Тривалість</TableCell>
-                            <TableCell align="right">Повна ціна</TableCell>
-                            <TableCell align="right">Щомісячна ціна</TableCell>
-                            <TableCell align="right">Кількість секцій</TableCell>
+                            {!isMobile && <>
+                                <TableCell align="right">Тривалість</TableCell>
+                                <TableCell align="right">Повна ціна</TableCell>
+                                <TableCell align="right">Щомісячна ціна</TableCell>
+                                <TableCell align="right">Кількість секцій</TableCell>
+                            </>}
                             <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
@@ -104,10 +108,13 @@ export default function CourseEditor() {
                             >
                                 <TableCell component="th" scope="row">{course.id} </TableCell>
                                 <TableCell align="left">{course.title}</TableCell>
-                                <TableCell align="right">{course.duration}</TableCell>
-                                <TableCell align="right">{course.priceFull}</TableCell>
-                                <TableCell align="right">{course.priceMonthly}</TableCell>
-                                <TableCell align="right">{course.sections.length}</TableCell>
+                                {!isMobile && <>
+
+                                    <TableCell align="right">{course.duration}</TableCell>
+                                    <TableCell align="right">{course.priceFull}</TableCell>
+                                    <TableCell align="right">{course.priceMonthly}</TableCell>
+                                    <TableCell align="right">{course.sections.length}</TableCell>
+                                </>}
                                 <TableCell align="right">
                                     <Button onClick={() => handleSelectCourse(course)} startIcon={<Edit />} />
                                     <LoadingButton loading={loading && target === course.id} onClick={() => handleDeleteCourse(course.id)} startIcon={<Delete />} color='error' />

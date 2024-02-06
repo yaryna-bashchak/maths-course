@@ -16,8 +16,9 @@ interface Props {
 export default function TableOfSectionLessons({ section, handleSelectLesson }: Props) {
     const theme = useTheme();
     const dispatch = useAppDispatch();
-    const isMobileOrTablet = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [loadingState, setLoadingState] = useState<LoadingState>({});
+    
 
     const setLoading = (id: number, action: 'submit' | 'delete', isLoading: boolean) => {
         setLoadingState(prevState => ({
@@ -45,13 +46,13 @@ export default function TableOfSectionLessons({ section, handleSelectLesson }: P
         <>
             {section &&
                 <TableRow>
-                    <TableCell style={{ padding: '0 16px 0 40px' }} colSpan={4}>
+                    <TableCell style={{ padding: isMobile ? 0 : '0 16px 0 40px' }} colSpan={4}>
                         <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>№</TableCell>
                                     <TableCell align="left">Назва уроку</TableCell>
-                                    {!isMobileOrTablet && <TableCell align="center">Важливість</TableCell>}
+                                    {!isMobile && <TableCell align="center">Важливість</TableCell>}
                                     <TableCell align="right"></TableCell>
                                 </TableRow>
                             </TableHead>

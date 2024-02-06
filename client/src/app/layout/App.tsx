@@ -44,14 +44,12 @@ function App() {
                 <Header />
                 {loading ? <LoadingComponent />
                     : <Container sx={{
-                        pt: "90px",
+                        pt: "70px",
                         pb: "30px",
                         width: "100%",
                         backgroundColor: isWhiteBackgroundNeeded ? "white" : "none",
-                        [theme.breakpoints.up('sm')]: {
-                            width: "100%",
-                        },
                         [theme.breakpoints.up('md')]: {
+                            pt: "90px",
                             width: "80%",
                             maxWidth: "980px"
                         },

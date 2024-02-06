@@ -1,4 +1,4 @@
-import { Typography, Grid, Box, Button } from "@mui/material";
+import { Typography, Grid, Box, Button, useMediaQuery, useTheme } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { Lesson } from "../../../app/models/lesson";
@@ -24,6 +24,9 @@ export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLes
     const dispatch = useAppDispatch();
     const [theoryPreviewUrl, setTheoryPreviewUrl] = useState<string | null>(null);
     const [practicePreviewUrl, setPracticePreviewUrl] = useState<string | null>(null);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    
     const { control, reset, handleSubmit, formState: { isDirty, isSubmitting } } = useForm({
         resolver: yupResolver<any>(lessonValidationSchema)
     });
@@ -58,7 +61,7 @@ export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLes
     }
 
     return (
-        <Box sx={{ p: 4 }}>
+        <Box sx={{ p: isMobile ? 2 : 4 }}>
             <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
                 Урок
             </Typography>

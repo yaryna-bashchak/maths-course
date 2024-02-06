@@ -1,4 +1,4 @@
-import { Typography, Grid, Paper, Box, Button, Table, TableBody, TableContainer } from "@mui/material";
+import { Typography, Grid, Paper, Box, Button, Table, TableBody, TableContainer, useTheme, useMediaQuery } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { Course, Section } from "../../../app/models/course";
@@ -24,6 +24,8 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
     const { course: fullCourse } = useCourse(givenCourse?.id);
     const course = fullCourse ?? givenCourse;
     const dispatch = useAppDispatch();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const { control, reset, handleSubmit, formState: { isSubmitting, isDirty } } = useForm({
         resolver: yupResolver<any>(courseValidationSchema)
@@ -51,7 +53,7 @@ export default function CourseForm({ course: givenCourse, cancelEdit, handleSele
     }
 
     return (
-        <Box sx={{ p: 4 }}>
+        <Box sx={{ p: isMobile ? 2 : 4 }}>
             <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
                 Курс
             </Typography>

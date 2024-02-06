@@ -13,7 +13,7 @@ interface Props {
 
 export default function LessonLine({ lesson, handleSelectLesson, handleDeleteLesson, loadingState }: Props) {
     const theme = useTheme();
-    const isMobileOrTablet = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <>
@@ -26,7 +26,7 @@ export default function LessonLine({ lesson, handleSelectLesson, handleDeleteLes
                         {lesson?.id}
                     </TableCell>
                     <TableCell align="left">{lesson?.title}</TableCell>
-                    {!isMobileOrTablet && <TableCell align="center">{lesson?.importance}</TableCell>}
+                    {!isMobile && <TableCell align="center">{lesson?.importance}</TableCell>}
                     <TableCell align="right">
                         <Button onClick={() => handleSelectLesson(lesson)} startIcon={<Edit />} />
                         <LoadingButton loading={loadingState?.[lesson.id]?.delete} onClick={() => handleDeleteLesson(lesson.id)} startIcon={<Delete />} color='error' />
