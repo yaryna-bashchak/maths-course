@@ -77,7 +77,7 @@ export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLes
                         <Typography variant="h5" gutterBottom>
                             Теорія
                         </Typography>
-                        <Box display='flex' justifyContent='space-between' alignItems='center'>
+                        <Box display='flex' flexWrap='wrap' sx={{columnGap: '10px'}} justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='theoryFile' setPreviewUrl={setTheoryPreviewUrl} currentPreviewUrl={theoryPreviewUrl} />
                             <VideoPreview ref={theoryRef} videoUrl={theoryPreviewUrl || lesson?.urlTheory} />
                         </Box>
@@ -86,7 +86,7 @@ export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLes
                         <Typography variant="h5" gutterBottom>
                             Практика
                         </Typography>
-                        <Box display='flex' justifyContent='space-between' alignItems='center'>
+                        <Box display='flex' flexWrap='wrap' sx={{columnGap: '10px'}} justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='practiceFile' setPreviewUrl={setPracticePreviewUrl} currentPreviewUrl={practicePreviewUrl} />
                             <VideoPreview ref={practiceRef} videoUrl={practicePreviewUrl || lesson?.urlPractice} />
                         </Box>

@@ -20,7 +20,6 @@ export default function AppDropzone({ setPreviewUrl, currentPreviewUrl, ...other
         paddingTop: '30px',
         alignItems: 'center',
         height: 200,
-        width: 400
     }
 
     const dzActive = {
@@ -41,11 +40,11 @@ export default function AppDropzone({ setPreviewUrl, currentPreviewUrl, ...other
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
     return (
-        <div {...getRootProps()}>
+        <div {...getRootProps()} style={{ maxWidth: 400, flex: '1 1 400px' }}>
             <FormControl style={isDragActive ? { ...dzStyles, ...dzActive } : dzStyles} error={!!fieldState.error} >
                 <input {...getInputProps()} />
                 <UploadFile sx={{ fontSize: '100px' }} />
-                <Typography variant='h4'>Перетягніть відео сюди</Typography>
+                <Typography variant='h4' sx={{ textAlign: 'center' }}>Перетягніть відео сюди</Typography>
                 <FormHelperText>{fieldState.error?.message}</FormHelperText>
             </FormControl>
         </div>

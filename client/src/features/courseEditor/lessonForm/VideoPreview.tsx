@@ -15,7 +15,7 @@ const VideoPreview = forwardRef<HTMLVideoElement, Props>(
         return (
             <>
                 {videoUrl ? (
-                    <video ref={ref} style={{ maxHeight: 200 }} controls>
+                    <video ref={ref} style={{ maxWidth: '100%',  maxHeight: 200, flex: '0 1 auto' }} controls>
                         <source src={videoUrl} type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
