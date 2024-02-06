@@ -2,7 +2,7 @@ import { Typography, Grid, Box, Button, useMediaQuery, useTheme } from "@mui/mat
 import { FieldValues, useForm } from "react-hook-form";
 import AppTextInput from "../../../app/components/AppTextInput";
 import { Lesson } from "../../../app/models/lesson";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import AppDropzone from "../../../app/components/AppDropzone";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { lessonValidationSchema } from "../courseForm/validationSchemas";
@@ -30,9 +30,6 @@ export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLes
     const { control, reset, handleSubmit, formState: { isDirty, isSubmitting } } = useForm({
         resolver: yupResolver<any>(lessonValidationSchema)
     });
-
-    const theoryRef = useRef<HTMLVideoElement>(null);
-    const practiceRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         if (lesson && !isDirty) reset(lesson);
@@ -82,7 +79,7 @@ export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLes
                         </Typography>
                         <Box display='flex' flexWrap='wrap' sx={{gap: '10px'}} justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='theoryFile' setPreviewUrl={setTheoryPreviewUrl} currentPreviewUrl={theoryPreviewUrl} />
-                            <VideoPreview ref={theoryRef} newVideoUrl={theoryPreviewUrl} initialVideoUrl={lesson?.urlTheory} />
+                            <VideoPreview newVideoUrl={theoryPreviewUrl} initialVideoUrl={lesson?.urlTheory} />
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -91,7 +88,7 @@ export default function LessonForm({ lesson, cancelEdit, section, numberOfNewLes
                         </Typography>
                         <Box display='flex' flexWrap='wrap' sx={{gap: '10px'}} justifyContent='space-between' alignItems='center'>
                             <AppDropzone control={control} name='practiceFile' setPreviewUrl={setPracticePreviewUrl} currentPreviewUrl={practicePreviewUrl} />
-                            <VideoPreview ref={practiceRef} newVideoUrl={practicePreviewUrl} initialVideoUrl={lesson?.urlPractice} />
+                            <VideoPreview newVideoUrl={practicePreviewUrl} initialVideoUrl={lesson?.urlPractice} />
                         </Box>
                     </Grid>
                 </Grid>
