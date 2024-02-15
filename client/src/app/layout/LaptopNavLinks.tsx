@@ -3,17 +3,7 @@ import { NavLink } from "react-router-dom";
 import SignedInMenu from "./SignedInMenu";
 import { useAppSelector } from "../store/configureStore";
 import { navStyles } from "./Header";
-
-const midLinks = [
-    { title: 'Про⠀нас', path: '' },
-    { title: 'Курси', path: 'course' },
-    { title: 'Ціни', path: '/#price' },
-]
-
-const rightLinks = [
-    { title: 'Увійти', path: '/login' },
-    { title: 'Зареєструватися', path: '/register' },
-]
+import { adminLinks, baseLinks, nonAuthorizedLinks } from "./links";
 
 export default function LaptopNavLinks() {
     const { user } = useAppSelector(state => state.account);
@@ -21,7 +11,17 @@ export default function LaptopNavLinks() {
     return (
         <>
             <List sx={{ display: 'flex' }}>
-                {midLinks.map(({ title, path }) => (
+                {baseLinks.map(({ title, path }) => (
+                    <ListItem
+                        component={NavLink}
+                        to={path}
+                        key={path}
+                        sx={navStyles}
+                    >
+                        {title.toUpperCase()}
+                    </ListItem>
+                ))}
+                {user && user.roles?.includes('Admin') && adminLinks.map(({ title, path }) => (
                     <ListItem
                         component={NavLink}
                         to={path}
@@ -35,7 +35,7 @@ export default function LaptopNavLinks() {
             {user ?
                 <SignedInMenu /> :
                 <List sx={{ display: 'flex' }}>
-                    {rightLinks.map(({ title, path }) => (
+                    {nonAuthorizedLinks.map(({ title, path }) => (
                         <ListItem
                             component={NavLink}
                             to={path}

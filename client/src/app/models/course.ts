@@ -12,6 +12,7 @@ export interface Course {
 
 export interface Section {
   id: number
+  courseId: number
   number: number
   title: string
   description: string
@@ -31,6 +32,7 @@ export interface CoursePreview {
 
 export interface SectionPreview {
   id: number
+  courseId: number
   number: number
   title: string
   description: string

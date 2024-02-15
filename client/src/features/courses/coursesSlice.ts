@@ -63,7 +63,7 @@ export const updateLessonAsync = createAsyncThunk<
   { id: number; body: object }
 >('courses/updateLessonAsync', async ({ id, body }, thunkAPI) => {
   try {
-    return await agent.Lesson.update(id, body)
+    return await agent.Lesson.updateCompletion(id, body)
   } catch (error: any) {
     return thunkAPI.rejectWithValue({ error: error.data })
   }
@@ -73,6 +73,15 @@ export function initLessonParams (): LessonParams {
   return {
     maxImportance: 2,
     onlyUncompleted: false
+  }
+}
+
+const initializeCourseStatusLogic = (state: any, courseId: number) => {
+  if (!state.individualCourseStatus[courseId]) {
+    state.individualCourseStatus[courseId] = {
+      courseLoaded: false,
+      lessonParams: initLessonParams()
+    }
   }
 }
 
@@ -98,19 +107,85 @@ export const coursesSlice = createSlice({
     },
     initializeCourseStatus: (state, action) => {
       const { courseId } = action.payload
-      if (!state.individualCourseStatus[courseId]) {
-        state.individualCourseStatus[courseId] = {
-          courseLoaded: false,
-          lessonParams: initLessonParams()
-        }
-      }
+      initializeCourseStatusLogic(state, courseId)
       //state.status = 'pendingFetchCourse'
     },
-    clearCourses: (state) => {
-      state.entities = {};
-      state.ids = [];
-      state.coursesLoaded = false;
-      state.individualCourseStatus = {};
+    clearCourses: state => {
+      state.entities = {}
+      state.ids = []
+      state.coursesLoaded = false
+      state.individualCourseStatus = {}
+    },
+    setCourse: (state, action) => {
+      const course = action.payload
+
+      initializeCourseStatusLogic(state, course.id)
+
+      coursesAdapter.upsertOne(state, course)
+      state.individualCourseStatus[course.id].courseLoaded = true
+    },
+    removeCourse: (state, action) => {
+      coursesAdapter.removeOne(state, action.payload)
+    },
+    setSection: (state, action) => {
+      const section = action.payload
+      const course = state.entities[section.courseId]
+
+      if (course) {
+        const existingSectionIndex = course.sections.findIndex(
+          s => s.id === section.id
+        )
+
+        if (existingSectionIndex !== -1) {
+          course.sections[existingSectionIndex] = section
+        } else {
+          course.sections.push(section)
+        }
+      }
+    },
+    removeSection: (state, action) => {
+      const { id, courseId } = action.payload
+      const course = state.entities[courseId]
+
+      if (course) {
+        course.sections = course.sections.filter(section => section.id !== id)
+      }
+    },
+    setLesson: (state, action) => {
+      const { lesson, sectionId } = action.payload
+
+      for (const course of Object.values(state.entities)) {
+        if (course?.sections) {
+          for (const section of course.sections) {
+            const lessonIndex = section.lessons.findIndex(
+              l => l.id === lesson.id
+            )
+
+            if (lessonIndex !== -1) {
+              section.lessons[lessonIndex] = lesson
+            } else if (section.id === sectionId) {
+              section.lessons.push(lesson)
+            }
+          }
+        }
+      }
+    },
+    removeLesson: (state, action) => {
+      const { id, sectionId } = action.payload
+
+      const course = Object.values(state.entities).find(course =>
+        course?.sections.some(section => section.id === sectionId)
+      )
+
+      if (course) {
+        const section = course.sections.find(
+          section => section.id === sectionId
+        )
+
+        if (section) {
+          section.lessons = section.lessons.filter(lesson => lesson.id !== id)
+        }
+      }
     }
   },
   extraReducers: builder => {
@@ -183,4 +258,14 @@ export const courseSelectors = coursesAdapter.getSelectors(
   (state: RootState) => state.courses
 )
 
-export const { setLessonParams, initializeCourseStatus, clearCourses } = coursesSlice.actions
+export const {
+  setLessonParams,
+  initializeCourseStatus,
+  clearCourses,
+  setCourse,
+  removeCourse,
+  setSection,
+  removeSection,
+  setLesson,
+  removeLesson
+} = coursesSlice.actions

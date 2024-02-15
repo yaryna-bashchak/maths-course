@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Dtos.Keyword;
-using SQLitePCL;
 
 namespace API.Dtos.Lesson
 {
@@ -19,6 +14,8 @@ namespace API.Dtos.Lesson
         public float? TestScore { get; set; }
         public bool IsTheoryCompleted { get; set; } = false;
         public bool IsPracticeCompleted { get; set; } = false;
+        public string TheoryPublicId { get; set; }
+        public string PracticePublicId { get; set; }
         public List<GetKeywordDto> Keywords { get; set; }
         public List<GetPreviousLessonDto> PreviousLessons { get; set; }
     }

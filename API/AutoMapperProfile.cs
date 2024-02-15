@@ -34,6 +34,7 @@ namespace API
                 });
             CreateMap<Lesson, GetLessonPreviewDto>();
             CreateMap<AddLessonDto, Lesson>();
+            CreateMap<UpdateLesssonDto, Lesson>();
             CreateMap<Lesson, GetPreviousLessonDto>();
             CreateMap<GetLessonDto, GetLessonPreviewDto>();
             CreateMap<GetLessonPreviewDto, GetLessonDto>();
@@ -67,11 +68,13 @@ namespace API
                     var userSection = src.UserSections.FirstOrDefault(us => us.UserId == userId);
                     return userSection?.isAvailable ?? false;
                 }));
+            CreateMap<AddSectionDto, Section>();
 
             CreateMap<Course, GetCourseDto>()
                 .ForMember(dto => dto.Sections, opt => opt.MapFrom(c => c.Sections));
             CreateMap<Course, GetCoursePreviewDto>()
                 .ForMember(dto => dto.Sections, opt => opt.MapFrom(c => c.Sections));
+            CreateMap<AddCourseDto, Course>();
 
 
 

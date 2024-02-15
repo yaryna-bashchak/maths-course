@@ -14,14 +14,41 @@ namespace API.Repositories.Implementation
         private readonly CourseContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly ISectionsRepository _sectionsRepository;
         public CoursesRepository(
             CourseContext context,
             UserManager<User> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            ISectionsRepository sectionsRepository)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
+            _sectionsRepository = sectionsRepository;
+        }
+
+        public async Task<Result<GetCourseDto>> AddCourse(AddCourseDto newCourse, string username)
+        {
+            var course = _mapper.Map<Course>(newCourse);
+
+            course.Id = _context.Courses.Max(c => c.Id) + 1;
+            await _context.Courses.AddAsync(course);
+
+            return await SaveChangesAndReturnResult(course.Id, username);
+        }
+
+        public async Task<Result<GetCourseDto>> UpdateCourse(int id, UpdateCourseDto updatedCourse, string username)
+        {
+            var dbCourse = await GetCourseById(id);
+
+            if (dbCourse == null) return new Result<GetCourseDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+
+            dbCourse.Title = updatedCourse.Title ?? "";
+            dbCourse.Description = updatedCourse.Description ?? "";
+            dbCourse.PriceFull = updatedCourse.PriceFull != -1 ? updatedCourse.PriceFull : dbCourse.PriceFull;
+            dbCourse.PriceMonthly = updatedCourse.PriceMonthly != -1 ? updatedCourse.PriceMonthly : dbCourse.PriceMonthly;
+
+            return await SaveChangesAndReturnResult(id, username);
         }
 
         public async Task<Result<GetCourseDto>> GetCourse(int id, int? maxImportance, bool? onlyUncompleted, string searchTerm, string username)
@@ -100,6 +127,48 @@ namespace API.Repositories.Implementation
             {
                 return new Result<List<GetCoursePreviewDto>> { IsSuccess = false, ErrorMessage = "Courses not found." };
             }
+        }
+
+        public async Task<Result<bool>> DeleteCourse(int id)
+        {
+            try
+            {
+                var dbCourse = await _context.Courses.Include(c => c.Sections).FirstOrDefaultAsync(c => c.Id == id);
+
+                if (dbCourse == null) return new Result<bool> { IsSuccess = false, ErrorMessage = "Course with the provided ID not found." };
+
+                foreach (var section in dbCourse.Sections.ToList())
+                {
+                    await _sectionsRepository.DeleteSection(section.Id);
+                }
+
+                _context.Courses.Remove(dbCourse);
+                await _context.SaveChangesAsync();
+
+                return new Result<bool> { IsSuccess = true, Data = true };
+            }
+            catch (System.Exception ex)
+            {
+                return new Result<bool> { IsSuccess = false, ErrorMessage = ex.Message };
+            }
+        }
+
+        private async Task<Result<GetCourseDto>> SaveChangesAndReturnResult(int courseId, string username)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                return new Result<GetCourseDto> { IsSuccess = true, Data = GetCourse(courseId, null, null, null, username).Result.Data };
+            }
+            catch (System.Exception ex)
+            {
+                return new Result<GetCourseDto> { IsSuccess = false, ErrorMessage = ex.Message };
+            }
+        }
+
+        private async Task<Course> GetCourseById(int id)
+        {
+            return await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

@@ -10,15 +10,21 @@ import CourseCatalog from "../../features/courses/CourseCatalog";
 import Login from "../../features/account/Login";
 import Register from "../../features/account/Register";
 import RequireAuth from "./RequireAuth";
+import CourseEditor from "../../features/courseEditor/CourseEditor";
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <App />,
         children: [
+            // authenticated routes
             { element: <RequireAuth />, children: [
                 { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
                 { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
+            ]},
+            // admin routes
+            { element: <RequireAuth roles={['Admin']}/>, children: [
+                { path: 'editor', element: <CourseEditor /> },
             ]},
             { path: '', element: <HomePage /> },
             { path: 'course', element: <CourseCatalog /> },

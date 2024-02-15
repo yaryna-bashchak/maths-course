@@ -7,6 +7,8 @@ namespace API.Entities
         public string Description { get; set; }
         public string UrlTheory { get; set; }
         public string UrlPractice { get; set; }
+        public string TheoryPublicId { get; set; }
+        public string PracticePublicId { get; set; }
         public int Number { get; set; }
         public int Importance { get; set; } = 0;
         public List<UserLesson> UserLessons { get; set; }

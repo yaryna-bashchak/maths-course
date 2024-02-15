@@ -8,14 +8,11 @@ import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { fetchTestsAsync, testSelectors } from "./testsSlice";
-import { findLessonById, isAvailable } from "../lesson/LessonDetails";
 import { courseSelectors, fetchCourseAsync, initializeCourseStatus } from "../courses/coursesSlice";
 import { Test } from "../../app/models/test";
 import { LessonParams } from "../../app/models/course";
-
-export function totalSteps(tests: Test[]): number {
-    return tests ? tests.length : 0;
-}
+import { isAvailable } from "../lesson/isAvailable";
+import { findLessonById } from "../lesson/findLessonById";
 
 function isLoading(lessonParams: LessonParams, status: string, courseStatus: string) {
     return !lessonParams || status.includes('pending') || courseStatus.includes('pending');

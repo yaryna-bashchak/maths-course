@@ -36,11 +36,17 @@ namespace API.Data.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ImgUrl")
+                        .HasColumnType("text");
+
                     b.Property<int>("PriceFull")
                         .HasColumnType("integer");
 
                     b.Property<int>("PriceMonthly")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
@@ -82,6 +88,12 @@ namespace API.Data.Migrations
 
                     b.Property<int>("Number")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PracticePublicId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TheoryPublicId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
@@ -136,6 +148,9 @@ namespace API.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImgUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicId")
                         .HasColumnType("text");
 
                     b.Property<int>("TestId")
@@ -209,6 +224,9 @@ namespace API.Data.Migrations
 
                     b.Property<int>("LessonId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Question")
                         .HasColumnType("text");
@@ -357,13 +375,13 @@ namespace API.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2fee48b9-f7e4-49b3-83f9-22164e2cf086",
+                            Id = "b9600d23-6e54-4922-859c-fd47ec81dc03",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "4af85d66-9a1c-4a98-8e45-f303b005e8e3",
+                            Id = "fe0ece13-6061-49bd-9333-a745b9f63f0b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

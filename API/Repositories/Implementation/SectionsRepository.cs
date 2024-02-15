@@ -13,63 +13,98 @@ namespace API.Repositories.Implementation
         private readonly CourseContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly ILessonsRepository _lessonsRepository;
         public SectionsRepository(
             CourseContext context,
             UserManager<User> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            ILessonsRepository lessonsRepository)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
+            _lessonsRepository = lessonsRepository;
         }
 
-        public async Task<Result<GetSectionDto>> GetSection(int id)
+        private async Task<Result<GetSectionDto>> GetSection(int id, string username)
         {
-            try
-            {
-                var dbSection = await _context.Sections
-                    .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
-                    .FirstAsync(l => l.Id == id);
+            var user = await _userManager.FindByNameAsync(username);
 
-                var section = _mapper.Map<GetSectionDto>(dbSection);
-                return new Result<GetSectionDto> { IsSuccess = true, Data = section };
-            }
-            catch (System.Exception)
+            var dbSection = await _context.Sections
+                .Include(s => s.UserSections)
+                .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                    .ThenInclude(l => l.LessonKeywords).ThenInclude(lk => lk.Keyword)
+                .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                    .ThenInclude(l => l.PreviousLessons).ThenInclude(lpl => lpl.PreviousLesson)
+                .Include(s => s.SectionLessons).ThenInclude(sl => sl.Lesson)
+                    .ThenInclude(l => l.UserLessons)
+                .FirstOrDefaultAsync(l => l.Id == id);
+
+            var section = _mapper.Map<GetSectionDto>(dbSection, opts => opts.Items["UserId"] = user?.Id);
+            return new Result<GetSectionDto> { IsSuccess = true, Data = section };
+        }
+
+        public async Task<Result<GetSectionDto>> UpdateSectionAvailability(int sectionId, UpdateUserSectionDto updatedUserSection, string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return UnauthorizedResult("Unauthorized user.");
+
+            var dbSection = _context.Sections.Find(sectionId);
+            if (dbSection == null) return NotFoundResult("Section with the provided ID not found.");
+
+            if (updatedUserSection.IsAvailable != -1)
             {
-                return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = "Section with the provided ID not found." };
+                UserSection userSection = await _context.UserSections
+                    .Where(sl => sl.SectionId == sectionId)
+                    .FirstOrDefaultAsync(sl => sl.UserId == user.Id);
+
+                if (userSection == null)
+                {
+                    _context.UserSections.Add(
+                        new UserSection
+                        {
+                            SectionId = sectionId,
+                            UserId = user.Id,
+                            isAvailable = updatedUserSection.IsAvailable != 0,
+                        });
+                }
+                else
+                {
+                    userSection.isAvailable = updatedUserSection.IsAvailable != 0;
+                }
             }
+
+            await _context.SaveChangesAsync();
+
+            return new Result<GetSectionDto> { IsSuccess = true };
+        }
+
+        public async Task<Result<GetSectionDto>> AddSection(AddSectionDto newSection, string username)
+        {
+            var section = _mapper.Map<Section>(newSection);
+
+            section.Id = _context.Sections.Max(c => c.Id) + 1;
+            await _context.Sections.AddAsync(section);
+            await _context.SaveChangesAsync();
+
+            await UpdateSectionAvailability(section.Id, new UpdateUserSectionDto() { IsAvailable = 1 }, username);
+
+            var result = await GetSection(section.Id, username);
+            return new Result<GetSectionDto> { IsSuccess = true, Data = result.Data };
         }
 
         public async Task<Result<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection, string username)
         {
-            var user = await _userManager.FindByNameAsync(username);
-
             try
             {
-                var dbSection = await _context.Sections.FirstAsync(l => l.Id == id);
+                var dbSection = _context.Sections.Find(id);
 
-                dbSection.Title = updatedSection.Title ?? dbSection.Title;
-                dbSection.Description = updatedSection.Description ?? dbSection.Description;
+                if (dbSection == null) return NotFoundResult("Section with the provided ID not found.");
+
+                dbSection.Title = updatedSection.Title ?? "";
+                dbSection.Description = updatedSection.Description ?? "";
                 dbSection.Number = updatedSection.Number != -1 ? updatedSection.Number : dbSection.Number;
-
-                if (user != null && updatedSection.IsAvailable != -1)
-                {
-                    UserSection userSection = await _context.UserSections
-                        .Where(sl => sl.SectionId == id).FirstOrDefaultAsync(sl => sl.UserId == user.Id);
-
-                    if (userSection == null)
-                    {
-                        _context.UserSections.Add(
-                            new UserSection
-                            {
-                                SectionId = id,
-                                UserId = user.Id,
-                                isAvailable = updatedSection.IsAvailable != 0,
-                            });
-                    } else {
-                        userSection.isAvailable = updatedSection.IsAvailable != 0;
-                    }
-                }
 
                 if (updatedSection.LessonIdsToAdd != null)
                 {
@@ -122,18 +157,75 @@ namespace API.Repositories.Implementation
                         }
 
                         _context.SectionLessons.Remove(sectionLesson);
+                        await _context.SaveChangesAsync();
+
+                        var isLessonLinkedToOtherSections = await _context.SectionLessons.AnyAsync(sl => sl.LessonId == lessonId);
+                        if (!isLessonLinkedToOtherSections)
+                        {
+                            await _lessonsRepository.DeleteLesson(lessonId);
+                        }
+                    }
+                }
+
+                return await SaveChangesAndReturnResult(id, username);
+            }
+            catch (System.Exception ex)
+            {
+                return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = ex.Message };
+            }
+        }
+
+        public async Task<Result<bool>> DeleteSection(int id)
+        {
+            try
+            {
+                var dbSection = await _context.Sections.Include(s => s.SectionLessons).FirstOrDefaultAsync(s => s.Id == id);
+                if (dbSection == null) return new Result<bool> { IsSuccess = false, ErrorMessage = "Section with the provided ID not found." };
+
+                var lessonIds = dbSection.SectionLessons.Select(sl => sl.LessonId).ToList();
+                _context.Sections.Remove(dbSection);
+
+                foreach (var lessonId in lessonIds)
+                {
+                    var isLessonLinkedToOtherSections = await _context.SectionLessons.AnyAsync(sl => sl.LessonId == lessonId && sl.SectionId != id);
+                    if (!isLessonLinkedToOtherSections)
+                    {
+                        await _lessonsRepository.DeleteLesson(lessonId);
                     }
                 }
 
                 await _context.SaveChangesAsync();
 
-                var result = await GetSection(id);
-                return new Result<GetSectionDto> { IsSuccess = true, Data = result.Data };
+                return new Result<bool> { IsSuccess = true, Data = true };
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = "Section with the provided ID not found." };
+                return new Result<bool> { IsSuccess = false, ErrorMessage = ex.Message };
             }
+        }
+
+        private async Task<Result<GetSectionDto>> SaveChangesAndReturnResult(int sectionId, string username)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                var section = await GetSection(sectionId, username);
+                return new Result<GetSectionDto> { IsSuccess = true, Data = section.Data };
+            }
+            catch (System.Exception ex)
+            {
+                return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = ex.Message };
+            }
+        }
+
+        private Result<GetSectionDto> UnauthorizedResult(string errorMessage)
+        {
+            return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = errorMessage };
+        }
+
+        private Result<GetSectionDto> NotFoundResult(string errorMessage)
+        {
+            return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = errorMessage };
         }
     }
 }

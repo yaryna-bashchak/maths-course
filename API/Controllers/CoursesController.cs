@@ -1,6 +1,7 @@
 using API.Dtos.Course;
 using API.Repositories;
 using API.RequestHelper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -52,6 +53,59 @@ namespace API.Controllers
             }
 
             return result.Data;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<ActionResult<GetCourseDto>> AddLesson(AddCourseDto newCourse)
+        {
+            var username = User.Identity.Name ?? "";
+
+            if (newCourse.Duration <= 0 || newCourse.PriceFull <= 0 || newCourse.PriceMonthly <= 0)
+                return BadRequest("Duration, full price and price monthly must be greater than zero.");
+
+            var result = await _coursesRepository.AddCourse(newCourse, username);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GetCourseDto>> UpdateLesson(int id, UpdateCourseDto updatedCourse)
+        {
+            var username = User.Identity.Name ?? "";
+
+            if (updatedCourse.Duration <= 0 || updatedCourse.PriceFull <= 0 || updatedCourse.PriceMonthly <= 0)
+                return BadRequest("Duration, full price and price monthly must be greater than zero.");
+
+            var result = await _coursesRepository.UpdateCourse(id, updatedCourse, username);
+
+            if (!result.IsSuccess)
+            {
+                if (result.ErrorMessage.Contains("Unauthorized")) return Unauthorized();
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteLesson(int id)
+        {
+            var result = await _coursesRepository.DeleteCourse(id);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return Ok();
         }
     }
 }

@@ -5,7 +5,6 @@ import { green, pink } from "@mui/material/colors";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { testSelectors } from "./testsSlice";
-import { totalSteps } from "./TestsSpace";
 import { updateLessonAsync } from "../courses/coursesSlice";
 
 interface Props {
@@ -37,6 +36,10 @@ export default function TestControl({
     const [checked, setChecked] = useState('');
     const [helperText, setHelperText] = useState(' ');
     const answerId = test.options.find(option => option.isAnswer === true)?.id;
+
+    const totalSteps = (tests: Test[]): number => {
+        return tests ? tests.length : 0;
+    }
 
     const handleNext = () => {
         if (tests) {
@@ -140,6 +143,7 @@ export default function TestControl({
                                         label={option.text}
                                         disabled={activeStep in completed}
                                         checked={getChecked(option)}
+                                        key={option.id}
                                     />
                                 ))
                             }

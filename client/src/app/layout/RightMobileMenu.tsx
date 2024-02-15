@@ -8,20 +8,7 @@ import { useDispatch } from "react-redux";
 import { signOut } from "../../features/account/accountSlice";
 import { clearCourses } from "../../features/courses/coursesSlice";
 import { clearTests } from "../../features/tests/testsSlice";
-
-const nonAuthorizedLinks = [
-    { title: 'Увійти', path: '/login' },
-    { title: 'Зареєструватися', path: '/register' },
-]
-const authorizedLinks = [
-    { title: 'Вийти', path: '/'},
-]
-
-const baseLinks = [
-    { title: 'Про⠀нас', path: '' },
-    { title: 'Курси', path: 'course' },
-    { title: 'Ціни', path: '/#price' },
-]
+import { adminLinks, authorizedLinks, baseLinks, nonAuthorizedLinks } from "./links";
 
 export default function RightMobileMenu() {
     const { user } = useAppSelector(state => state.account);
@@ -38,21 +25,26 @@ export default function RightMobileMenu() {
         setMenuOpen(false);
     };
 
-    const sideList = () => (
-        <List>
-            {user && (
-                <ListItem sx={{ borderBottom: '1px solid #ddd' }}>
-                    <AccountCircle sx={{ mr: 1, fontSize: '25px', color: 'primary.main' }} />
-                    <ListItemText primary={`${user.username.toUpperCase()}`} primaryTypographyProps={{ color: 'primary.main' }} />
-                </ListItem>
-            )}
-            {(user ? authorizedLinks : nonAuthorizedLinks).concat(baseLinks).map(({ title, path }) => (
-                <ListItem button component={NavLink} to={path} key={path} onClick={() => handleMenuClick(title)}>
-                    {title}
-                </ListItem>
-            ))}
-        </List>
-    );
+    const sideList = () => {
+        let combinedLinks = (user ? authorizedLinks : nonAuthorizedLinks).concat(baseLinks);
+        if (user && user.roles?.includes('Admin')) combinedLinks = combinedLinks.concat(adminLinks);
+
+        return (
+            <List>
+                {user && (
+                    <ListItem sx={{ borderBottom: '1px solid #ddd' }}>
+                        <AccountCircle sx={{ mr: 1, fontSize: '25px', color: 'primary.main' }} />
+                        <ListItemText primary={`${user.username.toUpperCase()}`} primaryTypographyProps={{ color: 'primary.main' }} />
+                    </ListItem>
+                )}
+                {combinedLinks.map(({ title, path }) => (
+                    <ListItem button component={NavLink} to={path} key={path} onClick={() => handleMenuClick(title)}>
+                        {title}
+                    </ListItem>
+                ))}
+            </List>
+        )
+    };
 
     return (<>
         <IconButton
