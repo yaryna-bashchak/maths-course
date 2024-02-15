@@ -11,6 +11,8 @@ primary_region = "waw"
 
 [env]
   ASPNETCORE_URLS="http://+:8080"
+  Cloudinary__CloudName="dakefp7s6"
+  Cloudinary__ApiKey="639239621864542"
 
 [http_service]
   internal_port = 8080
