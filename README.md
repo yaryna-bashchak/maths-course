@@ -23,9 +23,9 @@ Managing courses is allowed only to users with "Admin" role. They have "Реда
 
 You can change any information, create new sections, lessons and so on.
 
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d40b8914-9642-4c33-8cee-bb4fdd512659' width='500'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d40b8914-9642-4c33-8cee-bb4fdd512659' width='700'>
 
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d4e7dfba-fcdb-457e-a9de-d12b25e59441' width='500'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d4e7dfba-fcdb-457e-a9de-d12b25e59441' width='700'>
 
 ### 2) Take the Course
 As Bob, you have access to some sections in 1st course. Open it by selecting "Курси" tab on the top bar and choose "Дізнатись більше". 
