@@ -1,8 +1,14 @@
-# Web App for math courses
+# Web App for Courses
+
+## Technologies
+- <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/e3d0cafd-dcf6-4db2-9331-b8ca7b558d99' height='25'> **.NET** for the Back-end
+- <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/27b894e3-2717-4629-902d-3f46090a7502' height='25'> **React** for the Front-end
+- <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/e745a456-bd6a-4605-a679-9fd24fe14d36' height='25'> **Redux** for storing data from database on Front-end
+- <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/38fe52c2-2880-43e3-92be-1b9da5601e77' height='18'> **Cloudinary** server for storing videos and images
 
 ## About project
 
-This is a Web App for taking the math courses using basically **.NET** for the Back-end, and **React and Redux** for the Front-end. For now, here is a web API that helps you interact with a database that stores math courses data, and the client side to take courses (log in, see which lessons have already been completed, choose next lesson to complete, watch videos, take tests and see the result).
+This is a Web App for creating and taking the courses. Here is a web API that helps you interact with a database that stores courses data, and the client side to create and take courses (log in, create and complete lessons, upload and watch videos, take tests).
 
 More about business logic, database schema, component diagram you can see in [design document](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing).
 
@@ -10,18 +16,19 @@ To run the project and try by yourself see "How to run".
 
 ## Examples
 
-### Web App
-To see what the courses look like inside, you should log in.
+### 1) Create a Course
+Managing courses is allowed only to users with "Admin" role. They have "Редагувати курси" tab on the top bar. Here you can create a new course or edit some.
 
-> Use a demo account:
-> - username: bob
-> - password: Pa$$w0rd
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/de204bf4-dbe8-48f3-8edc-aafda6a6c4fc)
 
->There won't be any confidential information about the courses here, so that's fine.
+You can change any information, create new sections, lessons and so on.
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/91527a47-f2d8-4906-8c57-080c72a2c09d)
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d40b8914-9642-4c33-8cee-bb4fdd512659' width='500'>
 
-Now, you have access to some sections in 1st course. Open it by selecting "Курси" tab on the top bar and choose "Дізнатись більше". 
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d4e7dfba-fcdb-457e-a9de-d12b25e59441' width='500'>
+
+### 2) Take the Course
+As Bob, you have access to some sections in 1st course. Open it by selecting "Курси" tab on the top bar and choose "Дізнатись більше". 
 
 ![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/26a60aaf-24a6-45e7-922f-849e762de756)
 
