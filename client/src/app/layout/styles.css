@@ -5,9 +5,17 @@ video, iframe {
 }
 
 .video-wrapper {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
-    padding: 15px;
+    width: 300px;
+    height: 220px;
+}
+
+.box-container {
+    display: flex;
+    flex-wrap: wrap; 
+    margin-top: 15px;
+    column-gap: 15px;
 }
 
 .list-border {

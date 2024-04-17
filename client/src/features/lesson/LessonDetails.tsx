@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Lesson } from "../../app/models/lesson";
 import Tests from "./Tests";
-import Videos from "./Videos";
+import VideoWithCheckbox from "./VideoWithCheckbox";
 import { Link, useParams } from "react-router-dom";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
@@ -37,7 +37,10 @@ export default function LessonDetails() {
                 </Box>
                 <Typography variant="h5">{lesson.number}. {lesson.title}</Typography>
                 <Typography variant="body1">{lesson.description}</Typography>
-                <Videos />
+                <Box className="box-container">
+                    <VideoWithCheckbox videoNumber={0} />
+                    <VideoWithCheckbox videoNumber={1} />
+                </Box>
                 <Tests />
             </>
         ) : null
