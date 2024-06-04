@@ -1,6 +1,5 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import App from "../layout/App";
-import HomePage from "../../features/home/HomePage";
 import CourseDetails from "../../features/course/CourseDetails";
 import LessonDetails from "../../features/lesson/LessonDetails";
 import TestsSpace from "../../features/tests/TestsSpace";
@@ -26,7 +25,8 @@ export const router = createBrowserRouter([
             { element: <RequireAuth roles={['Admin']}/>, children: [
                 { path: 'editor', element: <CourseEditor /> },
             ]},
-            { path: '', element: <HomePage /> },
+            // { path: '', element: <HomePage /> },
+            { path: '', element: <Navigate to='/course' replace /> },
             { path: 'course', element: <CourseCatalog /> },
             { path: 'course/:courseId', element: <CourseDetails /> },
             { path: 'register', element: <Register /> },
