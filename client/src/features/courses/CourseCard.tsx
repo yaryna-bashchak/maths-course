@@ -46,7 +46,7 @@ export default function CourseCard({ courseId }: Props) {
                     <Button component={Link} to={`/course/${course?.id}`} size="small">
                         {stageOfCourse() === "notBought" ? "Теми уроків" : "Проходити курс"}
                     </Button>
-                    <Button
+                    {/* <Button
                         size="small"
                         variant={stageOfCourse() === "boughtInFull" ? "outlined" : "contained"}
                         // color="success"
@@ -59,7 +59,7 @@ export default function CourseCard({ courseId }: Props) {
                         }}
                         >
                         {stageOfCourse() === "notBought" ? "Купити" : stageOfCourse() === "boughtInPart" ? "Купити наступний місяць" : "Куплено"}
-                    </Button>
+                    </Button> */}
                 </CardActions>
             </Card >
         </>
