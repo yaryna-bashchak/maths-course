@@ -9,12 +9,15 @@
 ## About project
 
 This is a Web App for creating and taking the courses. Here is a web API that helps you interact with a database that stores courses data, and the client side to create and take courses (log in, create and complete lessons, upload and watch videos, take tests).
+ 
+<!---More about business logic, database schema, component diagram you can see in [design document](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing). --->
 
-More about business logic, database schema, component diagram you can see in [design document](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing).
+You can access the deployed version of our application through [this link](https://plan-znoshnika.fly.dev/course). For testing purposes, please use the following credentials:
 
-[Deployed app](https://plan-znoshnika.fly.dev/course)
+- **Username:** bob
+- **Password:** Pa$$w0rd
 
-But to run the project by yourself see "How to run".
+But to run the project yourself see "How to run".
 
 ## Examples
 
