@@ -12,7 +12,9 @@ This is a Web App for creating and taking the courses. Here is a web API that he
 
 More about business logic, database schema, component diagram you can see in [design document](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing).
 
-To run the project and try by yourself see "How to run".
+[Deployed app](https://plan-znoshnika.fly.dev/course)
+
+But to run the project by yourself see "How to run".
 
 ## Examples
 
