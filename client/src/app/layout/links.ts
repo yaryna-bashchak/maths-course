@@ -8,9 +8,9 @@ export const authorizedLinks = [
 ]
 
 export const baseLinks = [
-    { title: 'Про⠀нас', path: '' },
+    // { title: 'Про⠀нас', path: '' },
     { title: 'Курси', path: 'course' },
-    { title: 'Ціни', path: '/#price' },
+    // { title: 'Ціни', path: '/#price' },
 ]
 
 export const adminLinks = [
