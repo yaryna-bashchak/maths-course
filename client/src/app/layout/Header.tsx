@@ -63,7 +63,7 @@ export default function Header() {
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: "100%", [theme.breakpoints.up('md')]: { width: '80%', maxWidth: "980px" } }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <NavLink to='/' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
+                        <NavLink to='/course' style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
                             <Avatar alt="Logo" src="/images/header/logo.jpg" sx={{ mr: "10px" }} />
                             <Typography variant="h6"
                                 sx={{

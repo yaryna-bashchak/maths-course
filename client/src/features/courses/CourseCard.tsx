@@ -1,4 +1,4 @@
-import { Card, CardMedia, CardContent, Typography, CardActions, Button, Box } from "@mui/material";
+import { Card, CardMedia, CardContent, Typography, CardActions, Button, Box, Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/store/configureStore";
 import { courseSelectors } from "./coursesSlice";
@@ -46,20 +46,31 @@ export default function CourseCard({ courseId }: Props) {
                     <Button component={Link} to={`/course/${course?.id}`} size="small">
                         {stageOfCourse() === "notBought" ? "Теми уроків" : "Проходити курс"}
                     </Button>
-                    {/* <Button
-                        size="small"
-                        variant={stageOfCourse() === "boughtInFull" ? "outlined" : "contained"}
-                        // color="success"
-                        disabled={stageOfCourse() === "boughtInFull"}
-                        style={{
-                            backgroundColor: stageOfCourse() === "boughtInFull" ? '#f0f7f0' : '',
-                            borderColor: stageOfCourse() === "boughtInFull" ? '#89b38c' : '',
-                            color: stageOfCourse() === "boughtInFull" ? '#6da670' : '',
-                            opacity: 1
-                        }}
-                        >
-                        {stageOfCourse() === "notBought" ? "Купити" : stageOfCourse() === "boughtInPart" ? "Купити наступний місяць" : "Куплено"}
-                    </Button> */}
+                    <Tooltip title="Поки що ця можливість відсутня" placement="top">
+                        <span>
+                            {/* <Button
+                                size="small"
+                                variant={stageOfCourse() === "boughtInFull" ? "outlined" : "contained"}
+                                // color="success"
+                                disabled={stageOfCourse() === "boughtInFull"}
+                                style={{
+                                    backgroundColor: stageOfCourse() === "boughtInFull" ? '#f0f7f0' : '',
+                                    borderColor: stageOfCourse() === "boughtInFull" ? '#89b38c' : '',
+                                    color: stageOfCourse() === "boughtInFull" ? '#6da670' : '',
+                                    opacity: 1
+                                }}
+                            >
+                                {stageOfCourse() === "notBought" ? "Купити" : stageOfCourse() === "boughtInPart" ? "Купити наступний місяць" : "Куплено"}
+                            </Button> */}
+                            <Button
+                                size="small"
+                                variant="contained"
+                                disabled
+                            >
+                                Купити
+                            </Button>
+                        </span>
+                    </Tooltip>
                 </CardActions>
             </Card >
         </>
