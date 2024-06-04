@@ -15,7 +15,7 @@ interface Props {
     onItemClick: (index: number) => void;
 }
 
-export default function SectionItem({ section, isOpen, onItemClick }: Props) { 
+export default function SectionItem({ section, isOpen, onItemClick }: Props) {
     type Stage = "unavailable" | "completed" | "inProcess" | "notStarted";
 
     const stages = {
@@ -26,9 +26,15 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
     };
 
     const stageOfLessonCompletion = (lesson: Lesson, isAvailable: boolean): Stage => {
-        if(!isAvailable) return "unavailable";
+        if (!isAvailable) return "unavailable";
 
-        const completed = [lesson.isTheoryCompleted, lesson.isPracticeCompleted, Boolean(lesson.testScore)]
+        const completed = [Boolean(lesson.testScore)]
+
+        if (lesson.urlTheory !== "")
+            completed.push(lesson.isTheoryCompleted)
+
+        if (lesson.urlPractice !== "")
+            completed.push(lesson.isPracticeCompleted)
 
         if (completed.every(value => value === true)) {
             return "completed";
@@ -40,7 +46,7 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
     }
 
     const stageOfSectionCompletion = (completed: Stage[], isAvailable: boolean): Stage => {
-        if(!isAvailable) return "unavailable";
+        if (!isAvailable) return "unavailable";
 
         if (completed.every(value => value === "completed")) {
             return "completed";
