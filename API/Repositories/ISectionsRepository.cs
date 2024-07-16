@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Dtos.Course;
 using API.Dtos.Section;
 
 namespace API.Repositories
@@ -12,6 +13,7 @@ namespace API.Repositories
         Task<Result<GetSectionDto>> AddSection(AddSectionDto newSection, string username);
         Task<Result<GetSectionDto>> UpdateSection(int id, UpdateSectionDto updatedSection, string username);
         Task<Result<GetSectionDto>> UpdateSectionAvailability(int sectionId, UpdateUserSectionDto updatedUserSection, string username);
+        Task<Result<GetCourseDto>> UpdateSectionsAvailabilityByCourseId(int courseId, UpdateUserCourseDto updatedUserCourse, string username);
         Task<Result<bool>> DeleteSection(int id);
     }
 }

@@ -1,10 +1,12 @@
 using API.Controllers;
 using API.Data;
+using API.Dtos.Course;
 using API.Dtos.Section;
 using API.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Repositories.Implementation
 {
@@ -48,10 +50,10 @@ namespace API.Repositories.Implementation
         public async Task<Result<GetSectionDto>> UpdateSectionAvailability(int sectionId, UpdateUserSectionDto updatedUserSection, string username)
         {
             var user = await _userManager.FindByNameAsync(username);
-            if (user == null) return UnauthorizedResult("Unauthorized user.");
+            if (user == null) return UnauthorizedResult<GetSectionDto>("Unauthorized user.");
 
             var dbSection = _context.Sections.Find(sectionId);
-            if (dbSection == null) return NotFoundResult("Section with the provided ID not found.");
+            if (dbSection == null) return NotFoundResult<GetSectionDto>("Section with the provided ID not found.");
 
             if (updatedUserSection.IsAvailable != -1)
             {
@@ -100,7 +102,7 @@ namespace API.Repositories.Implementation
             {
                 var dbSection = _context.Sections.Find(id);
 
-                if (dbSection == null) return NotFoundResult("Section with the provided ID not found.");
+                if (dbSection == null) return NotFoundResult<GetSectionDto>("Section with the provided ID not found.");
 
                 dbSection.Title = updatedSection.Title ?? "";
                 dbSection.Description = updatedSection.Description ?? "";
@@ -175,6 +177,45 @@ namespace API.Repositories.Implementation
             }
         }
 
+        public async Task<Result<GetCourseDto>> UpdateSectionsAvailabilityByCourseId(int courseId, UpdateUserCourseDto updatedUserCourse, string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return UnauthorizedResult<GetCourseDto>("Unauthorized user.");
+
+            var dbSections = await _context.Sections.Where(s => s.CourseId == courseId).ToListAsync();
+
+            if (dbSections.IsNullOrEmpty()) return NotFoundResult<GetCourseDto>("Sections for course with the provided ID not found.");
+
+            foreach (var dbSection in dbSections)
+            {
+                if (updatedUserCourse.IsAvailable != -1)
+                {
+                    UserSection userSection = await _context.UserSections
+                        .Where(sl => sl.SectionId == dbSection.Id)
+                        .FirstOrDefaultAsync(sl => sl.UserId == user.Id);
+
+                    if (userSection == null)
+                    {
+                        _context.UserSections.Add(
+                            new UserSection
+                            {
+                                SectionId = dbSection.Id,
+                                UserId = user.Id,
+                                isAvailable = updatedUserCourse.IsAvailable != 0,
+                            });
+                    }
+                    else
+                    {
+                        userSection.isAvailable = updatedUserCourse.IsAvailable != 0;
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new Result<GetCourseDto> { IsSuccess = true };
+        }
+
         public async Task<Result<bool>> DeleteSection(int id)
         {
             try
@@ -218,14 +259,14 @@ namespace API.Repositories.Implementation
             }
         }
 
-        private Result<GetSectionDto> UnauthorizedResult(string errorMessage)
+        private Result<T> UnauthorizedResult<T>(string errorMessage)
         {
-            return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = errorMessage };
+            return new Result<T> { IsSuccess = false, ErrorMessage = errorMessage };
         }
 
-        private Result<GetSectionDto> NotFoundResult(string errorMessage)
+        private Result<T> NotFoundResult<T>(string errorMessage)
         {
-            return new Result<GetSectionDto> { IsSuccess = false, ErrorMessage = errorMessage };
+            return new Result<T> { IsSuccess = false, ErrorMessage = errorMessage };
         }
     }
 }
