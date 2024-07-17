@@ -1,24 +1,71 @@
 import { Box, Button, Paper, Step, StepLabel, Stepper, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PurchasePlanSelection from "./PurchasePlanSelection.tsx";
 import PaymentForm from "./PaymentForm.tsx";
-import Review from "./Review.tsx";
+import Review from './Review.tsx';
 import useCourse from "../../app/hooks/useCourse.tsx";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
+import NotFound from "../../app/errors/NotFound.tsx";
+import LoadingComponent from "../../app/layout/LoadingComponent.tsx";
 
 const steps = ['Оберіть план', 'Перегляньте своє замовлення', 'Оплатіть замовлення'];
 
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 export default function CheckoutPage() {
-    const { course } = useCourse();
-    const [activeStep, setActiveStep] = useState(0);
+    const { course, status, courseLoaded, lessonParams } = useCourse();
+    const query = useQuery();
     const methods = useForm();
+    const [activeStep, setActiveStep] = useState(0);
+    const [sectionExists, setSectionExists] = useState<boolean | null>(null);
+    const isSectionIdInQuery = query.get('sectionId') ? true : false;
+    const [sectionId, setSectionId] = useState(isSectionIdInQuery ? parseInt(query.get('sectionId')!, 10) : null);
+
+    const selectedPlan = methods.watch('selectedPlan');
+
+    useEffect(() => {
+        if (isSectionIdInQuery && activeStep === 0) {
+            const sectionFound = course?.sections?.some(section => section.id === sectionId);
+
+            if (sectionFound) {
+                methods.setValue('selectedPlan', 'monthly');
+                setActiveStep(1);
+                setSectionExists(true);
+            } else {
+                setSectionExists(false);
+            }
+        }
+    }, [sectionId, course, methods, activeStep, isSectionIdInQuery]);
+
+    useEffect(() => {
+        if (course) {
+            if (selectedPlan === 'monthly' && !isSectionIdInQuery) {
+                setSectionId(course.sections[0].id);
+            } else if (selectedPlan === 'full') {
+                setSectionId(null);
+            }
+        }
+    }, [course, isSectionIdInQuery, sectionId, selectedPlan]);
+
+
+    if ((!course || course.sections.length === 0) && !courseLoaded) {
+        if (!lessonParams || status.includes('pending')) return <LoadingComponent />;
+        return <NotFound />;
+    }
+
+    if (sectionExists !== null && sectionExists === false) return <NotFound />;
 
     const getStepContent = (step: number) => {
+        if (!course) return;
+
         switch (step) {
             case 0:
-                return <PurchasePlanSelection name='selectedPlan' control={methods.control} title={course?.title} duration={course?.duration} priceFull={course?.priceFull} priceMonthly={course?.priceMonthly} />;
+                return <PurchasePlanSelection name='selectedPlan' control={methods.control} />;
             case 1:
-                return <Review />;
+                return <Review name='total' control={methods.control} sectionId={sectionId} />;
             case 2:
                 return <PaymentForm />;
             default:
@@ -26,7 +73,7 @@ export default function CheckoutPage() {
         }
     }
     const handleNext = (data: FieldValues) => {
-        if (activeStep === 0) console.log(data);
+        console.log(data);
         setActiveStep(activeStep + 1);
     };
 
@@ -64,7 +111,7 @@ export default function CheckoutPage() {
                             {getStepContent(activeStep)}
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                 {activeStep !== 0 && (
-                                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }} disabled={activeStep === 1 && isSectionIdInQuery}>
                                         Назад
                                     </Button>
                                 )}
