@@ -21,7 +21,7 @@ export default function CheckoutPage() {
     const methods = useForm();
     const [activeStep, setActiveStep] = useState(0);
     const [sectionExists, setSectionExists] = useState<boolean | null>(null);
-    const isSectionIdInQuery = query.get('sectionId') ? true : false;
+    const isSectionIdInQuery = !!query.get('sectionId');
     const [sectionId, setSectionId] = useState(isSectionIdInQuery ? parseInt(query.get('sectionId')!, 10) : null);
 
     const selectedPlan = methods.watch('selectedPlan');
