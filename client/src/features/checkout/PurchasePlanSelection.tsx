@@ -1,19 +1,22 @@
-import { Typography, Grid } from "@mui/material";
+import { Typography, Grid, FormHelperText } from "@mui/material";
 import SelectableCard from "./SelectableCard";
 import { useState } from "react";
+import { UseControllerProps, useController } from "react-hook-form";
 
-interface Props {
+interface Props extends UseControllerProps {
   title?: string,
   duration?: number,
   priceFull?: number,
   priceMonthly?: number,
 }
 
-export default function PurchasePlanSelection({ title, duration, priceFull, priceMonthly }: Props) {
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+export default function PurchasePlanSelection({ title, duration, priceFull, priceMonthly, ...otherProps }: Props) {
+  const { fieldState, field } = useController({ ...otherProps, defaultValue: null, rules: { required: 'Будь ласка, оберіть план' } })
+  const [selectedCard, setSelectedCard] = useState<number | null>(field.value);
 
   const handleCardClick = (cardIndex: number) => {
     setSelectedCard(cardIndex);
+    field.onChange(cardIndex);
   };
 
   const cards = [
@@ -144,6 +147,7 @@ export default function PurchasePlanSelection({ title, duration, priceFull, pric
           />
         </Grid> */}
       </Grid>
+      {fieldState.error && <FormHelperText sx={{fontSize: '12px'}} error>{fieldState.error.message}</FormHelperText>}
     </>
   );
 }
