@@ -1,4 +1,4 @@
-import { Collapse, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Box, Button, Collapse, Link, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { green, grey, yellow } from '@mui/material/colors';
 import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined';
@@ -8,6 +8,7 @@ import { Section } from "../../app/models/course";
 import { Lesson } from "../../app/models/lesson";
 import LessonItemShort from "./LessonItemShort";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     section: Section;
@@ -17,6 +18,7 @@ interface Props {
 
 export default function SectionItem({ section, isOpen, onItemClick }: Props) {
     type Stage = "unavailable" | "completed" | "inProcess" | "notStarted";
+    const navigate = useNavigate();
 
     const stages = {
         unavailable: <LockOutlinedIcon sx={{ color: grey[400], mr: "5px" }} />,
@@ -57,8 +59,13 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
         }
     }
 
-    const handleClick = () => {
+    const handleListItemClick = () => {
         onItemClick(section.id);
+    };
+
+    const handleBuyButtonClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        event.stopPropagation();
+        navigate(`/checkout/${section.courseId}${section.id ? `?sectionId=${section.id}` : ''}`);
     };
 
     const sectionCompleted = section.lessons.map(lesson => stageOfLessonCompletion(lesson, section.isAvailable));
@@ -67,36 +74,48 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
 
     return (
         <>
-            <ListItemButton
-                className='item-border'
-                onClick={handleClick}
-                sx={{ opacity: section.isAvailable ? 1 : 0.5 }}>
-                <ListItemIcon
-                    sx={{
-                        minWidth: "0",
-                        mr: "10px",
-                        "& svg": {
-                            fontSize: "25px",
-                        }
-                    }}>
-                    {stages[stage]}
-                </ListItemIcon>
-                <ListItemText
-                    primary={section.title}
-                    secondary={`Завершено: ${countOfCompleted}/${section.lessons.length}`}
-                    sx={{
-                        ".MuiListItemText-primary": {
-                            fontSize: "16px",
-                        }
-                    }} />
-                {/* <ListItemText sx={{ "& svg": { fontSize: "20px", mr: "10px" } }}>
-                    <span style={{ display: "flex", alignItems: "center", fontSize: "16px" }}>
+            <Box className='item-border' sx={{ position: 'relative' }}>
+                <ListItemButton
+                    onClick={handleListItemClick}
+                    sx={{ opacity: section.isAvailable ? 1 : 0.5 }}>
+                    <ListItemIcon
+                        sx={{
+                            minWidth: "0",
+                            mr: "10px",
+                            "& svg": {
+                                fontSize: "25px",
+                            }
+                        }}>
                         {stages[stage]}
-                        {section.title}
-                    </span>
-                </ListItemText> */}
-                {isOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={section.title}
+                        secondary={`Завершено: ${countOfCompleted}/${section.lessons.length}`}
+                        sx={{
+                            ".MuiListItemText-primary": {
+                                fontSize: "16px",
+                            }
+                        }} />
+                    {isOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                {!section.isAvailable &&
+                    <Button
+                        component={Link}
+                        size="small"
+                        variant="outlined"
+                        onClick={handleBuyButtonClick}
+                        sx={{
+                            position: 'absolute',
+                            right: 48,
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            boxShadow: 'none'
+                        }}
+                    >
+                        Отримати доступ
+                    </Button>
+                }
+            </Box>
             <Collapse className="item-border" in={isOpen} timeout="auto" unmountOnExit sx={{ pl: "16px" }}>
                 {section.lessons.map((lesson, index) =>
                     <LessonItemShort
