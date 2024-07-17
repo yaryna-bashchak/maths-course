@@ -18,15 +18,19 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             // authenticated routes
-            { element: <RequireAuth />, children: [
-                { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
-                { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
-                { path: 'checkout/:courseId', element: <CheckoutPage /> },
-            ]},
+            {
+                element: <RequireAuth />, children: [
+                    { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
+                    { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
+                    { path: 'checkout/:courseId', element: <CheckoutPage /> },
+                ]
+            },
             // admin routes
-            { element: <RequireAuth roles={['Admin']}/>, children: [
-                { path: 'editor', element: <CourseEditor /> },
-            ]},
+            {
+                element: <RequireAuth roles={['Admin']} />, children: [
+                    { path: 'editor', element: <CourseEditor /> },
+                ]
+            },
             // { path: '', element: <HomePage /> },
             { path: '', element: <Navigate to='/course' replace /> },
             { path: 'course', element: <CourseCatalog /> },
