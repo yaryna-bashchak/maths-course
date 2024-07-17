@@ -8,6 +8,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Filters from "./Filters";
 import SectionSkeleton from "./SectionSkeleton";
 import useCourse from "../../app/hooks/useCourse";
+import stageOfCourse from "../courses/stageOfCourse";
 
 export default function CourseDetails() {
     const { course, status, courseLoaded, lessonParams } = useCourse();
@@ -43,15 +44,27 @@ export default function CourseDetails() {
         return <NotFound />;
     }
 
+    const isCourseBought = stageOfCourse(course) !== "notBought";
+
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'start', mb: '10px' }}>
                 <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course`}>Назад до курсів</Button>
             </Box>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'start', alignItems: "center", gap: '10px' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: isCourseBought ? 'start' : 'space-between', alignItems: "center", gap: '10px' }}>
                 <Typography variant="h5">{course?.title}</Typography>
-                <Filters />
+                {isCourseBought
+                    ? <Filters />
+                    : <Button
+                        component={Link}
+                        to={`/checkout/${course?.id}`}
+                        size="small"
+                        variant="contained"
+                    >
+                        Купити
+                    </Button>}
             </Box>
+            {!isCourseBought && <Typography variant="body1">Нижче представлені теми уроків, що будуть на курсі. Тільки для огляду. Щоб отримати до них доступ, перейдіть до оплати.</Typography>}
             <List className="list-border" sx={{ p: "0px", m: "8px 0px" }}>
                 {course && course.sections.map((section) =>
                     section.lessons.length !== 0 ?

@@ -2,6 +2,7 @@ import { Card, CardMedia, CardContent, Typography, CardActions, Button, Box } fr
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/store/configureStore";
 import { courseSelectors } from "./coursesSlice";
+import stageOfCourse from "./stageOfCourse";
 
 interface Props {
     courseId: number;
@@ -9,18 +10,6 @@ interface Props {
 
 export default function CourseCard({ courseId }: Props) {
     const course = useAppSelector(state => courseSelectors.selectById(state, courseId!));
-
-    type Stage = "notBought" | "boughtInPart" | "boughtInFull";
-
-    const stageOfCourse = (): Stage => {
-        if (course?.sections.every(value => value.isAvailable === true)) {
-            return "boughtInFull";
-        } else if (course?.sections.some(value => value.isAvailable === true)) {
-            return "boughtInPart";
-        } else {
-            return "notBought";
-        }
-    }
 
     return (
         <>
@@ -44,37 +33,17 @@ export default function CourseCard({ courseId }: Props) {
                 </CardContent>
                 <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Button component={Link} to={`/course/${course?.id}`} size="small">
-                        {stageOfCourse() === "notBought" ? "Теми уроків" : "Проходити курс"}
+                        {stageOfCourse(course) === "notBought" ? "Теми уроків" : "Проходити курс"}
                     </Button>
-                    <Button
-                        component={Link}
-                        to={`/checkout/${courseId}`}
-                        size="small"
-                        variant={stageOfCourse() === "boughtInFull" ? "outlined" : "contained"}
-                        // color="success"
-                        disabled={stageOfCourse() === "boughtInFull"}
-                        style={{
-                            backgroundColor: stageOfCourse() === "boughtInFull" ? '#f0f7f0' : '',
-                            borderColor: stageOfCourse() === "boughtInFull" ? '#89b38c' : '',
-                            color: stageOfCourse() === "boughtInFull" ? '#6da670' : '',
-                            opacity: 1
-                        }}
-                    >
-                        {stageOfCourse() === "notBought" ? "Купити" : stageOfCourse() === "boughtInPart" ? "Купити наступний місяць" : "Куплено"}
-                    </Button>
-                    {/* <Tooltip title="Поки що ця можливість відсутня" placement="top">
-                        <span>
-                            <Button
-                                component={Link}
-                                to={`/checkout`}
-                                size="small"
-                                variant="contained"
-                                disabled
-                            >
-                                Купити
-                            </Button>
-                        </span>
-                    </Tooltip> */}
+                    {stageOfCourse(course) === "notBought" &&
+                        <Button
+                            component={Link}
+                            to={`/checkout/${courseId}`}
+                            size="small"
+                            variant="contained"
+                        >
+                            Купити
+                        </Button>}
                 </CardActions>
             </Card >
         </>

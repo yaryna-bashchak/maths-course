@@ -9,6 +9,8 @@ import { Lesson } from "../../app/models/lesson";
 import LessonItemShort from "./LessonItemShort";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from "react-router-dom";
+import useCourse from "../../app/hooks/useCourse";
+import stageOfCourse from "../courses/stageOfCourse";
 
 interface Props {
     section: Section;
@@ -17,6 +19,7 @@ interface Props {
 }
 
 export default function SectionItem({ section, isOpen, onItemClick }: Props) {
+    const { course } = useCourse();
     type Stage = "unavailable" | "completed" | "inProcess" | "notStarted";
     const navigate = useNavigate();
 
@@ -98,7 +101,7 @@ export default function SectionItem({ section, isOpen, onItemClick }: Props) {
                         }} />
                     {isOpen ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
-                {!section.isAvailable &&
+                {stageOfCourse(course) !== "notBought" && !section.isAvailable &&
                     <Button
                         component={Link}
                         size="small"

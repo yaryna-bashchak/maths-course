@@ -1,19 +1,41 @@
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import CourseCard from "./CourseCard";
 import useCourses from "../../app/hooks/useCourses";
+import CourseCategory from "./CourseCategory";
+import stageOfCourse from "./stageOfCourse";
+import { Course } from "../../app/models/course";
+
+function splitCourses(courses: Course[]): { title: string, courses: Course[] }[] {
+    const myCourses: Course[] = [];
+    const otherCourses: Course[] = [];
+
+    courses.forEach(course => {
+        if (stageOfCourse(course) === "notBought") {
+            otherCourses.push(course);
+        } else {
+            myCourses.push(course);
+        }
+    });
+
+    return [
+        { title: "Мої курси", courses: myCourses },
+        { title: "Інші курси", courses: otherCourses }
+    ];
+}
 
 export default function CourseCatalog() {
     const { courses, status } = useCourses();
 
     if (status.includes('pending')) return <LoadingComponent />
 
+    const splitedCourses = splitCourses(courses);
+
     return (
-        <>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', textAlign: 'center' }}>
-                    {courses.sort((a, b) => a.id - b.id).map((_course, index) =>
-                        <CourseCard courseId={index + 1} key={index + 1}/>
-                    )}
-                </div>
-        </>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {splitedCourses.map((courseCategory, index) => {
+                console.log(courseCategory);
+                return <CourseCategory courseCategory={courseCategory} key={index + 1} />
+            }
+            )}
+        </div>
     )
 }
