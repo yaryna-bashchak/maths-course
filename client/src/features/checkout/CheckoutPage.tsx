@@ -5,9 +5,10 @@ import PaymentForm from "./PaymentForm.tsx";
 import Review from './Review.tsx';
 import useCourse from "../../app/hooks/useCourse.tsx";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import NotFound from "../../app/errors/NotFound.tsx";
 import LoadingComponent from "../../app/layout/LoadingComponent.tsx";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const steps = ['Оберіть план', 'Перегляньте своє замовлення', 'Оплатіть замовлення'];
 
@@ -83,6 +84,9 @@ export default function CheckoutPage() {
 
     return (
         <FormProvider {...methods}>
+            <Box sx={{ display: 'flex', justifyContent: 'start', mb: '10px' }}>
+                <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course`}>Назад до курсів</Button>
+            </Box>
             <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
                 <Typography component="h1" variant="h4" align="center">
                     Оформлення покупки

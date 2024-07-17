@@ -15,7 +15,7 @@ export default function Review({ sectionId, ...otherProps }: Props) {
   useEffect(() => {
     const total = sectionId ? course?.priceMonthly : course?.priceFull;
     field.onChange(total);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -25,12 +25,12 @@ export default function Review({ sectionId, ...otherProps }: Props) {
       </Typography>
       <List disablePadding>
         <ListItem key={course?.id} sx={{ py: 1, px: 0 }}>
-          <ListItemText primary={sectionId ? `${section?.title} з курсу "${course?.title}"` : `Курс "${course?.title}"`} />
-          <Typography variant="body2">{sectionId ? course?.priceMonthly : course?.priceFull} грн</Typography>
+          <ListItemText primary={<Typography sx={{ fontSize: '16px' }} variant="h5">{sectionId ? `${section?.title} з курсу "${course?.title}"` : `Курс "${course?.title}"`}</Typography>} />
+          <Typography sx={{ fontSize: '16px' }} variant="h5">{sectionId ? course?.priceMonthly : course?.priceFull} грн</Typography>
         </ListItem>
-        <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary="Сума" />
-          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+        <ListItem sx={{ py: '0px', px: 0 }}>
+          <ListItemText primary={<Typography sx={{ fontSize: '16px' }} variant="h5">Сума</Typography>} />
+          <Typography variant="h5" sx={{ fontSize: '16px', fontWeight: 700 }}>
             {field.value} грн
           </Typography>
         </ListItem>
