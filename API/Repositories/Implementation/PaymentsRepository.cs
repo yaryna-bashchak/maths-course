@@ -31,7 +31,7 @@ namespace API.Repositories.Implementation
             return new Result<List<GetPaymentDto>> { IsSuccess = true, Data = payments };
         }
 
-        public async Task<Result<GetPaymentDto>> AddPaymentAsync(PaymentIntentDto paymentIntent, string username)
+        public async Task<Result<GetPaymentDto>> AddPaymentAsync(CreatePaymentIntentDto paymentIntent, string username)
         {
             var user = await _userManager.FindByNameAsync(username);
 
@@ -42,7 +42,7 @@ namespace API.Repositories.Implementation
             return await SaveChangesAndReturnResult(payment.Id);
         }
 
-        public async Task<Result<GetPaymentDto>> GetPaymentAsync(PaymentIntentDto paymentIntent, string username)
+        public async Task<Result<GetPaymentDto>> GetPaymentAsync(CreatePaymentIntentDto paymentIntent, string username)
         {
             var user = await _userManager.FindByNameAsync(username);
 
@@ -57,7 +57,7 @@ namespace API.Repositories.Implementation
             return new Result<GetPaymentDto> { IsSuccess = true, Data = MapToPaymentDto(payment) };
         }
 
-        private Payment MapToPayment(PaymentIntentDto paymentIntentDto, string userId)
+        private Payment MapToPayment(CreatePaymentIntentDto paymentIntentDto, string userId)
         {
             return new Payment
             {

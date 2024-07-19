@@ -9,3 +9,8 @@ export interface Payment {
   purchaseType: string
   purchaseId: number
 }
+
+export interface PaymentPayload {
+  purchaseType: string
+  purchaseId: number
+}

@@ -24,7 +24,7 @@ public class PaymentsController : BaseApiController
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<GetPaymentDto>> CreateOrUpdatePaymentIntent(PaymentIntentDto paymentIntent)
+    public async Task<ActionResult<GetPaymentDto>> CreateOrUpdatePaymentIntent(CreatePaymentIntentDto paymentIntent)
     {
         var username = User.Identity.Name;
         var existingResult = await _paymentsRepository.GetPaymentAsync(paymentIntent, username);
