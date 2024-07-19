@@ -19,8 +19,7 @@ namespace API.DI
             services.AddScoped<TokenService>();
             services.AddScoped<VideoService>();
             services.AddScoped<ImageService>();
-
-            // Services should be here
+            services.AddScoped<PaymentService>();
 
             return services;
         }
