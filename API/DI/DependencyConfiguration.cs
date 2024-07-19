@@ -14,6 +14,7 @@ namespace API.DI
             services.AddScoped<ICoursesRepository, CoursesRepository>();
             services.AddScoped<ISectionsRepository, SectionsRepository>();
             services.AddScoped<IOptionsRepository, OptionsRepository>();
+            services.AddScoped<IPaymentsRepository, PaymentsRepository>();
 
             // Services
             services.AddScoped<TokenService>();

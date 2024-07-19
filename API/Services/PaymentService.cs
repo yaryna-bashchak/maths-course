@@ -15,7 +15,7 @@ public class PaymentService
         _context = context;
     }
 
-    public async Task<PaymentIntent> CreateOrUpdatePaymentIntent(PaymentIntentDto paymentIntent)
+    public async Task<PaymentIntent> CreateOrUpdatePaymentIntent(GetPaymentDto paymentIntent)
     {
         StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
 
