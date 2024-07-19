@@ -57,6 +57,18 @@ namespace API.Repositories.Implementation
             return new Result<GetPaymentDto> { IsSuccess = true, Data = MapToPaymentDto(payment) };
         }
 
+        public async Task<Result<GetPaymentDto>> UpdatePaymentAsync(GetPaymentDto paymentDto)
+        {
+            var dbPayment = await _context.Payments.FirstOrDefaultAsync(p => p.Id == paymentDto.Id);
+
+            dbPayment.Amount = paymentDto.Amount;
+            dbPayment.PaymentIntentId = paymentDto.PaymentIntentId;
+            dbPayment.ClientSecret = paymentDto.ClientSecret;
+            dbPayment.PaymentStatus = paymentDto.PaymentStatus;
+
+            return await SaveChangesAndReturnResult(paymentDto.Id);
+        }
+
         private Payment MapToPayment(CreatePaymentIntentDto paymentIntentDto, string userId)
         {
             return new Payment
@@ -64,6 +76,22 @@ namespace API.Repositories.Implementation
                 UserId = userId,
                 PurchaseType = paymentIntentDto.PurchaseType,
                 PurchaseId = paymentIntentDto.PurchaseId,
+            };
+        }
+
+        private Payment MapToPayment(GetPaymentDto paymentDto)
+        {
+            return new Payment
+            {
+                Id = paymentDto.Id,
+                UserId = paymentDto.UserId,
+                Amount = paymentDto.Amount,
+                PaymentDate = paymentDto.PaymentDate,
+                PaymentStatus = paymentDto.PaymentStatus,
+                PaymentIntentId = paymentDto.PaymentIntentId,
+                ClientSecret = paymentDto.ClientSecret,
+                PurchaseType = paymentDto.PurchaseType,
+                PurchaseId = paymentDto.PurchaseId
             };
         }
 

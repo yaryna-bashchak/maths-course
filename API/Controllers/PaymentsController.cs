@@ -55,8 +55,14 @@ public class PaymentsController : BaseApiController
         payment.PaymentIntentId ??= intent.Id;
         payment.ClientSecret ??= intent.ClientSecret;
 
-        await _context.SaveChangesAsync();
-        return payment;
+        var result = await _paymentsRepository.UpdatePaymentAsync(payment);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(new ProblemDetails { Title = "Problem updating payment with intent" });
+        }
+
+        return result.Data;
     }
 
     [Authorize]
