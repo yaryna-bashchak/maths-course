@@ -32,7 +32,7 @@ export default function CheckoutPage() {
             const sectionFound = course?.sections?.some(section => section.id === sectionId);
 
             if (sectionFound) {
-                methods.setValue('selectedPlan', 'monthly');
+                methods.setValue('selectedPlan', 'Section');
                 setActiveStep(1);
                 setSectionExists(true);
             } else {
@@ -43,21 +43,13 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         if (course) {
-            if (selectedPlan === 'monthly' && !isSectionIdInQuery) {
+            if (selectedPlan === 'Section' && !isSectionIdInQuery) {
                 setSectionId(course.sections[0].id);
-            } else if (selectedPlan === 'full') {
+            } else if (selectedPlan === 'Course') {
                 setSectionId(null);
             }
         }
     }, [course, isSectionIdInQuery, sectionId, selectedPlan]);
-
-
-    if ((!course || course.sections.length === 0) && !courseLoaded) {
-        if (!lessonParams || status.includes('pending')) return <LoadingComponent />;
-        return <NotFound />;
-    }
-
-    if (sectionExists !== null && sectionExists === false) return <NotFound />;
 
     const getStepContent = (step: number) => {
         if (!course) return;
@@ -73,6 +65,14 @@ export default function CheckoutPage() {
                 throw new Error('Unknown step');
         }
     }
+
+    if ((!course || course.sections.length === 0) && !courseLoaded) {
+        if (!lessonParams || status.includes('pending')) return <LoadingComponent />;
+        return <NotFound />;
+    }
+
+    if (sectionExists !== null && sectionExists === false) return <NotFound />;
+
     const handleNext = (data: FieldValues) => {
         console.log(data);
         setActiveStep(activeStep + 1);

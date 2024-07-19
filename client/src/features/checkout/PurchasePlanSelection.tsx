@@ -25,7 +25,7 @@ export default function PurchasePlanSelection({ ...otherProps }: Props) {
       При оплаті певного місяця вам відкривається доступ до відповідних уроків.
       Оплата наступних місяців не є обов'язковою, але ви матимете доступ лише до тих, що оплатили.`,
       price: `${course?.priceMonthly} грн/міс`,
-      type: 'monthly',
+      type: 'Section',
     },
     {
       title: 'Весь курс одразу',
@@ -33,7 +33,7 @@ export default function PurchasePlanSelection({ ...otherProps }: Props) {
       При повній оплаті ви отримуєте доступ до всіх уроків та одразу можете перейти до вивчення будь-якої теми. При купівлі одразу всього курсу ціна знижена.`,
       price: `${course?.priceFull} грн`,
       oldPrice: `${course?.priceMonthly && course?.duration && course.priceMonthly * course.duration} грн`,
-      type: 'full',
+      type: 'Course',
     },
   ];
 
