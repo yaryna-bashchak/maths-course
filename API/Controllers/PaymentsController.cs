@@ -5,6 +5,7 @@ using API.Repositories;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -56,5 +57,20 @@ public class PaymentsController : BaseApiController
 
         await _context.SaveChangesAsync();
         return payment;
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<List<GetPaymentDto>>> GetUserPayments()
+    {
+        var username = User.Identity.Name;
+        var result = await _paymentsRepository.GetUserPayments(username);
+
+        if (!result.IsSuccess)
+        {
+            return NotFound(result.ErrorMessage);
+        }
+
+        return result.Data;
     }
 }

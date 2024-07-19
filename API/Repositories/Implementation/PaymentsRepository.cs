@@ -19,6 +19,18 @@ namespace API.Repositories.Implementation
             _userManager = userManager;
         }
 
+        public async Task<Result<List<GetPaymentDto>>> GetUserPayments(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            var payments = await _context.Payments
+                .Where(p => p.UserId == user.Id)
+                .Select(p => MapToPaymentDto(p))
+                .ToListAsync();
+
+            return new Result<List<GetPaymentDto>> { IsSuccess = true, Data = payments };
+        }
+
         public async Task<Result<GetPaymentDto>> AddPaymentAsync(PaymentIntentDto paymentIntent, string username)
         {
             var user = await _userManager.FindByNameAsync(username);
