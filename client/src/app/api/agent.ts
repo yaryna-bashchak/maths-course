@@ -123,13 +123,20 @@ const TestErrors = {
   getValidationError: () => requests.get('buggy/validation-error')
 }
 
+const Payments = {
+  getAll: () => requests.get('payments'),
+  createOrUpdatePaymentIntent: (values: any) =>
+    requests.post('payments', values)
+}
+
 const agent = {
   Course,
   Lesson,
   Test,
   Account,
   TestErrors,
-  Section
+  Section,
+  Payments
 }
 
 export default agent
