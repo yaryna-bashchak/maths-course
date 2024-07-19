@@ -93,6 +93,11 @@ namespace API.Data
                 .HasOne(lpl => lpl.PreviousLesson)
                 .WithMany(pl => pl.PreviousLessonOf) // <--
                 .HasForeignKey(lpl => lpl.PreviousLessonId);
+
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Payments)
+                .HasForeignKey(p => p.UserId);
         }
 
         public DbSet<Lesson> Lessons { get; set; }
@@ -106,5 +111,6 @@ namespace API.Data
         public DbSet<Option> Options { get; set; }
         public DbSet<UserSection> UserSections { get; set; }
         public DbSet<UserLesson> UserLessons { get; set; }
+        public DbSet<Payment> Payments { get; set; }
     }
 }
