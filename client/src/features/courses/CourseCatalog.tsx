@@ -31,10 +31,8 @@ export default function CourseCatalog() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {splitedCourses.map((courseCategory, index) => {
-                console.log(courseCategory);
-                return <CourseCategory courseCategory={courseCategory} key={index + 1} />
-            }
+            {splitedCourses.map((courseCategory, index) =>
+                <CourseCategory courseCategory={courseCategory} key={index + 1} />
             )}
         </div>
     )

@@ -10,7 +10,7 @@ import Login from "../../features/account/Login";
 import Register from "../../features/account/Register";
 import RequireAuth from "./RequireAuth";
 import CourseEditor from "../../features/courseEditor/CourseEditor";
-import CheckoutPage from "../../features/checkout/CheckoutPage";
+import CheckoutWrapper from "../../features/checkout/CheckoutWrapper";
 
 export const router = createBrowserRouter([
     {
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
                 element: <RequireAuth />, children: [
                     { path: 'course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
                     { path: 'course/:courseId/lesson/:lessonId/test', element: <TestsSpace /> },
-                    { path: 'checkout/:courseId', element: <CheckoutPage /> },
+                    { path: 'checkout/:courseId', element: <CheckoutWrapper /> },
                 ]
             },
             // admin routes

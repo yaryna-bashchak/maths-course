@@ -9,6 +9,10 @@ import { Link, useLocation } from "react-router-dom";
 import NotFound from "../../app/errors/NotFound.tsx";
 import LoadingComponent from "../../app/layout/LoadingComponent.tsx";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { StripeElementType } from "@stripe/stripe-js";
+import { createOrUpdatePayment } from "./paymentSlice.ts";
+import { useAppDispatch } from "../../app/store/configureStore.ts";
+// import { useElements, useStripe } from "@stripe/react-stripe-js";
 
 const steps = ['Оберіть план', 'Перегляньте своє замовлення', 'Оплатіть замовлення'];
 
@@ -18,14 +22,36 @@ function useQuery() {
 
 export default function CheckoutPage() {
     const { course, status, courseLoaded, lessonParams } = useCourse();
+    const dispatch = useAppDispatch();
     const query = useQuery();
     const methods = useForm();
     const [activeStep, setActiveStep] = useState(0);
     const [sectionExists, setSectionExists] = useState<boolean | null>(null);
     const isSectionIdInQuery = !!query.get('sectionId');
     const [sectionId, setSectionId] = useState(isSectionIdInQuery ? parseInt(query.get('sectionId')!, 10) : null);
+    const [cardState, setCardState] = useState<{ elementError: { [key in StripeElementType]?: string } }>({ elementError: {} });
+    const [cardComplete, setCardComplete] = useState<any>({ cardNumber: false, cardExpiry: false, cardCvc: false });
+    // const [paymentMessage, setPaymentMessage] = useState('');
+    // const [paymentSucceed, setPaymentSucceed] = useState(false);
+    // const stripe = useStripe();
+    // const elements = useElements();
+
+    function onCardInputChange(event: any) {
+        setCardState({
+            ...cardState,
+            elementError: {
+                ...cardState.elementError,
+                [event.elementType]: event.error?.message,
+            }
+        });
+        setCardComplete({
+            ...cardComplete,
+            [event.elementType]: event.complete,
+        })
+    }
 
     const selectedPlan = methods.watch('selectedPlan');
+    const nameOnCard = methods.watch('nameOnCard');
 
     useEffect(() => {
         if (isSectionIdInQuery && activeStep === 0) {
@@ -60,7 +86,7 @@ export default function CheckoutPage() {
             case 1:
                 return <Review name='total' control={methods.control} sectionId={sectionId} />;
             case 2:
-                return <PaymentForm />;
+                return <PaymentForm cardState={cardState} onCardInputChange={onCardInputChange} />;
             default:
                 throw new Error('Unknown step');
         }
@@ -75,12 +101,34 @@ export default function CheckoutPage() {
 
     const handleNext = (data: FieldValues) => {
         console.log(data);
+        
+        if (activeStep === steps.length - 2) {
+            dispatch(createOrUpdatePayment({
+                body: {
+                    purchaseType: selectedPlan,
+                    purchaseId: selectedPlan === 'Course' ? course?.id : sectionId
+                }
+            }));
+        }
+
         setActiveStep(activeStep + 1);
     };
 
     const handleBack = () => {
         setActiveStep(activeStep - 1);
     };
+
+    const submitDisabled = () => {
+        if (activeStep === 0) {
+            return selectedPlan === null
+        }
+        else if (activeStep === steps.length - 1) {
+            return !cardComplete.cardNumber
+                || !cardComplete.cardExpiry
+                || !cardComplete.cardCvc
+                || !nameOnCard
+        }
+    }
 
     return (
         <FormProvider {...methods}>
@@ -121,6 +169,7 @@ export default function CheckoutPage() {
                                 )}
                                 <Button
                                     variant="contained"
+                                    disabled={submitDisabled()}
                                     type='submit'
                                     sx={{ mt: 3, ml: 1 }}
                                 >
