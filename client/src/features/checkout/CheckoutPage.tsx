@@ -126,12 +126,12 @@ export default function CheckoutPage() {
             if (paymentResult.paymentIntent?.status === 'succeeded') {
                 // dispatch(fetchPayments()); ще приходить status 0, не встигає оновитись
                 setPaymentSucceed(true);
-                setPaymentMessage('Thank you - we have received your payment');
+                setPaymentMessage('Дякуємо - ми отримали Вашу оплату!');
                 setActiveStep(activeStep + 1);
                 // dispatch(fetchCourseAsync(course!.id)); ще приходить що курс не available
                 setLoading(false);
             } else {
-                setPaymentMessage(paymentResult.error?.message || 'Payment failed');
+                setPaymentMessage(paymentResult.error?.message || 'Збій оплати');
                 setPaymentSucceed(false);
                 setLoading(false);
                 setActiveStep(activeStep + 1);
@@ -201,12 +201,10 @@ export default function CheckoutPage() {
                             </Typography>
                             {paymentSucceed ? (
                                 <Typography variant="subtitle1">
-                                    Your order number is #2001539. We have emailed your order
-                                    confirmation, and will send you an update when your order has
-                                    shipped.
+                                    Вітаємо з придбанням курсу! Ми вже надали Вам доступ до уроків - успіхів! 
                                 </Typography>
                             ) : (
-                                <Button variant="contained" onClick={handleBack}>Go back and try again</Button>
+                                <Button variant="contained" onClick={handleBack}>Спробувати ще раз</Button>
                             )}
 
                         </>
