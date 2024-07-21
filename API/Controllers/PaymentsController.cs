@@ -6,6 +6,7 @@ using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace API.Controllers;
 
@@ -14,12 +15,16 @@ public class PaymentsController : BaseApiController
     private readonly PaymentService _paymentService;
     private readonly CourseContext _context;
     private readonly IPaymentsRepository _paymentsRepository;
+    private readonly IConfiguration _config;
+    private readonly ISectionsRepository _sectionsRepository;
 
-    public PaymentsController(PaymentService paymentService, CourseContext context, IPaymentsRepository paymentsRepository)
+    public PaymentsController(PaymentService paymentService, CourseContext context, IPaymentsRepository paymentsRepository, IConfiguration config, ISectionsRepository sectionsRepository)
     {
         _context = context;
         _paymentService = paymentService;
         _paymentsRepository = paymentsRepository;
+        _config = config;
+        _sectionsRepository = sectionsRepository;
     }
 
     [Authorize]
@@ -78,5 +83,37 @@ public class PaymentsController : BaseApiController
         }
 
         return result.Data;
+    }
+
+    [HttpPost("webhook")]
+    public async Task<ActionResult> StripeWebhook()
+    {
+        var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+
+        var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"],
+            _config["StripeSettings:WhSecret"]);
+
+        var charge = (Charge)stripeEvent.Data.Object;
+
+        var payment = await _context.Payments.FirstOrDefaultAsync(x =>
+            x.PaymentIntentId == charge.PaymentIntentId);
+
+        if (charge.Status == "succeeded")
+        {
+            payment.PaymentStatus = PaymentStatus.PaymentReceived;
+
+            if (payment.PurchaseType == "Course")
+            {
+                await _sectionsRepository.MakeCourseAvailable(payment.PurchaseId, payment.UserId);
+            }
+            else if (payment.PurchaseType == "Section")
+            {
+                await _sectionsRepository.MakeSectionAvailable(payment.PurchaseId, payment.UserId);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        return new EmptyResult();
     }
 }

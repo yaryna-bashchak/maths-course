@@ -11,8 +11,10 @@ import LoadingComponent from "../../app/layout/LoadingComponent.tsx";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { StripeElementType } from "@stripe/stripe-js";
 import { createOrUpdatePayment } from "./paymentSlice.ts";
-import { useAppDispatch } from "../../app/store/configureStore.ts";
-// import { useElements, useStripe } from "@stripe/react-stripe-js";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore.ts";
+import { CardNumberElement } from "@stripe/react-stripe-js";
+import { useElements, useStripe } from "@stripe/react-stripe-js";
+import { LoadingButton } from "@mui/lab";
 
 const steps = ['Оберіть план', 'Перегляньте своє замовлення', 'Оплатіть замовлення'];
 
@@ -31,10 +33,12 @@ export default function CheckoutPage() {
     const [sectionId, setSectionId] = useState(isSectionIdInQuery ? parseInt(query.get('sectionId')!, 10) : null);
     const [cardState, setCardState] = useState<{ elementError: { [key in StripeElementType]?: string } }>({ elementError: {} });
     const [cardComplete, setCardComplete] = useState<any>({ cardNumber: false, cardExpiry: false, cardCvc: false });
-    // const [paymentMessage, setPaymentMessage] = useState('');
-    // const [paymentSucceed, setPaymentSucceed] = useState(false);
-    // const stripe = useStripe();
-    // const elements = useElements();
+    const [loading, setLoading] = useState(false);
+    const [paymentMessage, setPaymentMessage] = useState('');
+    const [paymentSucceed, setPaymentSucceed] = useState(false);
+    const { payments } = useAppSelector(state => state.payments);
+    const stripe = useStripe();
+    const elements = useElements();
 
     function onCardInputChange(event: any) {
         setCardState({
@@ -99,20 +103,63 @@ export default function CheckoutPage() {
 
     if (sectionExists !== null && sectionExists === false) return <NotFound />;
 
-    const handleNext = (data: FieldValues) => {
-        console.log(data);
-        
-        if (activeStep === steps.length - 2) {
-            dispatch(createOrUpdatePayment({
-                body: {
-                    purchaseType: selectedPlan,
-                    purchaseId: selectedPlan === 'Course' ? course?.id : sectionId
+    const getCurrentPayment = () => {
+        return payments.find(payment =>
+            payment.purchaseType === selectedPlan
+                && payment.purchaseId === (selectedPlan === 'Course' ? course?.id : sectionId));
+    }
+
+    async function submitPayment() {
+        setLoading(true);
+        if (!stripe || !elements) return;
+        try {
+            const cardElement = elements.getElement(CardNumberElement);
+            const paymentResult = await stripe.confirmCardPayment(getCurrentPayment()!.clientSecret, {
+                payment_method: {
+                    card: cardElement!,
+                    billing_details: {
+                        name: nameOnCard
+                    }
                 }
-            }));
+            })
+            console.log(paymentResult);
+            if (paymentResult.paymentIntent?.status === 'succeeded') {
+                // dispatch(fetchPayments()); ще приходить status 0, не встигає оновитись
+                setPaymentSucceed(true);
+                setPaymentMessage('Thank you - we have received your payment');
+                setActiveStep(activeStep + 1);
+                // dispatch(fetchCourseAsync(course!.id)); ще приходить що курс не available
+                setLoading(false);
+            } else {
+                setPaymentMessage(paymentResult.error?.message || 'Payment failed');
+                setPaymentSucceed(false);
+                setLoading(false);
+                setActiveStep(activeStep + 1);
+            }
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
         }
 
-        setActiveStep(activeStep + 1);
-    };
+    }
+    const handleNext = async (data: FieldValues) => {
+        console.log(data);
+
+        if (activeStep === steps.length - 1) {
+            await submitPayment();
+        } else {
+            if (activeStep === steps.length - 2) {
+                dispatch(createOrUpdatePayment({
+                    body: {
+                        purchaseType: selectedPlan,
+                        purchaseId: selectedPlan === 'Course' ? course?.id : sectionId
+                    }
+                }));
+            }
+
+            setActiveStep(activeStep + 1);
+        }
+    }
 
     const handleBack = () => {
         setActiveStep(activeStep - 1);
@@ -150,13 +197,18 @@ export default function CheckoutPage() {
                     {activeStep === steps.length ? (
                         <>
                             <Typography variant="h5" gutterBottom>
-                                Thank you for your order.
+                                {paymentMessage}
                             </Typography>
-                            <Typography variant="subtitle1">
-                                Your order number is #2001539. We have emailed your order
-                                confirmation, and will send you an update when your order has
-                                shipped.
-                            </Typography>
+                            {paymentSucceed ? (
+                                <Typography variant="subtitle1">
+                                    Your order number is #2001539. We have emailed your order
+                                    confirmation, and will send you an update when your order has
+                                    shipped.
+                                </Typography>
+                            ) : (
+                                <Button variant="contained" onClick={handleBack}>Go back and try again</Button>
+                            )}
+
                         </>
                     ) : (
                         <form onSubmit={methods.handleSubmit(handleNext)}>
@@ -167,14 +219,15 @@ export default function CheckoutPage() {
                                         Назад
                                     </Button>
                                 )}
-                                <Button
+                                <LoadingButton
+                                    loading={loading}
                                     variant="contained"
                                     disabled={submitDisabled()}
                                     type='submit'
                                     sx={{ mt: 3, ml: 1 }}
                                 >
                                     {activeStep === steps.length - 1 ? 'Оплатити' : 'Далі'}
-                                </Button>
+                                </LoadingButton>
                             </Box>
                         </form>
                     )}

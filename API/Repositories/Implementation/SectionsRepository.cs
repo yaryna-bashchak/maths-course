@@ -47,41 +47,6 @@ namespace API.Repositories.Implementation
             return new Result<GetSectionDto> { IsSuccess = true, Data = section };
         }
 
-        public async Task<Result<GetSectionDto>> UpdateSectionAvailability(int sectionId, UpdateUserSectionDto updatedUserSection, string username)
-        {
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null) return UnauthorizedResult<GetSectionDto>("Unauthorized user.");
-
-            var dbSection = _context.Sections.Find(sectionId);
-            if (dbSection == null) return NotFoundResult<GetSectionDto>("Section with the provided ID not found.");
-
-            if (updatedUserSection.IsAvailable != -1)
-            {
-                UserSection userSection = await _context.UserSections
-                    .Where(sl => sl.SectionId == sectionId)
-                    .FirstOrDefaultAsync(sl => sl.UserId == user.Id);
-
-                if (userSection == null)
-                {
-                    _context.UserSections.Add(
-                        new UserSection
-                        {
-                            SectionId = sectionId,
-                            UserId = user.Id,
-                            isAvailable = updatedUserSection.IsAvailable != 0,
-                        });
-                }
-                else
-                {
-                    userSection.isAvailable = updatedUserSection.IsAvailable != 0;
-                }
-            }
-
-            await _context.SaveChangesAsync();
-
-            return new Result<GetSectionDto> { IsSuccess = true };
-        }
-
         public async Task<Result<GetSectionDto>> AddSection(AddSectionDto newSection, string username)
         {
             var section = _mapper.Map<Section>(newSection);
@@ -90,7 +55,8 @@ namespace API.Repositories.Implementation
             await _context.Sections.AddAsync(section);
             await _context.SaveChangesAsync();
 
-            await UpdateSectionAvailability(section.Id, new UpdateUserSectionDto() { IsAvailable = 1 }, username);
+            var user = await _userManager.FindByNameAsync(username);
+            await MakeSectionAvailable(section.Id, user.Id);
 
             var result = await GetSection(section.Id, username);
             return new Result<GetSectionDto> { IsSuccess = true, Data = result.Data };
@@ -177,41 +143,45 @@ namespace API.Repositories.Implementation
             }
         }
 
-        public async Task<Result<GetCourseDto>> UpdateSectionsAvailabilityByCourseId(int courseId, UpdateUserCourseDto updatedUserCourse, string username)
+        public async Task<Result<GetSectionDto>> MakeSectionAvailable(int sectionId, string userId)
         {
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null) return UnauthorizedResult<GetCourseDto>("Unauthorized user.");
+            var dbSection = _context.Sections.Find(sectionId);
+            if (dbSection == null) return NotFoundResult<GetSectionDto>("Section with the provided ID not found.");
 
+            UserSection userSection = await _context.UserSections
+                .Where(sl => sl.SectionId == sectionId)
+                .FirstOrDefaultAsync(sl => sl.UserId == userId);
+
+            if (userSection == null)
+            {
+                _context.UserSections.Add(
+                    new UserSection
+                    {
+                        SectionId = sectionId,
+                        UserId = userId,
+                        isAvailable = true,
+                    });
+            }
+            else
+            {
+                userSection.isAvailable = true;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new Result<GetSectionDto> { IsSuccess = true };
+        }
+
+        public async Task<Result<GetCourseDto>> MakeCourseAvailable(int courseId, string userId)
+        {
             var dbSections = await _context.Sections.Where(s => s.CourseId == courseId).ToListAsync();
 
             if (dbSections.IsNullOrEmpty()) return NotFoundResult<GetCourseDto>("Sections for course with the provided ID not found.");
 
             foreach (var dbSection in dbSections)
             {
-                if (updatedUserCourse.IsAvailable != -1)
-                {
-                    UserSection userSection = await _context.UserSections
-                        .Where(sl => sl.SectionId == dbSection.Id)
-                        .FirstOrDefaultAsync(sl => sl.UserId == user.Id);
-
-                    if (userSection == null)
-                    {
-                        _context.UserSections.Add(
-                            new UserSection
-                            {
-                                SectionId = dbSection.Id,
-                                UserId = user.Id,
-                                isAvailable = updatedUserCourse.IsAvailable != 0,
-                            });
-                    }
-                    else
-                    {
-                        userSection.isAvailable = updatedUserCourse.IsAvailable != 0;
-                    }
-                }
+                await MakeSectionAvailable(dbSection.Id, userId);
             }
-
-            await _context.SaveChangesAsync();
 
             return new Result<GetCourseDto> { IsSuccess = true };
         }
