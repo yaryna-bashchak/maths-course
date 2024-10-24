@@ -1,11 +1,12 @@
-import { FormControl, RadioGroup, FormControlLabel, Radio, Typography, Box, Button, FormHelperText } from "@mui/material";
+import { FormControl, /*RadioGroup,*/ Typography, Box, Button, FormHelperText } from "@mui/material";
 import React, { useState } from "react";
-import { Test, Option } from "../../app/models/test";
-import { green, pink } from "@mui/material/colors";
+import { Test } from "../../app/models/test";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { testSelectors } from "./testsSlice";
 import { updateLessonAsync } from "../courses/coursesSlice";
+//import RadioButtonComponent from "./RadioButtonComponent";
+import ButtonCardComponent from "./ButtonCardComponent";
 
 interface Props {
     test: Test;
@@ -73,8 +74,13 @@ export default function TestControl({
         dispatch(updateLessonAsync({ id: parseInt(lessonId!), body: { testScore: 100 * currentTestScore / totalSteps(tests), courseId } }))
     }
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked((event.target as HTMLInputElement).value);
+    // const handleChangeOld = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setChecked((event.target as HTMLInputElement).value);
+    //     setHelperText(' ');
+    // };
+
+    const handleChange = (id: string) => {
+        setChecked(id);
         setHelperText(' ');
     };
 
@@ -92,63 +98,57 @@ export default function TestControl({
         return completedCount === total;
     }
 
-    const getRadioStyle = (option: Option) => {
-        if (!(activeStep in completed)) return {};
-
-        const isAnswer = option.id === answerId;
-        const isChecked = option.id === Number(checked);
-
-        if (isChecked) return isAnswer ? styles.greenRadio : styles.pinkRadio;
-        if (isAnswer) return styles.greenRadio;
-        return {};
-    }
-
-    const styles = {
-        greenRadio: {
-            color: green[800],
-            '&.Mui-checked': {
-                color: green[600],
-            },
-        },
-        pinkRadio: {
-            color: pink[800],
-            '&.Mui-checked': {
-                color: pink[600],
-            },
-        }
-    };
-
-    const getChecked = (option: Option) => {
-        const isStepCompleted = Object.prototype.hasOwnProperty.call(completed, activeStep);
-        const isAnswer = option.id === answerId;
-        const isChecked = option.id === Number(checked);
-
-        return (isStepCompleted && isAnswer) || isChecked;
-    }
-
     return (
         <div hidden={index !== activeStep}>
             <>
                 {test && (
-                    <FormControl>
-                        <Typography variant="h5">
-                            {test.question}
+                    <FormControl sx={{ width: "100%", rowGap: "20px", marginTop: "20px" }}>
+                        <Typography variant="h5" sx={{ paddingLeft: "8px"}}>
+                            {index + 1}. {test.question}
                         </Typography>
-                        <RadioGroup onChange={handleChange}>
-                            {
-                                test.options.map(option => (
-                                    <FormControlLabel
-                                        value={option.id}
-                                        control={<Radio sx={getRadioStyle(option)} />}
-                                        label={option.text}
-                                        disabled={activeStep in completed}
-                                        checked={getChecked(option)}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                justifyContent: "center",
+                                gap: "20px",
+                            }}
+                        >
+                            {test.options.map((option) => {
+                                const isStepCompleted = Object.prototype.hasOwnProperty.call(
+                                    completed,
+                                    activeStep
+                                );
+                                return (
+                                    <ButtonCardComponent
                                         key={option.id}
+                                        option={option}
+                                        checked={checked}
+                                        handleChange={handleChange}
+                                        isStepCompleted={isStepCompleted}
+                                        answerId={answerId!}
                                     />
-                                ))
+                                );
+                            })}
+                        </Box>
+                        {/* <RadioGroup onChange={handleChangeOld}>
+                            {
+                                test.options.map(option => {
+                                    const isStepCompleted = Object.prototype.hasOwnProperty.call(completed, activeStep);
+
+                                    return (
+                                        <RadioButtonComponent
+                                            key={option.id}
+                                            option={option}
+                                            checked={checked}
+                                            isStepCompleted={isStepCompleted}
+                                            answerId={answerId!}
+                                        />
+                                    )
+                                })
                             }
-                        </RadioGroup>
-                        <FormHelperText sx={{ color: 'red' }}>{helperText}</FormHelperText>
+                        </RadioGroup> */}
+                        <FormHelperText sx={{ color: 'red', marginLeft: '8px', fontSize: '1rem' }}>{helperText}</FormHelperText>
                     </FormControl>)}
                 <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                     <Button
