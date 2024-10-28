@@ -104,9 +104,7 @@ namespace API.Repositories.Implementation
             }
 
             var dbLesson = await GetLessonById(lessonId);
-
             if (dbLesson == null) return NotFoundResult("Lesson with the provided ID not found.");
-
 
             var userLesson = await GetUserLesson(lessonId, user.Id);
             if (userLesson == null)
