@@ -27,6 +27,25 @@ namespace API.Controllers
             return result.Data;
         }
 
+        [HttpPost("statistics")]
+        public async Task<ActionResult<TestsStatisticDto>> GetStatisticsOfTests([FromForm] TestsStatisticParametersDto parameters)
+        {
+            if (parameters.TopPercent < 0 || parameters.TopPercent > 100)
+            {
+                return BadRequest("Top Percent must be a number between 0 and 100.");
+            }
+
+            var username = User.Identity.Name ?? "";
+            var result = await _testsRepository.GetStatisticsOfLessonTests(parameters, username);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return result.Data;
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<GetTestDto>> AddTest([FromForm] AddTestDto newTest)
