@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         [HttpPost("statistics")]
-        public async Task<ActionResult<TestsStatisticDto>> GetStatisticsOfTests([FromForm] TestsStatisticParametersDto parameters)
+        public async Task<ActionResult<TestsStatisticDto>> GetStatisticsOfTests(TestsStatisticParametersDto parameters)
         {
             if (parameters.TopPercent < 0 || parameters.TopPercent > 100)
             {
@@ -48,7 +48,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<GetTestDto>> AddTest([FromForm] AddTestDto newTest)
+        public async Task<ActionResult<GetTestDto>> AddTest(/*[FromForm]*/ AddTestDto newTest)
         {
             var username = User.Identity.Name ?? "";
             var result = await _testsRepository.AddTest(newTest);
@@ -63,7 +63,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<ActionResult<GetTestDto>> UpdateTest(int id, [FromForm] UpdateTestDto updatedTest)
+        public async Task<ActionResult<GetTestDto>> UpdateTest(int id, /*[FromForm]*/ UpdateTestDto updatedTest)
         {
             var result = await _testsRepository.UpdateTest(id, updatedTest);
 
@@ -76,7 +76,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTest(int id)
         {
             var username = User.Identity.Name ?? "";
