@@ -1,6 +1,6 @@
 import { FormControl, /*RadioGroup,*/ Typography, Box, Button, FormHelperText } from "@mui/material";
-import React, { useState } from "react";
-import { Test } from "../../app/models/test";
+import React, { useEffect, useState } from "react";
+import { Option, Test } from "../../app/models/test";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { testSelectors } from "./testsSlice";
@@ -36,7 +36,20 @@ export default function TestControl({
     const tests = useAppSelector(testSelectors.selectAll);
     const [checked, setChecked] = useState('');
     const [helperText, setHelperText] = useState('');
+    const [shuffledOptions, setShuffledOptions] = useState(test.options);
     const answerId = test.options.find(option => option.isAnswer === true)?.id;
+    
+    useEffect(() => {
+        setShuffledOptions(shuffleArray([...test.options]));
+    }, [test.options]);
+
+    const shuffleArray = (array: Option[]) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    };
 
     const totalSteps = (tests: Test[]): number => {
         return tests ? tests.length : 0;
@@ -114,7 +127,7 @@ export default function TestControl({
                                 gap: "20px",
                             }}
                         >
-                            {test.options.map((option) => {
+                            {shuffledOptions.map((option) => {
                                 const isStepCompleted = Object.prototype.hasOwnProperty.call(
                                     completed,
                                     activeStep
@@ -133,7 +146,7 @@ export default function TestControl({
                         </Box>
                         {/* <RadioGroup onChange={handleChangeOld}>
                             {
-                                test.options.map(option => {
+                                shuffledOptions.map(option => {
                                     const isStepCompleted = Object.prototype.hasOwnProperty.call(completed, activeStep);
 
                                     return (
