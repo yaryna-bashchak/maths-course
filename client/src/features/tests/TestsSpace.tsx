@@ -83,12 +83,9 @@ export default function TestsSpace() {
 
     return (
         <>
-            <Box sx={{ display: 'flex', justifyContent: 'start' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: '16px' }}>
                 <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId}`}>Назад до уроку</Button>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', m: '10px 0px' }}>
-                <Typography variant="h3">Тести</Typography>
-                <Typography variant="h6" sx={{ mr: '10px' }}>
+                <Typography variant="h6" sx={{ mr: '10px', alignSelf: 'flex-end', lineHeight: 'initial' }}>
                     {!isFinished && formatTime(elapsedTime)}
                 </Typography>
             </Box>

@@ -35,7 +35,7 @@ export default function TestControl({
     const { lessonId, courseId } = useParams<{ courseId: string, lessonId: string }>();
     const tests = useAppSelector(testSelectors.selectAll);
     const [checked, setChecked] = useState('');
-    const [helperText, setHelperText] = useState(' ');
+    const [helperText, setHelperText] = useState('');
     const answerId = test.options.find(option => option.isAnswer === true)?.id;
 
     const totalSteps = (tests: Test[]): number => {
@@ -76,12 +76,12 @@ export default function TestControl({
 
     // const handleChangeOld = (event: React.ChangeEvent<HTMLInputElement>) => {
     //     setChecked((event.target as HTMLInputElement).value);
-    //     setHelperText(' ');
+    //     setHelperText('');
     // };
 
     const handleChange = (id: string) => {
         setChecked(id);
-        setHelperText(' ');
+        setHelperText('');
     };
 
     const submitAnswer = () => {
@@ -103,7 +103,7 @@ export default function TestControl({
             <>
                 {test && (
                     <FormControl sx={{ width: "100%", rowGap: "20px", marginTop: "20px" }}>
-                        <Typography variant="h5" sx={{ paddingLeft: "8px"}}>
+                        <Typography variant="h5" sx={{ paddingLeft: "8px" }}>
                             {index + 1}. {test.question}
                         </Typography>
                         <Box
@@ -148,7 +148,11 @@ export default function TestControl({
                                 })
                             }
                         </RadioGroup> */}
-                        <FormHelperText sx={{ color: 'red', marginLeft: '8px', fontSize: '1rem' }}>{helperText}</FormHelperText>
+                        {helperText && (
+                            <FormHelperText sx={{ color: 'red', marginLeft: '8px', fontSize: '1rem' }}>
+                                {helperText}
+                            </FormHelperText>
+                        )}
                     </FormControl>)}
                 <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                     <Button
