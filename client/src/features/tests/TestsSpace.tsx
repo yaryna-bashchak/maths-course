@@ -104,7 +104,7 @@ export default function TestsSpace() {
                         <Results
                             formatedTime={formatTime(elapsedTime)}
                             lessonId={lesson!.id}
-                            testScore={lesson?.testScore!}
+                            testScore={lesson!.testScore}
                         />
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Box sx={{ flex: '1 1 auto' }} />

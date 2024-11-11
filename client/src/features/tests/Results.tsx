@@ -6,7 +6,7 @@ import agent from "../../app/api/agent";
 interface Props {
     formatedTime: string;
     lessonId: number;
-    testScore: number;
+    testScore: number | null;
 }
 
 export default function Results({ formatedTime, lessonId, testScore }: Props) {
@@ -27,7 +27,7 @@ export default function Results({ formatedTime, lessonId, testScore }: Props) {
     }, [lessonId, topPercent]);
 
     const getMessage = () => {
-        if (!statistics) return;
+        if (!testScore || !statistics) return;
 
         if (testScore < 50)
             return 'Схоже, вам є над чим попрацювати. Спробуйте повторити тему для кращого засвоєння.';
