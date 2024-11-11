@@ -13,6 +13,7 @@ import { Test } from "../../app/models/test";
 import { LessonParams } from "../../app/models/course";
 import { isAvailable } from "../lesson/isAvailable";
 import { findLessonById } from "../lesson/findLessonById";
+import Results from "./Results";
 
 function isLoading(lessonParams: LessonParams, status: string, courseStatus: string) {
     return !lessonParams || status.includes('pending') || courseStatus.includes('pending');
@@ -103,10 +104,11 @@ export default function TestsSpace() {
             {
                 isFinished ? (
                     <>
-                        <Typography sx={{ mt: 2, mb: 1 }}>
-                            Вітаю! Твій результат: {lesson?.testScore && (lesson.testScore).toFixed(2)}% <br/>
-                            Час виконання: {formatTime(elapsedTime)}
-                        </Typography>
+                        <Results
+                            formatedTime={formatTime(elapsedTime)}
+                            lessonId={lesson!.id}
+                            testScore={lesson?.testScore!}
+                        />
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Box sx={{ flex: '1 1 auto' }} />
                             <Button endIcon={<ArrowForwardIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId ? parseInt(lessonId) + 1 : 0}`}>До наступного уроку</Button>
