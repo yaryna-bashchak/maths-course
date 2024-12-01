@@ -13,6 +13,7 @@ import { Test } from "../../app/models/test";
 import { LessonParams } from "../../app/models/course";
 import { isAvailable } from "../lesson/isAvailable";
 import { findLessonById } from "../lesson/findLessonById";
+import Results from "./Results";
 
 function isLoading(lessonParams: LessonParams, status: string, courseStatus: string) {
     return !lessonParams || status.includes('pending') || courseStatus.includes('pending');
@@ -37,6 +38,7 @@ export default function TestsSpace() {
         [k: number]: number;
     }>({});
     const [isFinished, setIsFinished] = useState(false);
+    const [elapsedTime, setElapsedTime] = useState(0);
 
     const { lessonParams } = useAppSelector(state => state.courses.individualCourseStatus[parseInt(courseId!)]) || {};
 
@@ -52,9 +54,25 @@ export default function TestsSpace() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    useEffect(() => {
+        if (isFinished) return;
+
+        const timer: NodeJS.Timeout = setInterval(() => {
+            setElapsedTime(prev => prev + 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [isFinished]);
+
     const handleStep = (step: number) => () => {
         setActiveStep(step);
     };
+
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const secondsOfNewMinute = String(elapsedTime % 60).padStart(2, '0');
+        return `${minutes}:${secondsOfNewMinute}`;
+    }
 
     if (isLoading(lessonParams, status, courseStatus)) return <LoadingComponent />
 
@@ -65,10 +83,12 @@ export default function TestsSpace() {
 
     return (
         <>
-            <Box sx={{ display: 'flex', justifyContent: 'start' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: '16px' }}>
                 <Button startIcon={<ArrowBackIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId}`}>Назад до уроку</Button>
+                <Typography variant="h6" sx={{ mr: '10px', alignSelf: 'flex-end', lineHeight: 'initial' }}>
+                    {!isFinished && formatTime(elapsedTime)}
+                </Typography>
             </Box>
-            <Typography variant="h3" sx={{ m: '10px 0px' }}>Тести</Typography>
             <Box sx={{ width: '100%', m: '10px 0px' }}>
                 <Stepper nonLinear activeStep={activeStep}>
                     {tests.map((_label, index) => (
@@ -81,9 +101,11 @@ export default function TestsSpace() {
             {
                 isFinished ? (
                     <>
-                        <Typography sx={{ mt: 2, mb: 1 }}>
-                            Вітаю! Твій результат: {lesson?.testScore && (lesson.testScore).toFixed(2)}%
-                        </Typography>
+                        <Results
+                            formatedTime={formatTime(elapsedTime)}
+                            lessonId={lesson!.id}
+                            testScore={lesson!.testScore}
+                        />
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                             <Box sx={{ flex: '1 1 auto' }} />
                             <Button endIcon={<ArrowForwardIcon />} variant="outlined" component={Link} to={`/course/${courseId}/lesson/${lessonId ? parseInt(lessonId) + 1 : 0}`}>До наступного уроку</Button>

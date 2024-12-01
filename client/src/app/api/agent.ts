@@ -106,7 +106,11 @@ const Lesson = {
 }
 
 const Test = {
-  details: (lessonId: number) => requests.get(`tests/lessonId/${lessonId}`)
+  details: (lessonId: number) => requests.get(`tests/lessonId/${lessonId}`),
+  getUserStatistic: (body: any) => requests.post('tests/statistics', body),
+  create: (body: any) => requests.post('tests', body),
+  update: (id: number, body: any) => requests.put(`tests/${id}`, body),
+  delete: (id: number) => requests.delete(`tests/${id}`)
 }
 
 const Account = {

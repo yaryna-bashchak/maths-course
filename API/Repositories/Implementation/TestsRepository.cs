@@ -48,6 +48,35 @@ public class TestsRepository : ITestsRepository
         return new Result<List<GetTestDto>> { IsSuccess = true, Data = tests };
     }
 
+    public async Task<Result<TestsStatisticDto>> GetStatisticsOfLessonTests(TestsStatisticParametersDto parameters, string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return new Result<TestsStatisticDto> { IsSuccess = false, ErrorMessage = "Unauthorized user." };
+
+        var lessonId = parameters.LessonId;
+        var topPercent = parameters.TopPercent;
+
+        var dbLesson = await _context.Lessons
+            .FirstOrDefaultAsync(l => l.Id == lessonId);
+
+        if (dbLesson == null) return new Result<TestsStatisticDto> { IsSuccess = false, ErrorMessage = "Lesson with the provided ID not found." };
+
+        var userLessons = await _context.UserLessons
+            .Where(ul => ul.Lesson.Id == lessonId && ul.TestScore != null)
+            .ToListAsync();
+
+        var isScoreHigherAverage = IsScoreHigherThanAverage(userLessons, user.Id);
+        var isUserInTop = IsUserInTopPercent(userLessons, topPercent, user.Id);
+
+        var testsStatistics = new TestsStatisticDto
+        {
+            IsScoreHigherThanAverage = isScoreHigherAverage,
+            IsUserInTopPercent = isUserInTop,
+        };
+
+        return new Result<TestsStatisticDto> { IsSuccess = true, Data = testsStatistics };
+    }
+
     public async Task<Result<GetTestDto>> AddTest(AddTestDto newTest)
     {
         var test = _mapper.Map<Test>(newTest);
@@ -138,6 +167,61 @@ public class TestsRepository : ITestsRepository
         {
             return new Result<bool> { IsSuccess = false, ErrorMessage = ex.Message };
         }
+    }
+
+    private bool? IsScoreHigherThanAverage(List<UserLesson> userLessons, string userId)
+    {
+        if (!userLessons.Any(ul => ul.UserId != userId))
+        {
+            return null;
+        }
+
+        var otherScores = userLessons
+            .Where(ul => ul.UserId != userId && ul.TestScore.HasValue)
+            .Select(ul => ul.TestScore.Value)
+            .ToList();
+
+        var average = CalculateAverageScore(otherScores);
+        var userScore = userLessons.First(ul => ul.UserId == userId).TestScore;
+
+        return userScore >= average;
+    }
+
+    private float CalculateAverageScore(List<float> scores)
+    {
+        float total = scores.Sum();
+        float average = total / scores.Count;
+
+        return average;
+    }
+
+    private bool? IsUserInTopPercent(List<UserLesson> userLessons, int topPercent, string userId)
+    {
+        if (!userLessons.Any(ul => ul.UserId != userId))
+        {
+            return null;
+        }
+        
+        var scores = userLessons
+            .Where(ul => ul.TestScore.HasValue)
+            .Select(ul => ul.TestScore.Value)
+            .ToList();
+
+        var threshold = CalculateTopPercentThreshold(scores, topPercent);
+        var userScore = userLessons.First(ul => ul.UserId == userId).TestScore;
+
+        return userScore >= threshold;
+    }
+
+    private float CalculateTopPercentThreshold(List<float> scores, int percent)
+    {
+        scores.Sort();
+
+        int totalCount = scores.Count;
+        int topCount = Math.Max(1, (int)Math.Ceiling(totalCount * percent / 100.0));
+
+        float topPercentThreshold = scores[totalCount - topCount];
+        return topPercentThreshold;
     }
 
     private void UpdateTestDetails(Test dbTest, UpdateTestDto updatedTest)
