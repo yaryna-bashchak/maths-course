@@ -658,75 +658,75 @@ namespace API.Data
                     LessonId = 1,
                     TestOptions = new List<TestOptions>
                     {
-                        new() {
-                            Question = "Вкажіть натуральне число",
-                            Options = new List<Option>
-                            {
-                                new() { Text = "4,1", isAnswer = false },
-                                new() { Text = "0", isAnswer = false },
-                                new() { Text = "-3", isAnswer = false },
-                                new() { Text = "17", isAnswer = true },
-                                new() { Text = "1,8", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "При діленні числа 14 на 6 остача дорівнює",
-                            Options = new()
-                            {
-                                new() { Text = "0", isAnswer = false },
-                                new() { Text = "1", isAnswer = false },
-                                new() { Text = "2", isAnswer = false },
-                                new() { Text = "4", isAnswer = true },
-                                new() { Text = "6", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "Скоротіть дріб 66/24 до нескоротного",
-                            Options = new()
-                            {
-                                new() { Text = "33/12", isAnswer = false },
-                                new() { Text = "11/3", isAnswer = false },
-                                new() { Text = "11/4", isAnswer = true },
-                                new() { Text = "22/8", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "Перетворіть мішаний дріб  2 1/2  у неправильний",
-                            Options = new()
-                            {
-                                new() { Text = "1/2", isAnswer = false },
-                                new() { Text = "3/5", isAnswer = false },
-                                new() { Text = "3/2", isAnswer = false },
-                                new() { Text = "5/3", isAnswer = false },
-                                new() { Text = "5/2", isAnswer = true },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "НСД(42; 63) =",
-                            Options = new()
-                            {
-                                new() { Text = "126", isAnswer = false },
-                                new() { Text = "7", isAnswer = false },
-                                new() { Text = "42", isAnswer = false },
-                                new() { Text = "21", isAnswer = true },
-                                new() { Text = "3", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "(4/5) * (7/4) =",
-                            Options = new()
-                            {
-                                new() { Text = "5/7", isAnswer = false },
-                                new() { Text = "35/16", isAnswer = false },
-                                new() { Text = "20/28", isAnswer = false },
-                                new() { Text = "7/5", isAnswer = true },
-                            },
-                        },
+                        // new() {
+                        //     Question = "Вкажіть натуральне число",
+                        //     Options = new List<Option>
+                        //     {
+                        //         new() { Text = "4,1", isAnswer = false },
+                        //         new() { Text = "0", isAnswer = false },
+                        //         new() { Text = "-3", isAnswer = false },
+                        //         new() { Text = "17", isAnswer = true },
+                        //         new() { Text = "1,8", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "При діленні числа 14 на 6 остача дорівнює",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "0", isAnswer = false },
+                        //         new() { Text = "1", isAnswer = false },
+                        //         new() { Text = "2", isAnswer = false },
+                        //         new() { Text = "4", isAnswer = true },
+                        //         new() { Text = "6", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Скоротіть дріб 66/24 до нескоротного",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "33/12", isAnswer = false },
+                        //         new() { Text = "11/3", isAnswer = false },
+                        //         new() { Text = "11/4", isAnswer = true },
+                        //         new() { Text = "22/8", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Перетворіть мішаний дріб  2 1/2  у неправильний",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "1/2", isAnswer = false },
+                        //         new() { Text = "3/5", isAnswer = false },
+                        //         new() { Text = "3/2", isAnswer = false },
+                        //         new() { Text = "5/3", isAnswer = false },
+                        //         new() { Text = "5/2", isAnswer = true },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "НСД(42; 63) =",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "126", isAnswer = false },
+                        //         new() { Text = "7", isAnswer = false },
+                        //         new() { Text = "42", isAnswer = false },
+                        //         new() { Text = "21", isAnswer = true },
+                        //         new() { Text = "3", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "(4/5) * (7/4) =",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "5/7", isAnswer = false },
+                        //         new() { Text = "35/16", isAnswer = false },
+                        //         new() { Text = "20/28", isAnswer = false },
+                        //         new() { Text = "7/5", isAnswer = true },
+                        //     },
+                        // },
                         new() {
                             Question = "Чому дорівнює 2 + 2?",
                             Options = new()
@@ -794,116 +794,176 @@ namespace API.Data
                     LessonId = 2,
                     TestOptions = new()
                     {
-                        new()
-                        {
-                            Question = "7412/1000 =",
+                        new() {
+                            Question = "Яка фігура має лише одну пару паралельних сторін?",
                             Options = new()
                             {
-                                new() { Text = "7412000", isAnswer = false },
-                                new() { Text = "74,12", isAnswer = false },
-                                new() { Text = "7,412", isAnswer = true },
-                                new() { Text = "0,7412", isAnswer = false },
+                                new() { Text = "Квадрат", isAnswer = false },
+                                new() { Text = "Трапеція", isAnswer = true },
+                                new() { Text = "Прямокутник", isAnswer = false },
+                                new() { Text = "Ромб", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "1,61 + 2,49",
+                        new() {
+                            Question = "Чому дорівнює 2 + 2?",
                             Options = new()
                             {
-                                new() { Text = "4,1", isAnswer = true },
-                                new() { Text = "4", isAnswer = false },
-                                new() { Text = "3,1", isAnswer = false },
                                 new() { Text = "3", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "7×1,2=",
-                            Options = new()
-                            {
-                                new() { Text = "8,4", isAnswer = true },
-                                new() { Text = "8,2", isAnswer = false },
-                                new() { Text = "0,74", isAnswer = false },
-                                new() { Text = "9,2", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "21:9=",
-                            Options = new()
-                            {
-                                new() { Text = "189", isAnswer = false },
-                                new() { Text = "2,(3)", isAnswer = true },
-                                new() { Text = "3,(1)", isAnswer = false },
-                                new() { Text = "3", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "Переведіть періодичний дріб 1,(6) у неправильний",
-                            Options = new()
-                            {
-                                new() { Text = "5/3", isAnswer = true },
-                                new() { Text = "2/5", isAnswer = false },
-                                new() { Text = "1/6", isAnswer = false },
-                                new() { Text = "2/3", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "Обчислити 3 + (20 - 10 × 0,2) : 6 × 2",
-                            Options = new()
-                            {
+                                new() { Text = "4", isAnswer = true },
+                                new() { Text = "5", isAnswer = false },
                                 new() { Text = "6", isAnswer = false },
-                                new() { Text = "4,5", isAnswer = false },
-                                new() { Text = "9", isAnswer = true },
-                                new() { Text = "3,(6)", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "(-0,3) × (-5)",
+                        new() {
+                            Question = "Який із цих кутів називається прямим?",
                             Options = new()
                             {
-                                new() { Text = "1,5", isAnswer = true },
-                                new() { Text = "-15", isAnswer = false },
-                                new() { Text = "-1,5", isAnswer = false },
-                                new() { Text = "15", isAnswer = false },
+                                new() { Text = "45 градусів", isAnswer = false },
+                                new() { Text = "90 градусів", isAnswer = true },
+                                new() { Text = "120 градусів", isAnswer = false },
+                                new() { Text = "180 градусів", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "Розкрити дужки -c (b - a)",
+                        new() {
+                            Question = "Скільки градусів має тупий кут?",
                             Options = new()
                             {
-                                new() { Text = "- cb - ca", isAnswer = false },
-                                new() { Text = "ac - bc", isAnswer = true },
-                                new() { Text = "bc + ac", isAnswer = false },
-                                new() { Text = "bc - ab", isAnswer = false },
+                                new() { Text = "Менше 90 градусів", isAnswer = false },
+                                new() { Text = "Більше 90, але менше 180 градусів", isAnswer = true },
+                                new() { Text = "Точно 180 градусів", isAnswer = false },
+                                new() { Text = "Рівно 90 градусів", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "Обчисліть вираз |7/14 - 0,6| + 0,2",
+                        new() {
+                            Question = "Яка фігура має всі сторони рівні?",
                             Options = new()
                             {
-                                new() { Text = "0", isAnswer = false },
-                                new() { Text = "0,1", isAnswer = false },
-                                new() { Text = "0,2", isAnswer = false },
-                                new() { Text = "0,3", isAnswer = true },
+                                new() { Text = "Трапеція", isAnswer = false },
+                                new() { Text = "Квадрат", isAnswer = true },
+                                new() { Text = "Прямокутник", isAnswer = false },
+                                new() { Text = "Паралелограм", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "Округліть число 1234,567 до десятків",
+                        new() {
+                            Question = "Скільки сторін має правильний п'ятикутник?",
                             Options = new()
                             {
-                                new() { Text = "1235", isAnswer = false },
-                                new() { Text = "1234,57", isAnswer = false },
-                                new() { Text = "1230", isAnswer = true },
-                                new() { Text = "1234,6", isAnswer = false },
+                                new() { Text = "3", isAnswer = false },
+                                new() { Text = "4", isAnswer = false },
+                                new() { Text = "5", isAnswer = true },
+                                new() { Text = "6", isAnswer = false },
                             },
                         },
+                        // new()
+                        // {
+                        //     Question = "7412/1000 =",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "7412000", isAnswer = false },
+                        //         new() { Text = "74,12", isAnswer = false },
+                        //         new() { Text = "7,412", isAnswer = true },
+                        //         new() { Text = "0,7412", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "1,61 + 2,49",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "4,1", isAnswer = true },
+                        //         new() { Text = "4", isAnswer = false },
+                        //         new() { Text = "3,1", isAnswer = false },
+                        //         new() { Text = "3", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "7×1,2=",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "8,4", isAnswer = true },
+                        //         new() { Text = "8,2", isAnswer = false },
+                        //         new() { Text = "0,74", isAnswer = false },
+                        //         new() { Text = "9,2", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "21:9=",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "189", isAnswer = false },
+                        //         new() { Text = "2,(3)", isAnswer = true },
+                        //         new() { Text = "3,(1)", isAnswer = false },
+                        //         new() { Text = "3", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Переведіть періодичний дріб 1,(6) у неправильний",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "5/3", isAnswer = true },
+                        //         new() { Text = "2/5", isAnswer = false },
+                        //         new() { Text = "1/6", isAnswer = false },
+                        //         new() { Text = "2/3", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Обчислити 3 + (20 - 10 × 0,2) : 6 × 2",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "6", isAnswer = false },
+                        //         new() { Text = "4,5", isAnswer = false },
+                        //         new() { Text = "9", isAnswer = true },
+                        //         new() { Text = "3,(6)", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "(-0,3) × (-5)",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "1,5", isAnswer = true },
+                        //         new() { Text = "-15", isAnswer = false },
+                        //         new() { Text = "-1,5", isAnswer = false },
+                        //         new() { Text = "15", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Розкрити дужки -c (b - a)",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "- cb - ca", isAnswer = false },
+                        //         new() { Text = "ac - bc", isAnswer = true },
+                        //         new() { Text = "bc + ac", isAnswer = false },
+                        //         new() { Text = "bc - ab", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Обчисліть вираз |7/14 - 0,6| + 0,2",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "0", isAnswer = false },
+                        //         new() { Text = "0,1", isAnswer = false },
+                        //         new() { Text = "0,2", isAnswer = false },
+                        //         new() { Text = "0,3", isAnswer = true },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Округліть число 1234,567 до десятків",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "1235", isAnswer = false },
+                        //         new() { Text = "1234,57", isAnswer = false },
+                        //         new() { Text = "1230", isAnswer = true },
+                        //         new() { Text = "1234,6", isAnswer = false },
+                        //     },
+                        // },
                     },
                 },
                 new()
@@ -922,108 +982,158 @@ namespace API.Data
                                 new() { Text = "40%", isAnswer = true },
                             },
                         },
-                        new()
-                        {
-                            Question = "Обчисліть 25% від 140",
+                        new() {
+                            Question = "Яка фігура має всі сторони рівні?",
                             Options = new()
                             {
-                                new() { Text = "30", isAnswer = false },
-                                new() { Text = "35", isAnswer = true },
-                                new() { Text = "70", isAnswer = false },
-                                new() { Text = "75", isAnswer = false },
+                                new() { Text = "Трапеція", isAnswer = false },
+                                new() { Text = "Квадрат", isAnswer = true },
+                                new() { Text = "Прямокутник", isAnswer = false },
+                                new() { Text = "Паралелограм", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "Ви поповнювали рахунок через термінал, який бере 5% комісії. У результаті комісія становила 3 грн, а решта грошей прийшла на рахунок💰 На скільки грн поповнився ваш рахунок?",
+                        new() {
+                            Question = "Скільки сторін має правильний п'ятикутник?",
                             Options = new()
                             {
-                                new() { Text = "60 грн", isAnswer = false },
-                                new() { Text = "57 грн", isAnswer = true },
-                                new() { Text = "15 грн", isAnswer = false },
-                                new() { Text = "12 грн", isAnswer = false },
+                                new() { Text = "3", isAnswer = false },
+                                new() { Text = "4", isAnswer = false },
+                                new() { Text = "5", isAnswer = true },
+                                new() { Text = "6", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "Ви поклали 3000 грн на депозит під 7% річних і щороку отримуєте однакову суму на карту. Який прибуток ви отримаєте через 5 років?",
+                        new() {
+                            Question = "Яка фігура має лише одну пару паралельних сторін?",
                             Options = new()
                             {
-                                new() { Text = "3210 грн", isAnswer = false },
-                                new() { Text = "4050 грн", isAnswer = false },
-                                new() { Text = "210 грн", isAnswer = false },
-                                new() { Text = "1050 грн", isAnswer = true },
+                                new() { Text = "Квадрат", isAnswer = false },
+                                new() { Text = "Трапеція", isAnswer = true },
+                                new() { Text = "Прямокутник", isAnswer = false },
+                                new() { Text = "Ромб", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "Товар зі знижкою 15% коштує 425 грн. Яка ціна без знижки? (відповідь округліть до десятків)",
+                        new() {
+                            Question = "Який із цих кутів називається прямим?",
                             Options = new()
                             {
-                                new() { Text = "490 грн", isAnswer = false },
-                                new() { Text = "500 грн", isAnswer = true },
-                                new() { Text = "360 грн", isAnswer = false },
-                                new() { Text = "450 грн", isAnswer = false },
+                                new() { Text = "45 градусів", isAnswer = false },
+                                new() { Text = "90 градусів", isAnswer = true },
+                                new() { Text = "120 градусів", isAnswer = false },
+                                new() { Text = "180 градусів", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "Відстань між школами дорівнює 6 км. Скільки це см на карті, якщо її масштаб 1:30 000?",
+                        new() {
+                            Question = "Скільки градусів має тупий кут?",
                             Options = new()
                             {
-                                new() { Text = "20 см", isAnswer = true },
-                                new() { Text = "18 см", isAnswer = false },
-                                new() { Text = "2 см", isAnswer = false },
-                                new() { Text = "1,8 см", isAnswer = false },
+                                new() { Text = "Менше 90 градусів", isAnswer = false },
+                                new() { Text = "Більше 90, але менше 180 градусів", isAnswer = true },
+                                new() { Text = "Точно 180 градусів", isAnswer = false },
+                                new() { Text = "Рівно 90 градусів", isAnswer = false },
                             },
                         },
-                        new()
-                        {
-                            Question = "Обчисліть 65% від 80",
-                            Options = new()
-                            {
-                                new() { Text = "52", isAnswer = true },
-                                new() { Text = "65", isAnswer = false },
-                                new() { Text = "48", isAnswer = false },
-                                new() { Text = "50", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "Число 42 складає 70% від числа a. Визначте число a",
-                            Options = new()
-                            {
-                                new() { Text = "65", isAnswer = false },
-                                new() { Text = "32", isAnswer = false },
-                                new() { Text = "81", isAnswer = false },
-                                new() { Text = "60", isAnswer = true },
-                                new() { Text = "29", isAnswer = false },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "В роздріб одна шоколадка коштує 30 грн. Але на оптову закупівлю (від 40 штук) діє знижка 25%. Скільки коштуватиме партія з 50-ти таких шоколадок?",
-                            Options = new()
-                            {
-                                new() { Text = "1750 грн", isAnswer = false },
-                                new() { Text = "1200 грн", isAnswer = false },
-                                new() { Text = "900 грн", isAnswer = false },
-                                new() { Text = "1350 грн", isAnswer = false },
-                                new() { Text = "1125 грн", isAnswer = true },
-                            },
-                        },
-                        new()
-                        {
-                            Question = "Працівник отримав підвищення. У результаті його зарплата зросла на 10% і тепер становить 16 500 грн/міс. Яку зарплату він отримував до цього підвищення?",
-                            Options = new()
-                            {
-                                new() { Text = "15 000 грн/міс", isAnswer = true },
-                                new() { Text = "14 500 грн/міс", isAnswer = false },
-                                new() { Text = "13 750 грн/міс", isAnswer = false },
-                                new() { Text = "14 850 грн/міс", isAnswer = false },
-                                new() { Text = "16 000 грн/міс", isAnswer = false },
-                            },
-                        },
+                        // new()
+                        // {
+                        //     Question = "Обчисліть 25% від 140",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "30", isAnswer = false },
+                        //         new() { Text = "35", isAnswer = true },
+                        //         new() { Text = "70", isAnswer = false },
+                        //         new() { Text = "75", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Ви поповнювали рахунок через термінал, який бере 5% комісії. У результаті комісія становила 3 грн, а решта грошей прийшла на рахунок💰 На скільки грн поповнився ваш рахунок?",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "60 грн", isAnswer = false },
+                        //         new() { Text = "57 грн", isAnswer = true },
+                        //         new() { Text = "15 грн", isAnswer = false },
+                        //         new() { Text = "12 грн", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Ви поклали 3000 грн на депозит під 7% річних і щороку отримуєте однакову суму на карту. Який прибуток ви отримаєте через 5 років?",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "3210 грн", isAnswer = false },
+                        //         new() { Text = "4050 грн", isAnswer = false },
+                        //         new() { Text = "210 грн", isAnswer = false },
+                        //         new() { Text = "1050 грн", isAnswer = true },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Товар зі знижкою 15% коштує 425 грн. Яка ціна без знижки? (відповідь округліть до десятків)",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "490 грн", isAnswer = false },
+                        //         new() { Text = "500 грн", isAnswer = true },
+                        //         new() { Text = "360 грн", isAnswer = false },
+                        //         new() { Text = "450 грн", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Відстань між школами дорівнює 6 км. Скільки це см на карті, якщо її масштаб 1:30 000?",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "20 см", isAnswer = true },
+                        //         new() { Text = "18 см", isAnswer = false },
+                        //         new() { Text = "2 см", isAnswer = false },
+                        //         new() { Text = "1,8 см", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Обчисліть 65% від 80",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "52", isAnswer = true },
+                        //         new() { Text = "65", isAnswer = false },
+                        //         new() { Text = "48", isAnswer = false },
+                        //         new() { Text = "50", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Число 42 складає 70% від числа a. Визначте число a",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "65", isAnswer = false },
+                        //         new() { Text = "32", isAnswer = false },
+                        //         new() { Text = "81", isAnswer = false },
+                        //         new() { Text = "60", isAnswer = true },
+                        //         new() { Text = "29", isAnswer = false },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "В роздріб одна шоколадка коштує 30 грн. Але на оптову закупівлю (від 40 штук) діє знижка 25%. Скільки коштуватиме партія з 50-ти таких шоколадок?",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "1750 грн", isAnswer = false },
+                        //         new() { Text = "1200 грн", isAnswer = false },
+                        //         new() { Text = "900 грн", isAnswer = false },
+                        //         new() { Text = "1350 грн", isAnswer = false },
+                        //         new() { Text = "1125 грн", isAnswer = true },
+                        //     },
+                        // },
+                        // new()
+                        // {
+                        //     Question = "Працівник отримав підвищення. У результаті його зарплата зросла на 10% і тепер становить 16 500 грн/міс. Яку зарплату він отримував до цього підвищення?",
+                        //     Options = new()
+                        //     {
+                        //         new() { Text = "15 000 грн/міс", isAnswer = true },
+                        //         new() { Text = "14 500 грн/міс", isAnswer = false },
+                        //         new() { Text = "13 750 грн/міс", isAnswer = false },
+                        //         new() { Text = "14 850 грн/міс", isAnswer = false },
+                        //         new() { Text = "16 000 грн/міс", isAnswer = false },
+                        //     },
+                        // },
                     },
                 },
                 new()
