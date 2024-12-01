@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for plan-znoshnika on 2024-06-04T11:47:48+03:00
+# fly.toml app configuration file generated for plan-znoshnika on 2024-12-01T23:48:47+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -13,14 +13,17 @@ primary_region = 'waw'
   ASPNETCORE_URLS="http://+:8080"
   Cloudinary__CloudName="dakefp7s6"
   Cloudinary__ApiKey="639239621864542"
+  StripeSettings__PublishableKey="pk_test_51PdqcnLIgQOEBkZAnCWSvJxIw0oIZqgGnHQAA8dbAXNE0tVAfHCAsKljw4qm6V0t0mrBuMBrWezZjdH8s8MGlrdP00o0r1iWM1"
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
 
 [[vm]]
-  size = 'shared-cpu-1x'
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
