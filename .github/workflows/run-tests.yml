@@ -1,4 +1,4 @@
-name: dotnet package
+name: run tests
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '7.0.x' ]
+        dotnet-version: [ '8.0.x' ]
 
     steps:
       - uses: actions/checkout@v3
