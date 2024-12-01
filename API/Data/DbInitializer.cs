@@ -192,7 +192,7 @@ namespace API.Data
             {
                 new() {
                     Title = "Види чисел, дроби, НСД, НСК, порівняння дробів",
-                    Description = "На уроці ви дізнаєтеся які бувають види чисел (натуральні, цілі, ірраціональні...) та дробів (правильні, неправильні, десяткові, мішані). Також навчитеся знаходити НСД і НСК, перетворювати дроби з одного виду в інший та порівнювати їх.",
+                    Description = "На уроці ви дізнаєтеся які бувають види чисел (натуральні, цілі, ірраціональні...) та дробів (правильні, неправильні, десяткові, мішані).",
                     UrlTheory = "https://res.cloudinary.com/dakefp7s6/video/upload/v1728158967/p7piu0g2rrwsqf40nbfz.mp4",
                     UrlPractice = "https://res.cloudinary.com/dakefp7s6/video/upload/v1728158982/tx1grzorwm5x2rz31ia3.mp4",
                     Number = 1,
@@ -256,7 +256,7 @@ namespace API.Data
                 },
                 new() {
                     Title = "Трикутник. 3 ознаки рівності трик., 3 ознаки подібності трик., формула Герона",
-                    Description = "На уроці ви дізнаєтеся всі базові складові трикутника, такі як середня лінія, висота, медіана, бісектриса та які властивості вони мають. Також буде вивчите по 3 ознаки рівності і подібності трикутників та формулу Герона для знаходження площі трикутника за 3-ма сторонами.",
+                    Description = "На уроці ви дізнаєтеся всі базові складові трикутника, такі як середня лінія, висота, медіана, бісектриса.",
                     UrlTheory = "https://res.cloudinary.com/dakefp7s6/video/upload/v1728158986/t6kpt7eor94m6u4yh9c4.mp4",
                     UrlPractice = "",
                     Number = 9,
@@ -264,7 +264,7 @@ namespace API.Data
                 },
                 new() {
                     Title = "Прямокутний трикутник, теорема Піфагора, sin, cos, tg, ctg, похила",
-                    Description = "На уроці ви глибше зануритеся в тему трикутників та дізнаєтесь набагато більше про один з їх видів - прямокутний трикутник. Вивчите теорему Піфагора - одну з найважливіших теорем в геометрії. А також отримаєте перше уявлення про такі тригонометричні функції, як синус, косинус, тангенс і котангенс. Також буде розглянуте поняття похилої та її проекції.",
+                    Description = "На уроці ви глибше зануритеся в тему трикутників та дізнаєтесь набагато більше про один з їх видів - прямокутний трикутник. Вивчите теорему Піфагора - одну з найважливіших теорем в геометрії.",
                     UrlTheory = "https://res.cloudinary.com/dakefp7s6/video/upload/v1728158986/t6kpt7eor94m6u4yh9c4.mp4",
                     UrlPractice = "https://res.cloudinary.com/dakefp7s6/video/upload/v1728158967/p7piu0g2rrwsqf40nbfz.mp4",
                     Number = 10,
@@ -751,7 +751,6 @@ namespace API.Data
                             Question = "Яка формула для знаходження площі прямокутника?",
                             Options = new()
                             {
-                                new() { Text = "S = a + b", isAnswer = false },
                                 new() { Text = "S = a * b", isAnswer = true },
                                 new() { Text = "S = 2a + 2b", isAnswer = false },
                                 new() { Text = "S = a²", isAnswer = false },
@@ -765,6 +764,7 @@ namespace API.Data
                                 new() { Text = "x = ±3", isAnswer = true },
                                 new() { Text = "x = 3", isAnswer = false },
                                 new() { Text = "x = -3", isAnswer = false },
+                                new() { Text = "x = -9", isAnswer = false },
                             },
                         },
                         new() {
@@ -782,9 +782,10 @@ namespace API.Data
                             Options = new()
                             {
                                 new() { Text = "P = 4a", isAnswer = true },
-                                new() { Text = "P = 2a + 2b", isAnswer = false },
+                                new() { Text = "P = 2a + b", isAnswer = false },
                                 new() { Text = "P = a^2", isAnswer = false },
                                 new() { Text = "P = a + b", isAnswer = false },
+                                new() { Text = "P = a * b", isAnswer = false },
                             },
                         },
                     },

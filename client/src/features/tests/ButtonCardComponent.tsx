@@ -48,12 +48,17 @@ export default function ButtonCardComponent({
             onClick={handleButtonClick}
             disabled={isStepCompleted}
             sx={{
-                width: "calc(50% - 20px)",
+                width: {
+                    xs: "100%",
+                    sm: "calc(50% - 20px)",
+                },
                 minWidth: "150px",
-                height: "100px",
+                height: "auto",
+                minHeight: "80px",
+                lineHeight: "1.25",
                 backgroundColor: getBackgroundColor(),
                 color: "white",
-                fontSize: "24px",
+                fontSize: "20px",
                 borderRadius: "8px",
                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                 transition: "transform 0.1s ease-in-out",

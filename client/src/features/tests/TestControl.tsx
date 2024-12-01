@@ -116,7 +116,7 @@ export default function TestControl({
             <>
                 {test && (
                     <FormControl sx={{ width: "100%", rowGap: "20px", marginTop: "20px" }}>
-                        <Typography variant="h5" sx={{ paddingLeft: "8px" }}>
+                        <Typography variant="h5" sx={{ paddingLeft: "8px", fontSize: "20px" }}>
                             {index + 1}. {test.question}
                         </Typography>
                         <Box

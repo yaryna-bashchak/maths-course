@@ -51,7 +51,7 @@ export default function VideoWithCheckbox({ videoNumber }: Props) {
             {videoKey ?
                 <div className="video-wrapper">
                     {showVideo ? (
-                        <video key={videoKey} style={{ maxWidth: '100%', maxHeight: 200, flex: '0 1 auto' }} controls controlsList="nodownload" onContextMenu={handleContextMenu}>
+                        <video key={videoKey} style={{ maxWidth: '100%', maxHeight: 200, flex: '0 1 auto', marginBottom: 0 }} controls controlsList="nodownload" onContextMenu={handleContextMenu}>
                             <source src={videoKey} type="video/mp4" />
                             Ваш браузер не підтримує відео тег.
                         </video>
