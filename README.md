@@ -12,30 +12,74 @@ This is a Web App for creating and taking the courses. Here is a web API that he
  
 <!---More about business logic, database schema, component diagram you can see in [design document](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing). --->
 
-You can access the deployed version of our application through [this link](https://plan-znoshnika.fly.dev/course). For testing purposes, please use the following credentials:
-
-- **Username:** bob
-- **Password:** Pa$$w0rd
+[Deployed App](https://plan-znoshnika.fly.dev/course).
 
 But to run the project yourself see "How to run".
 
 ## Examples
 
-### 1) Create a Course
-Managing courses is allowed only to users with "Admin" role. They have "Редагувати курси" tab on the top bar. Here you can create a new course or edit some.
+### 1) Taking the Course
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/de204bf4-dbe8-48f3-8edc-aafda6a6c4fc)
+#### - Create your own account, and "buy" courses.
 
-You can change any information, create new sections, lessons and so on.
+<img width="824" alt="image" src="https://github.com/user-attachments/assets/e91a6ead-768b-4b30-b477-f28f4c83efdd">
 
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d40b8914-9642-4c33-8cee-bb4fdd512659' width='700'>
+Then you should see this message about successful registretion.
 
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d4e7dfba-fcdb-457e-a9de-d12b25e59441' width='700'>
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/07b8a4a6-403f-4705-acde-7ce6bf51df7f">
 
-### 2) Take the Course
-As Bob, you have access to some sections in 1st course. Open it by selecting "Курси" tab on the top bar and choose "Дізнатись більше". 
+Log in, go to the main page and "buy" some courses.
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/26a60aaf-24a6-45e7-922f-849e762de756)
+![image](https://github.com/user-attachments/assets/181569ef-fda7-48df-bfea-bab5398ac385)
+
+Choose your plan.
+![image](https://github.com/user-attachments/assets/ddc9b615-ceaf-4ece-b6b4-d83249ad1227)
+
+Review purchase.
+![image](https://github.com/user-attachments/assets/54de055d-cd5a-408f-8d67-45db12146e94)
+
+Enter card data. Use the following test card data:
+
+> card number: 4242 4242 4242 4242
+> 
+> expiry date: any future date
+>
+> CVV: any 3 digits
+
+![image](https://github.com/user-attachments/assets/00d0bb0e-630d-42ee-bdd6-1ecf1093f6e3)
+
+You should see the success message.
+
+![image](https://github.com/user-attachments/assets/c143d29c-8073-496e-9421-978ebbbce88a)
+
+#### - Complete some lessons.
+
+Go the course.
+![image](https://github.com/user-attachments/assets/cfef7612-6825-45c0-815b-53b21a889d5c)
+
+Choose the lesson and start learning.
+
+![image](https://github.com/user-attachments/assets/22380a13-3de6-49c1-bdaa-8c47b56adf04)
+
+The lesson consists of videos and tests that should be completed after the lesson.
+
+![image](https://github.com/user-attachments/assets/c857951d-abe0-4953-bd67-a2aae23aa4ca)
+
+Complete the videos.
+
+![image](https://github.com/user-attachments/assets/9ccc0880-b6ca-475f-a659-ecc9839f914b)
+
+Pass the tests.
+<img width="770" alt="image" src="https://github.com/user-attachments/assets/bdac0ff6-be3e-4739-9acd-f4982f7fcb12">
+
+
+After answering, you immediately see whether you are right or not.
+
+
+And of course you see your score at the end.
+
+
+#### - Check your progress
 
 Here you can see what stage each lesson is at (completed, in progress, not started) and how many completed lessons are in each section.
 
@@ -62,18 +106,19 @@ And of course you see your score at the end.
 
 <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/52f0238e-2851-4aad-bea6-325eff95f04f' width='500'>
 
-### Web API
+### 2) Creating a Course
 
-If you want to test how the Web API works it would be enough to run only API folder (see "How to run").
+> Managing courses is allowed only to users with "Admin" role. They have "Редагувати курси" tab on the top bar.
 
-- then open [http://localhost:5000/swagger](http://localhost:5000/swagger) in your browser and try to use some endpoints to get or change data in database.
+Here you can create a new course or edit some.
 
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/f9867e92-b506-4ea7-8096-152be02fe9ad' width='600'>
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/2400f4a2-5c6c-4426-b99f-149a3a33687c' width='600'>
+![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/de204bf4-dbe8-48f3-8edc-aafda6a6c4fc)
 
-Example of getting _lesson by id_, where you can see information about the lesson, as well as a list of keywords and lessons that are recommended to be completed/repeated before.
+You can change any information, create new sections, lessons and so on.
 
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/24695d81-2e8a-43f6-8418-4db3fcb89956' width='700'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d40b8914-9642-4c33-8cee-bb4fdd512659' width='700'>
+
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/d4e7dfba-fcdb-457e-a9de-d12b25e59441' width='700'>
 
 ### Adaptive Design
 
@@ -86,6 +131,19 @@ The content of the pages is also appropriate.
 <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/03be35e4-8e5f-43ec-93e7-7d63286adf73' width='300'>
 <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/7fcbce25-5814-4883-902c-9e8ca4eef35a' width='300'>
 <img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/ab723440-a562-4b8c-8257-1c86e9d6e3a8' width='300'>
+
+### Web API
+
+If you want to test how the Web API works it would be enough to run only API folder (see "How to run").
+
+- then open [http://localhost:5000/swagger](http://localhost:5000/swagger) in your browser and try to use some endpoints to get or change data in database.
+
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/f9867e92-b506-4ea7-8096-152be02fe9ad' width='600'>
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/2400f4a2-5c6c-4426-b99f-149a3a33687c' width='600'>
+
+Example of getting _lesson by id_, where you can see information about the lesson, as well as a list of keywords and lessons that are recommended to be completed/repeated before.
+
+<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/24695d81-2e8a-43f6-8418-4db3fcb89956' width='700'>
 
 ### Tests
 If you want to **run tests** (you also can see that all tests are passed in [_Github Actions_](https://github.com/yaryna-bashchak/maths-course/actions))
