@@ -14,9 +14,38 @@ This is a Web App for creating and taking the courses. Here is a web API that he
 
 [Deployed App](https://plan-znoshnika.fly.dev/course).
 
-But to run the project yourself see "How to run".
+But to run the project locally see "How to run".
 
-## Examples
+## How to run
+- first of all, you need to install [.Net 8.0](https://dotnet.microsoft.com/en-us/download) (if you do not already have it)
+- open this folder in [VS Code](https://code.visualstudio.com/download)
+- run the following command to install all needed packages
+
+Now you're ready to start.
+If you want to **run the app**:
+
+- run Docker desktop and the following command to create postgres database
+
+<code>$ docker run --name devCourse -e POSTGRES_USER=appuser -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest</code>
+
+- go to API folder, set 6 user-secrets: 3 for Cloudinary (that stores videos) and 3 for Stripe (is used for payments), and run the API:
+
+<code>$ cd API</code></br>
+<code>$ dotnet user-secrets set "\<KeyName\>" "\<Value\>"</code></br>
+
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/0a1edc76-3b14-43cc-a8d8-5ff177cb05fb"></br>
+<code>$ dotnet restore </code></br>
+<code>$ dotnet run</code>
+
+- then open another terminal and run client side using the following commands:
+
+<code>$ cd client</code></br>
+<code>$ npm install</code></br>
+<code>$ npm start</code>
+
+After that, the home page of the app will be opened in your browser.
+
+## How to use
 
 ### 1) Taking the Course
 
@@ -144,28 +173,6 @@ Example:
 
 ![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/c05c51ec-8fde-42bd-9022-387070f7b4c3)
 
-## Design document
+<!--- ## Design document
 
-[here](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing)
-
-## How to run
-- first of all, you need to install [.Net 7.0](https://dotnet.microsoft.com/en-us/download) (if you do not already have it)
-- open this folder in [VS Code](https://code.visualstudio.com/download)
-- run the following command to install all needed packages
-
-<code>$ dotnet restore </code>
-
-Now you're ready to start.
-If you want to **run the app**:
-
-- go to API folder and run it using the following commands:
-
-<code>$ cd API</code></br>
-<code>$ dotnet run</code>
-
-- then open second terminal and run client side using the following commands:
-
-<code>$ cd client</code></br>
-<code>$ npm start</code>
-
-After that, the home page of the app will be opened in your browser.
+[here](https://docs.google.com/document/d/1bEvHXDxrGMU5eWxjBdT6eoA5OIkL18bKe9ypRxkODgo/edit?usp=sharing) --->
