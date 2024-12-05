@@ -24,7 +24,7 @@ But to run the project locally see "How to run".
 Now you're ready to start.
 If you want to **run the app**:
 
-- run Docker desktop and the following command to create postgres database
+- run Docker Desktop and the following command to create postgres database
 
 <code>$ docker run --name devCourse -e POSTGRES_USER=appuser -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest</code>
 
