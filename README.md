@@ -70,41 +70,28 @@ Complete the videos.
 ![image](https://github.com/user-attachments/assets/9ccc0880-b6ca-475f-a659-ecc9839f914b)
 
 Pass the tests.
+
 <img width="770" alt="image" src="https://github.com/user-attachments/assets/bdac0ff6-be3e-4739-9acd-f4982f7fcb12">
 
+![image](https://github.com/user-attachments/assets/0641ebf1-d37a-45b9-86dc-209113592ece)
 
 After answering, you immediately see whether you are right or not.
 
+![image](https://github.com/user-attachments/assets/9e030643-77b2-4e61-a31e-c383e4bde5a1)
 
-And of course you see your score at the end.
+![image](https://github.com/user-attachments/assets/dd1f5f8d-a3c5-4722-85e9-26f21752d93a)
 
+At the end, you will see your score.
+
+![image](https://github.com/user-attachments/assets/1e76014b-3b3e-48f8-9d9a-485ff6a02bc9)
+
+<img width="710" alt="image" src="https://github.com/user-attachments/assets/2e711566-df7c-41b9-b11e-b34967aa5c45">
 
 #### - Check your progress
 
-Here you can see what stage each lesson is at (completed, in progress, not started) and how many completed lessons are in each section.
+Also you can see what stage each lesson is at (completed, in progress, not started) and how many completed lessons are in each section.
 
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/ecdb5b69-16b3-49fc-8eb7-8cf1c24a994d)
-
-Then you can try how filters work and choose the lesson you want and start passing it.
-
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/dd8e2229-fab5-43f6-acc8-8adf5950f5eb)
-
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/0cdbc4e0-dac2-4c7a-9fc5-621d912593ad)
-
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/ace81f53-29c3-4930-808c-e2130744a686)
-
-Also you can take the tests.
-
-![image](https://github.com/yaryna-bashchak/maths-course/assets/90560209/4d59ae85-bad7-4849-b6d2-6a39b86f78e8)
-
-After answering, you immediately see whether you are right or not.
-
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/bcd44b5f-3255-40d9-af06-d8d230d8aee1' width='400'>
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/157fbc60-968f-4134-a1fe-125c177fa984' width='400'>
-
-And of course you see your score at the end.
-
-<img src='https://github.com/yaryna-bashchak/maths-course/assets/90560209/52f0238e-2851-4aad-bea6-325eff95f04f' width='500'>
+![image](https://github.com/user-attachments/assets/30951991-71e6-4108-98d8-537d08db8884)
 
 ### 2) Creating a Course
 
