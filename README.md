@@ -28,12 +28,15 @@ If you want to **run the app**:
 
 <code>$ docker run --name devCourse -e POSTGRES_USER=appuser -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest</code>
 
-- go to API folder, set 6 user-secrets: 3 for Cloudinary (that stores videos) and 3 for Stripe (is used for payments), and run the API:
+- go to API folder, set 6 user-secrets: 3 for Cloudinary (that stores videos) and 3 for Stripe (is used for payments):
 
 <code>$ cd API</code></br>
 <code>$ dotnet user-secrets set "\<KeyName\>" "\<Value\>"</code></br>
 
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/0a1edc76-3b14-43cc-a8d8-5ff177cb05fb"></br>
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/0a1edc76-3b14-43cc-a8d8-5ff177cb05fb">
+
+- and run the API:
+
 <code>$ dotnet restore </code></br>
 <code>$ dotnet run</code>
 
