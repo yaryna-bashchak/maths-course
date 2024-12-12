@@ -19,7 +19,6 @@ But to run the project locally see "How to run".
 ## How to run
 - first of all, you need to install [.Net 8.0](https://dotnet.microsoft.com/en-us/download) (if you do not already have it)
 - open this folder in [VS Code](https://code.visualstudio.com/download)
-- run the following command to install all needed packages
 
 Now you're ready to start.
 If you want to **run the app**:
