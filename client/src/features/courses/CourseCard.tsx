@@ -16,7 +16,7 @@ export default function CourseCard({ courseId }: Props) {
             <Card sx={{ width: '90%', maxWidth: '300px', minWidth: '250px' }}>
                 <CardMedia
                     sx={{ height: 140 }}
-                    image="https://lifeimg.pravda.com/images/doc/8/2/8252751-vipdesignusa-depositphotos.jpg"
+                    image="https://naurok.ua/uploads/blog/eksetasi-odhgon-23-11-2018.jpg"
                     title="green iguana"
                 />
                 <CardContent>
